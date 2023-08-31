@@ -1,0 +1,38 @@
+# Gradle files
+.gradle/
+build/
+
+# Local configuration files
+local.properties
+
+# Proguard files
+proguard-rules.pro
+
+# Android Studio related files
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# User-specific files
+.gradle/
+/captures/
+/local.properties
+/.idea/workspace.xml
+/.idea/tasks.xml
+/.idea/gradle.xml
+/.idea/assetWizardSettings.xml
+/.idea/dictionaries
+/.idea/libraries
+/.idea/caches
+
+# Compiled bytecode
+*.class
+*.jar
+*.war
+*.ear
+
+# Generated files
+bin/
+gen/
+out/
