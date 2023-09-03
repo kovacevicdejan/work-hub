@@ -10,27 +10,27 @@ interface Destination {
 }
 
 object HomeDestination : Destination {
-    override val icon = Icons.Filled.Home
+    override val icon = Icons.Default.Home
     override val route = "Home"
 }
 
 object NetworkDestination : Destination {
-    override val icon = Icons.Default.Phone
+    override val icon = Icons.Default.Group
     override val route = "Network"
 }
 
 object PostDestination : Destination {
-    override val icon = Icons.Default.Add
+    override val icon = Icons.Default.AddBox
     override val route = "Post"
 }
 
 object JobsDestination : Destination {
-    override val icon = Icons.Default.ShoppingCart
+    override val icon = Icons.Default.Work
     override val route = "Jobs"
 }
 
 object ChatsDestination : Destination {
-    override val icon = Icons.Default.Email
+    override val icon = Icons.Default.Chat
     override val route = "Chats"
 }
 

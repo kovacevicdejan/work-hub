@@ -96,10 +96,24 @@ fun SnippetApp() {
                     snippetDestinations.forEach { navDestination ->
                         BottomNavigationItem(
                             icon = {
-                                Icon(
-                                    imageVector = navDestination.icon,
-                                    contentDescription = null,
-                                )
+                                if(navDestination.route == "Network" || navDestination.route == "Chats") {
+                                    BadgedBox(
+                                        badge = {
+                                            Badge(backgroundColor = Color.Red) { Text("8") }
+                                        }
+                                    ) {
+                                        Icon(
+                                            imageVector = navDestination.icon,
+                                            contentDescription = null,
+                                        )
+                                    }
+                                }
+                                else {
+                                    Icon(
+                                        imageVector = navDestination.icon,
+                                        contentDescription = null,
+                                    )
+                                }
                             },
                             label = { Text(navDestination.route, fontSize = 11.sp) },
                             selected = currentRoute.startsWith(navDestination.route),

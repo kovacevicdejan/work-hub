@@ -20,13 +20,13 @@ import com.example.workhub.R
 fun Post(last: Boolean) {
     Card(modifier = Modifier.padding(start = 10.dp, top = 10.dp, end = 10.dp, bottom = if (last) 10.dp else 0.dp), backgroundColor = if(isSystemInDarkTheme()) Color(0xFF202020) else Color(0xFFEEEEEE)) {
         Column {
-            Row(modifier = Modifier.padding(horizontal = 5.dp), verticalAlignment = Alignment.CenterVertically) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     imageVector = Icons.Default.Person,
                     contentDescription = null,
                     modifier = Modifier
-                        .width(60.dp)
-                        .height(60.dp)
+                        .width(70.dp)
+                        .height(70.dp)
                 )
 
                 Column {
