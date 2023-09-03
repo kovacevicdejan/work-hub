@@ -10,7 +10,7 @@ interface Destination {
 }
 
 object HomeDestination : Destination {
-    override val icon = Icons.Default.Lock
+    override val icon = Icons.Filled.Home
     override val route = "Home"
 }
 
@@ -19,9 +19,9 @@ object NetworkDestination : Destination {
     override val route = "Network"
 }
 
-object ProfileDestination : Destination {
-    override val icon = Icons.Default.Person
-    override val route = "Profile"
+object PostDestination : Destination {
+    override val icon = Icons.Default.Add
+    override val route = "Post"
 }
 
 object JobsDestination : Destination {
@@ -34,4 +34,4 @@ object ChatsDestination : Destination {
     override val route = "Chats"
 }
 
-val snippetDestinations = listOf(HomeDestination, NetworkDestination, ProfileDestination, JobsDestination, ChatsDestination)
+val snippetDestinations = listOf(HomeDestination, NetworkDestination, PostDestination, JobsDestination, ChatsDestination)
