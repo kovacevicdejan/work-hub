@@ -47,7 +47,6 @@ fun ChatScreen(
                             modifier = Modifier
                                 .weight(5.6f)
                                 .padding(horizontal = 10.dp)
-                                .weight(3f)
                         )
 
                         Button(

@@ -14,10 +14,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.workhub.R
 
 @Composable
-fun Post(last: Boolean) {
+fun Post(last: Boolean, navController: NavHostController) {
     Card(modifier = Modifier.padding(start = 10.dp, top = 10.dp, end = 10.dp, bottom = if (last) 10.dp else 0.dp), backgroundColor = if(isSystemInDarkTheme()) Color(0xFF202020) else Color(0xFFEEEEEE)) {
         Column {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -96,7 +97,18 @@ fun Post(last: Boolean) {
                 }
 
                 Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.weight(1f)) {
-                    IconButton(onClick = { /*TODO*/ }) {
+                    IconButton(
+                        onClick = {
+                            navController.navigate("Comments") {
+                                launchSingleTop = true
+                                restoreState = true
+//                            popUpTo(JobsDestination.route) {
+//                                saveState = true
+//                                inclusive = false
+//                            }
+                            }
+                        }
+                    ) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Icon(imageVector = Icons.Default.Email, contentDescription = "Comment", modifier = Modifier.size(20.dp))
                             Text(text = "Comment", fontSize = 12.sp)
@@ -104,14 +116,14 @@ fun Post(last: Boolean) {
                     }
                 }
 
-                Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.weight(1f)) {
-                    IconButton(onClick = { /*TODO*/ }) {
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Icon(imageVector = Icons.Default.ArrowForward, contentDescription = "Repost", modifier = Modifier.size(20.dp))
-                            Text(text = "Repost", fontSize = 12.sp)
-                        }
-                    }
-                }
+//                Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.weight(1f)) {
+//                    IconButton(onClick = { /*TODO*/ }) {
+//                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+//                            Icon(imageVector = Icons.Default.ArrowForward, contentDescription = "Repost", modifier = Modifier.size(20.dp))
+//                            Text(text = "Repost", fontSize = 12.sp)
+//                        }
+//                    }
+//                }
             }
         }
     }

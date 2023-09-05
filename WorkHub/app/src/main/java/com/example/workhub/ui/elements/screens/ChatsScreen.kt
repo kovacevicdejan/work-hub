@@ -49,10 +49,10 @@ fun ChatsScreen(
                         backgroundColor = if (isSystemInDarkTheme()) Color(0xFF202020) else Color(0xFFEEEEEE),
                         shape = Shapes.large,
                         onClick = {
-                            navController.navigate("Chat") {
+                            navController.navigate("Single Chat") {
                                 launchSingleTop = true
                                 restoreState = true
-//                                popUpTo(ChatsDestination.route) {
+//                                popUpTo(HomeDestination.route) {
 //                                    saveState = true
 //                                    inclusive = false
 //                                }

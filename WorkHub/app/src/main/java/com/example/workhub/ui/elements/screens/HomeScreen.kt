@@ -6,12 +6,14 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import com.example.workhub.SnippetViewModel
 import com.example.workhub.ui.elements.composables.Post
 
 @Composable
 fun HomeScreen(
-    viewModelFromActivity: SnippetViewModel
+    viewModelFromActivity: SnippetViewModel,
+    navController: NavHostController
 ) {
     val viewModelFromRoute: SnippetViewModel = viewModel()
 
@@ -20,9 +22,9 @@ fun HomeScreen(
 
     LazyColumn {
         items(count = 2) {
-            Post(last = false)
+            Post(last = false, navController = navController)
         }
 
-        item { Post(last = true) }
+        item { Post(last = true, navController = navController) }
     }
 }

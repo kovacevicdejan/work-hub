@@ -148,7 +148,7 @@ fun NewPostScreen (
                                     fontSize = 20.sp
                                 )
 
-                                Button(onClick = { /*TODO*/ }) {
+                                Button(onClick = {}) {
                                     Text(text = "Select image", color = Color.White)
                                 }
                             }

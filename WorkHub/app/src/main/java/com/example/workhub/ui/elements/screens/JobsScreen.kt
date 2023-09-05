@@ -60,10 +60,6 @@ fun JobsScreen(
                         navController.navigate("Saved Jobs") {
                             launchSingleTop = true
                             restoreState = true
-//                            popUpTo(JobsDestination.route) {
-//                                saveState = true
-//                                inclusive = false
-//                            }
                         }
                     }
                 ) {

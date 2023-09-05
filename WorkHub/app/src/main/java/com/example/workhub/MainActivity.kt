@@ -1,6 +1,7 @@
 package com.example.workhub
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -24,6 +25,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.workhub.ui.elements.screens.*
 import com.example.workhub.ui.elements.theme.WorkHubTheme
+import kotlinx.coroutines.flow.forEach
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -119,15 +121,18 @@ fun SnippetApp() {
                             selected = currentRoute.startsWith(navDestination.route),
                             onClick = {
                                 val newRoute = navDestination.route
+                                Log.d("print", newRoute)
 
                                 navController.navigate(newRoute) {
                                     launchSingleTop = true
                                     restoreState = true
                                     popUpTo(HomeDestination.route) {
-                                        saveState = true
+                                        saveState = false
                                         inclusive = false
                                     }
                                 }
+
+                                Log.d("print", navController.currentDestination.toString())
                             },
                         )
                     }
@@ -140,10 +145,16 @@ fun SnippetApp() {
                 modifier = Modifier.padding(it),
             ) {
                 composable(route = HomeDestination.route) {
-                    HomeScreen(viewModelFromActivity = viewModelFromActivity)
+                    HomeScreen(
+                        viewModelFromActivity = viewModelFromActivity,
+                        navController = navController
+                    )
                 }
                 composable(route = NetworkDestination.route) {
-                    NetworkScreen(viewModelFromActivity = viewModelFromActivity)
+                    NetworkScreen(
+                        viewModelFromActivity = viewModelFromActivity,
+                        navController = navController
+                    )
                 }
                 composable(route = PostDestination.route) {
                     NewPostScreen(viewModelFromActivity = viewModelFromActivity)
@@ -166,8 +177,23 @@ fun SnippetApp() {
                 composable(route = "Saved Jobs") {
                     SavedJobsScreen(viewModelFromActivity = viewModelFromActivity)
                 }
-                composable(route = "Chat") {
+                composable(route = "Single Chat") {
                     ChatScreen(viewModelFromActivity = viewModelFromActivity)
+                }
+                composable(route = "Comments") {
+                    CommentsScreen(viewModelFromActivity = viewModelFromActivity)
+                }
+                composable(route = "ManageNetwork") {
+                    ManageNetworkScreen(
+                        viewModelFromActivity = viewModelFromActivity,
+                        navController = navController
+                    )
+                }
+                composable(route = "Invitations") {
+                    InvitationsScreen(
+                        viewModelFromActivity = viewModelFromActivity,
+                        navController = navController
+                    )
                 }
             }
         }

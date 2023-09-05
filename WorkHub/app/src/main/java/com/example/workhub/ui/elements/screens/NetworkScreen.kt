@@ -16,11 +16,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import com.example.workhub.SnippetViewModel
 
 @Composable
 fun NetworkScreen(
-    viewModelFromActivity: SnippetViewModel
+    viewModelFromActivity: SnippetViewModel,
+    navController: NavHostController
 ) {
     val viewModelFromRoute: SnippetViewModel = viewModel()
 
@@ -34,7 +36,14 @@ fun NetworkScreen(
                     modifier = Modifier.weight(1f),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    TextButton(onClick = { }) {
+                    TextButton(
+                        onClick = {
+                            navController.navigate("ManageNetwork") {
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        }
+                    ) {
                         Text(text = "Manage my network", color = Color(0xFF0077B5))
                     }
                 }
@@ -43,7 +52,14 @@ fun NetworkScreen(
                     modifier = Modifier.weight(1f),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    TextButton(onClick = { }) {
+                    TextButton(
+                        onClick = {
+                            navController.navigate("Invitations") {
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        }
+                    ) {
                         Text(text = "Invitations", color = Color(0xFF0077B5))
                     }
                 }
