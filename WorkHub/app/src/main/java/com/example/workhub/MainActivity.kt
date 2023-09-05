@@ -149,13 +149,25 @@ fun SnippetApp() {
                     NewPostScreen(viewModelFromActivity = viewModelFromActivity)
                 }
                 composable(route = JobsDestination.route) {
-                    JobsScreen(viewModelFromActivity = viewModelFromActivity)
+                    JobsScreen(
+                        viewModelFromActivity = viewModelFromActivity,
+                        navController = navController
+                    )
                 }
                 composable(route = ChatsDestination.route) {
-                    ChatsScreen(viewModelFromActivity = viewModelFromActivity)
+                    ChatsScreen(
+                        viewModelFromActivity = viewModelFromActivity,
+                        navController = navController
+                    )
                 }
                 composable(route = "Profile") {
                     ProfileScreen(viewModelFromActivity = viewModelFromActivity)
+                }
+                composable(route = "Saved Jobs") {
+                    SavedJobsScreen(viewModelFromActivity = viewModelFromActivity)
+                }
+                composable(route = "Chat") {
+                    ChatScreen(viewModelFromActivity = viewModelFromActivity)
                 }
             }
         }

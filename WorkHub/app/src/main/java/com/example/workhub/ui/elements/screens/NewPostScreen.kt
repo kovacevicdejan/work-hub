@@ -20,8 +20,7 @@ import com.example.workhub.ui.elements.theme.Blue
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun NewPostScreen (
-    modifier: Modifier = Modifier,
-    viewModelFromActivity: SnippetViewModel,
+    viewModelFromActivity: SnippetViewModel
 ) {
     var state by remember { mutableStateOf(true) }
 

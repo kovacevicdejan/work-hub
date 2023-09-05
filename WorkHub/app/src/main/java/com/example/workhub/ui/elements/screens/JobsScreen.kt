@@ -1,42 +1,33 @@
 package com.example.workhub.ui.elements.screens
 
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowForward
-import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.workhub.R
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import com.example.workhub.HomeDestination
+import com.example.workhub.JobsDestination
 import com.example.workhub.SnippetViewModel
-import com.example.workhub.ui.elements.theme.Blue
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun JobsScreen(
     viewModelFromActivity: SnippetViewModel,
-    modifier: Modifier = Modifier,
+    navController: NavHostController
 ) {
     val viewModelFromRoute: SnippetViewModel = viewModel()
 
-    var value by remember { mutableStateOf("") }
     val uiStateFromRoute by viewModelFromRoute.uiState.collectAsState()
     val uiStateFromActivity by viewModelFromActivity.uiState.collectAsState()
 
@@ -58,14 +49,24 @@ fun JobsScreen(
 //    location .
 //    industry
 
-
     Column {
         Row(modifier = Modifier.padding(5.dp, 10.dp, 5.dp, 0.dp)) {
             Column(
                 modifier = Modifier.weight(1f),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                TextButton(onClick = { }) {
+                TextButton(
+                    onClick = {
+                        navController.navigate("Saved Jobs") {
+                            launchSingleTop = true
+                            restoreState = true
+//                            popUpTo(JobsDestination.route) {
+//                                saveState = true
+//                                inclusive = false
+//                            }
+                        }
+                    }
+                ) {
                     Text(text = "Saved jobs", color = Color(0xFF0077B5))
                 }
             }

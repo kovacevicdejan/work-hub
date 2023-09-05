@@ -1,6 +1,5 @@
 package com.example.workhub.ui.elements.screens
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -21,12 +20,10 @@ import com.example.workhub.SnippetViewModel
 
 @Composable
 fun NetworkScreen(
-    viewModelFromActivity: SnippetViewModel,
-    modifier: Modifier = Modifier,
+    viewModelFromActivity: SnippetViewModel
 ) {
     val viewModelFromRoute: SnippetViewModel = viewModel()
 
-    var value by remember { mutableStateOf("") }
     val uiStateFromRoute by viewModelFromRoute.uiState.collectAsState()
     val uiStateFromActivity by viewModelFromActivity.uiState.collectAsState()
 

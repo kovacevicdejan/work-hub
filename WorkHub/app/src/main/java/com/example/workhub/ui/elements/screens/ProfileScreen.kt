@@ -21,8 +21,7 @@ import com.example.workhub.SnippetViewModel
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ProfileScreen (
-    modifier: Modifier = Modifier,
-    viewModelFromActivity: SnippetViewModel,
+    viewModelFromActivity: SnippetViewModel
     ) {
     Scaffold {
         LazyColumn(modifier = Modifier.padding(10.dp)) {
