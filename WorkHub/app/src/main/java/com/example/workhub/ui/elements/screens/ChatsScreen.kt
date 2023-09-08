@@ -35,7 +35,14 @@ fun ChatsScreen(
 
     Scaffold(
         floatingActionButton = {
-            FloatingActionButton(onClick = {}) {
+            FloatingActionButton(
+                onClick = {
+                    navController.navigate("Select New Chat") {
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                }
+            ) {
                 Icon(imageVector = Icons.Default.AddComment, contentDescription = null)
             }
         }
@@ -52,10 +59,6 @@ fun ChatsScreen(
                             navController.navigate("Single Chat") {
                                 launchSingleTop = true
                                 restoreState = true
-//                                popUpTo(HomeDestination.route) {
-//                                    saveState = true
-//                                    inclusive = false
-//                                }
                             }
                         }
                     ) {

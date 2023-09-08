@@ -22,20 +22,29 @@ fun Post(last: Boolean, navController: NavHostController) {
     Card(modifier = Modifier.padding(start = 10.dp, top = 10.dp, end = 10.dp, bottom = if (last) 10.dp else 0.dp), backgroundColor = if(isSystemInDarkTheme()) Color(0xFF202020) else Color(0xFFEEEEEE)) {
         Column {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    imageVector = Icons.Default.Person,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .width(70.dp)
-                        .height(70.dp)
-                )
+                IconButton(
+                    onClick = {
+                        navController.navigate("Profile") {
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Person,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .width(70.dp)
+                            .height(70.dp)
+                    )
+                }
 
                 Column {
                     Text(text = "Pera Peric", fontSize = 20.sp)
 
-                    Text(text = "Backend engineer", fontSize = 10.sp)
+                    Text(text = "Backend engineer", fontSize = 12.sp)
 
-                    Text(text = "1d", fontSize = 10.sp)
+                    Text(text = "1d", fontSize = 12.sp)
                 }
 
                 Spacer(modifier = Modifier.weight(1f))
@@ -102,10 +111,6 @@ fun Post(last: Boolean, navController: NavHostController) {
                             navController.navigate("Comments") {
                                 launchSingleTop = true
                                 restoreState = true
-//                            popUpTo(JobsDestination.route) {
-//                                saveState = true
-//                                inclusive = false
-//                            }
                             }
                         }
                     ) {

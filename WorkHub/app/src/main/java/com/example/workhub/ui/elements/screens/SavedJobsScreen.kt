@@ -14,13 +14,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import com.example.workhub.SnippetViewModel
 import com.example.workhub.ui.elements.theme.Shapes
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SavedJobsScreen(
-    viewModelFromActivity: SnippetViewModel
+    viewModelFromActivity: SnippetViewModel,
+    navController: NavHostController
 ) {
     val viewModelFromRoute: SnippetViewModel = viewModel()
 
@@ -161,28 +163,39 @@ fun SavedJobsScreen(
 //            }
 //        }
 
-        Card(
-            modifier = Modifier.padding(vertical = 10.dp),
-            backgroundColor = if(isSystemInDarkTheme()) Color(0xFF202020) else Color(0xFFEEEEEE),
-            shape = Shapes.large
-        ) {
-            LazyColumn {
-                item {
+        LazyColumn {
+            item {
+                Card(
+                    backgroundColor = if(isSystemInDarkTheme()) Color(0xFF202020) else Color(0xFFEEEEEE),
+                    shape = Shapes.large,
+                    modifier = Modifier.fillMaxWidth().padding(0.dp, 10.dp, 0.dp, 0.dp)
+                ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.padding(10.dp)
                     ) {
                         Text(text = "Saved jobs", fontSize = 24.sp)
                     }
-
-                    Divider()
                 }
 
-                for(i in 0..5) {
-                    item {
+                Divider()
+            }
+
+            for(i in 0..7) {
+                item {
+                    Card(
+                        backgroundColor = if(isSystemInDarkTheme()) Color(0xFF202020) else Color(0xFFEEEEEE),
+                        shape = Shapes.large,
+                        onClick = {
+                            navController.navigate("Job Post") {
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        }
+                    ) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.padding(vertical = 10.dp)
+                            modifier = Modifier.padding(vertical = 5.dp)
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Person,
@@ -204,13 +217,16 @@ fun SavedJobsScreen(
 
                             Spacer(modifier = Modifier.weight(1f))
 
-                            Button(onClick = {}, modifier = Modifier.padding(horizontal = 10.dp)) {
+                            Button(
+                                onClick = {},
+                                modifier = Modifier.padding(horizontal = 10.dp)
+                            ) {
                                 Text(text = "Remove", color = Color.White)
                             }
                         }
-
-                        Divider()
                     }
+
+                    Divider()
                 }
             }
         }

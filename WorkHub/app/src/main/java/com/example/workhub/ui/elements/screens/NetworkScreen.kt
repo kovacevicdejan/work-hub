@@ -19,6 +19,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.workhub.SnippetViewModel
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun NetworkScreen(
     viewModelFromActivity: SnippetViewModel,
@@ -38,7 +39,7 @@ fun NetworkScreen(
                 ) {
                     TextButton(
                         onClick = {
-                            navController.navigate("ManageNetwork") {
+                            navController.navigate("Manage Network") {
                                 launchSingleTop = true
                                 restoreState = true
                             }
@@ -90,7 +91,14 @@ fun NetworkScreen(
 
                             ) {
                             items(count = 4) {
-                                Card {
+                                Card(
+                                    onClick = {
+                                        navController.navigate("Profile") {
+                                            launchSingleTop = true
+                                            restoreState = true
+                                        }
+                                    }
+                                ) {
                                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                         Icon(
                                             imageVector = Icons.Default.Person,
@@ -139,7 +147,14 @@ fun NetworkScreen(
                             modifier = Modifier.height(360.dp)
                         ) {
                             items(count = 4) {
-                                Card {
+                                Card(
+                                    onClick = {
+                                        navController.navigate("Page") {
+                                            launchSingleTop = true
+                                            restoreState = true
+                                        }
+                                    }
+                                ) {
                                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                         Icon(
                                             imageVector = Icons.Default.Person,
@@ -147,7 +162,7 @@ fun NetworkScreen(
                                             modifier = Modifier.size(70.dp)
                                         )
 
-                                        Text(text = "ETF", fontSize = 20.sp)
+                                        Text(text = "TomTom", fontSize = 20.sp)
 
                                         Text(text = "20 connections follow this page", fontSize = 12.sp)
 
@@ -186,7 +201,14 @@ fun NetworkScreen(
                             modifier = Modifier.height(400.dp)
                         ) {
                             items(count = 4) {
-                                Card {
+                                Card(
+                                    onClick = {
+                                        navController.navigate("Profile") {
+                                            launchSingleTop = true
+                                            restoreState = true
+                                        }
+                                    }
+                                ) {
                                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                         Icon(
                                             imageVector = Icons.Default.Person,

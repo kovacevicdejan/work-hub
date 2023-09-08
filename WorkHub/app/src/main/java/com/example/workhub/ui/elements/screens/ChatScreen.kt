@@ -17,13 +17,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import com.example.workhub.SnippetViewModel
 import com.example.workhub.ui.elements.theme.Shapes
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ChatScreen(
-    viewModelFromActivity: SnippetViewModel
+    viewModelFromActivity: SnippetViewModel,
+    navController: NavHostController
 ) {
     val viewModelFromRoute: SnippetViewModel = viewModel()
 
@@ -80,13 +82,20 @@ fun ChatScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.padding(vertical = 10.dp)
                     ) {
-                        Icon(
-                            imageVector = Icons.Default.Person,
-                            contentDescription = null,
-                            modifier = Modifier
-                                .width(60.dp)
-                                .height(60.dp)
-                        )
+                        IconButton(
+                            onClick = {
+                                navController.navigate("Profile") {
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Person,
+                                contentDescription = null,
+                                modifier = Modifier.size(60.dp)
+                            )
+                        }
 
                         Column {
                             Text(text = "Petar Petrovic", fontSize = 20.sp)

@@ -59,7 +59,7 @@ fun SnippetApp() {
                                 launchSingleTop = true
                                 restoreState = true
                                 popUpTo(HomeDestination.route) {
-                                    saveState = true
+                                    saveState = false
                                     inclusive = false
                                 }
                             }
@@ -85,7 +85,19 @@ fun SnippetApp() {
                             )
                         }
 
-                        Button(onClick = { /*TODO*/ }, modifier = Modifier.weight(1f)) {
+                        Button(
+                            onClick = {
+                                navController.navigate("Search") {
+                                    launchSingleTop = true
+                                    restoreState = false
+                                    popUpTo(HomeDestination.route) {
+                                        saveState = false
+                                        inclusive = false
+                                    }
+                                }
+                            },
+                            modifier = Modifier.weight(1f)
+                        ) {
                             Text(text = "Search", color = Color.White)
                         }
                     }
@@ -150,47 +162,102 @@ fun SnippetApp() {
                         navController = navController
                     )
                 }
+
                 composable(route = NetworkDestination.route) {
                     NetworkScreen(
                         viewModelFromActivity = viewModelFromActivity,
                         navController = navController
                     )
                 }
+
                 composable(route = PostDestination.route) {
                     NewPostScreen(viewModelFromActivity = viewModelFromActivity)
                 }
+
                 composable(route = JobsDestination.route) {
                     JobsScreen(
                         viewModelFromActivity = viewModelFromActivity,
                         navController = navController
                     )
                 }
+
                 composable(route = ChatsDestination.route) {
                     ChatsScreen(
                         viewModelFromActivity = viewModelFromActivity,
                         navController = navController
                     )
                 }
+
                 composable(route = "Profile") {
-                    ProfileScreen(viewModelFromActivity = viewModelFromActivity)
+                    ProfileScreen(
+                        viewModelFromActivity = viewModelFromActivity,
+                        navController = navController
+                    )
                 }
+
                 composable(route = "Saved Jobs") {
-                    SavedJobsScreen(viewModelFromActivity = viewModelFromActivity)
+                    SavedJobsScreen(
+                    viewModelFromActivity = viewModelFromActivity,
+                        navController = navController
+                    )
                 }
+
                 composable(route = "Single Chat") {
-                    ChatScreen(viewModelFromActivity = viewModelFromActivity)
+                    ChatScreen(
+                        viewModelFromActivity = viewModelFromActivity,
+                        navController = navController
+                    )
                 }
+
                 composable(route = "Comments") {
                     CommentsScreen(viewModelFromActivity = viewModelFromActivity)
                 }
-                composable(route = "ManageNetwork") {
+
+                composable(route = "Manage Network") {
                     ManageNetworkScreen(
                         viewModelFromActivity = viewModelFromActivity,
                         navController = navController
                     )
                 }
+
                 composable(route = "Invitations") {
                     InvitationsScreen(
+                        viewModelFromActivity = viewModelFromActivity,
+                        navController = navController
+                    )
+                }
+
+                composable(route = "New Job Post") {
+                    PostJobScreen(viewModelFromActivity = viewModelFromActivity)
+                }
+
+                composable(route = "Job Post") {
+                    JobScreen(
+                        viewModelFromActivity = viewModelFromActivity,
+                        navController = navController
+                    )
+                }
+
+                composable(route = "Edit Profile") {
+                    EditProfileScreen(viewModelFromActivity = viewModelFromActivity)
+                }
+
+                composable(route = "Page") {
+                    PageScreen(
+                        viewModelFromActivity = viewModelFromActivity,
+                        navController = navController
+                    )
+                }
+
+                composable(route = "Search") {
+                    SearchScreen(
+                        viewModelFromActivity = viewModelFromActivity,
+                        navController = navController
+                    )
+                }
+
+                composable(route = "Select New Chat") {
+                    SelectNewChatScreen(
                         viewModelFromActivity = viewModelFromActivity,
                         navController = navController
                     )
