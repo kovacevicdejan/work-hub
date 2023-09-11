@@ -36,3 +36,28 @@ proguard-rules.pro
 bin/
 gen/
 out/
+
+# dependencies
+backend/node_modules/
+backend/uploads
+
+# build output
+backend/build/
+
+backend/dist
+
+# runtime data
+backend/pid
+backend/.pids
+backend/logs
+backend/*.log
+
+# IDEs and editors
+.vscode
+
+# environment variables
+backend.env
+
+# misc
+backend.DS_Store
+
