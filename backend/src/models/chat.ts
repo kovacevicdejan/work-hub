@@ -1,4 +1,3 @@
-import { Int32 } from "mongodb";
 import mongoose from "mongoose";
 
 const Schema = mongoose.Schema
@@ -19,7 +18,7 @@ let Chat = new Schema({
                 type: String
             },
             date_sent: {
-                type: Date
+                type: Number
             }
         }
     ]

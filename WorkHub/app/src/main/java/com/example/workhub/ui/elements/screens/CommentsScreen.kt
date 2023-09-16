@@ -16,21 +16,14 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.workhub.R
-import com.example.workhub.SnippetViewModel
 import com.example.workhub.ui.elements.theme.Blue
 import com.example.workhub.ui.elements.theme.Shapes
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun CommentsScreen(
-    viewModelFromActivity: SnippetViewModel
 ) {
-    val viewModelFromRoute: SnippetViewModel = viewModel()
-
-    val uiStateFromRoute by viewModelFromRoute.uiState.collectAsState()
-    val uiStateFromActivity by viewModelFromActivity.uiState.collectAsState()
     var replying by remember { mutableStateOf(false) }
 
     Scaffold(

@@ -1,52 +1,65 @@
-import { Int32 } from "mongodb";
 import mongoose from "mongoose";
 
 const Schema = mongoose.Schema
 
-let Page = new Schema({
-    name: {
+let Post = new Schema({
+    visibility: {
         type: String
     },
-    headline: {
+    post_type: {
         type: String
     },
-    industry: {
+    creator_type: {
         type: String
     },
-    location: {
+    creator: {
         type: String
     },
-    profile_image: {
+    text: {
         type: String
     },
-    about: {
+    image: {
         type: String
     },
-    website: {
+    job_title: {
         type: String
     },
-    size: {
+    page: {
         type: String
     },
-    date_created: {
-        type: Date
+    options: [
+        {
+            option: {
+                type: String
+            },
+        }
+    ],
+    date_posted: {
+        type: Number
     },
-    admin: {
-        type: String
-    },
-    reviews: [
+    comments: [
         {
             user: {
                 type: String
             },
-            // id: {
-            //     type: String
-            // }
             text: {
+                type: String
+            },
+            replying_user: {
+                type: String
+            },
+            replying_text: {
+                type: String
+            }
+        }
+    ],
+    likes: [
+        {
+            user: {
                 type: String
             }
         }
     ]
 })
 
-export default mongoose.model('Page', Page, 'page')
+export default mongoose.model('Post', Post, 'post')

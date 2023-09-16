@@ -1,55 +1,28 @@
 package com.example.workhub.ui.elements.screens
 
-import android.app.DatePickerDialog
-import android.os.Build
-import android.widget.DatePicker
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CalendarMonth
-import androidx.compose.material.icons.filled.EditCalendar
-import androidx.compose.material.icons.filled.Send
-import androidx.compose.runtime.*
+import androidx.compose.material.Button
+import androidx.compose.material.Card
+import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.workhub.R
-import com.example.workhub.SnippetViewModel
-import java.util.*
 
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun EditProfileScreen (
-    viewModelFromActivity: SnippetViewModel
 ) {
     var jobTitle by rememberSaveable { mutableStateOf("") }
-    val context = LocalContext.current
-    val year: Int
-    val month: Int
-    val day: Int
-    val calendar = Calendar.getInstance()
-    val date = remember { mutableStateOf("") }
-
-    year = calendar.get(Calendar.YEAR)
-    month = calendar.get(Calendar.MONTH)
-    day = calendar.get(Calendar.DAY_OF_MONTH)
-    calendar.time = Date()
-
-    val datePickerDialog = DatePickerDialog(
-        context,
-        if(isSystemInDarkTheme()) R.style.DatePickerDarkTheme else R.style.DatePickerLightTheme,
-        { _: DatePicker, mYear: Int, mMonth: Int, mDayOfMonth: Int ->
-            date.value = "$mDayOfMonth/${mMonth+1}/$mYear"
-        }, year, month, day
-    )
 
     Card(modifier = Modifier.padding(10.dp), backgroundColor = if(isSystemInDarkTheme()) Color(0xFF202020) else Color(0xFFEEEEEE)) {
         Column {

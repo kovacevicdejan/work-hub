@@ -12,23 +12,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import com.example.workhub.SnippetViewModel
-import com.example.workhub.ui.elements.composables.Post
 import com.example.workhub.ui.elements.theme.Shapes
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SearchScreen(
-    viewModelFromActivity: SnippetViewModel,
     navController: NavHostController
 ) {
-    val viewModelFromRoute: SnippetViewModel = viewModel()
-
-    val uiStateFromRoute by viewModelFromRoute.uiState.collectAsState()
-    val uiStateFromActivity by viewModelFromActivity.uiState.collectAsState()
-
     var state by remember { mutableStateOf(0) }
     val titles = listOf("PEOPLE", "PAGES", "JOBS")
 

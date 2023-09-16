@@ -1,17 +1,13 @@
 package com.example.workhub.ui.elements.screens
 
 import android.app.DatePickerDialog
-import android.os.Build
 import android.widget.DatePicker
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
-import androidx.compose.material.icons.filled.EditCalendar
-import androidx.compose.material.icons.filled.Send
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -21,14 +17,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.workhub.R
-import com.example.workhub.SnippetViewModel
 import java.util.*
 
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun PostJobScreen (
-    viewModelFromActivity: SnippetViewModel
 ) {
     var state by remember { mutableStateOf(true) }
 

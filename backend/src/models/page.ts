@@ -1,62 +1,44 @@
-import { Int32 } from "mongodb";
 import mongoose from "mongoose";
 
 const Schema = mongoose.Schema
 
 let Page = new Schema({
-    visibility: {
+    name: {
         type: String
     },
-    post_type: {
+    headline: {
         type: String
     },
-    creator_type: {
+    industry: {
         type: String
     },
-    creator: {
+    location: {
         type: String
     },
-    text: {
+    profile_image: {
         type: String
     },
-    image: {
+    about: {
         type: String
     },
-    job_title: {
+    website: {
         type: String
     },
-    page: {
+    size: {
         type: String
     },
-    options: [
-        {
-            option: {
-                type: String
-            },
-        }
-    ],
-    date_posted: {
-        type: Date
+    date_created: {
+        type: Number
     },
-    comments: [
+    admin: {
+        type: String
+    },
+    reviews: [
         {
             user: {
                 type: String
             },
             text: {
-                type: String
-            },
-            replying_user: {
-                type: String
-            },
-            replying_text: {
-                type: String
-            }
-        }
-    ],
-    likes: [
-        {
-            user: {
                 type: String
             }
         }

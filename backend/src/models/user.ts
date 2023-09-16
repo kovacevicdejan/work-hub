@@ -1,4 +1,3 @@
-import { Int32 } from "mongodb";
 import mongoose from "mongoose";
 
 const Schema = mongoose.Schema
@@ -34,27 +33,21 @@ let User = new Schema({
     industry: {
         type: String
     },
-    date: {
-        type: Date
+    registration_date: {
+        type: Number
     },
     connections: [
         {
-            email: {
+            user: {
                 type: String
             }
-            // id: {
-            //     type: String
-            // }
         }
     ],
-    pages: [
+    followed_pages: [
         {
             name: {
                 type: String
             }
-            // id: {
-            //     type: String
-            // }
         }
     ],
     saved_jobs: [
@@ -69,9 +62,6 @@ let User = new Schema({
             email: {
                 type: String
             }
-            // id: {
-            //     type: String
-            // }
         }
     ],
     received_invitations: [
@@ -79,9 +69,6 @@ let User = new Schema({
             email: {
                 type: String
             }
-            // id: {
-            //     type: String
-            // }
         }
     ],
     experience: [
@@ -98,10 +85,10 @@ let User = new Schema({
                         type: String
                     },
                     start_date: {
-                        type: Date
+                        type: Number
                     },
                     end_date: {
-                        type: Date
+                        type: Number
                     },
                     location: {
                         type: String
@@ -124,10 +111,10 @@ let User = new Schema({
                         type: String
                     },
                     start_year: {
-                        type: Int32
+                        type: Number
                     },
                     end_year: {
-                        type: Int32
+                        type: Number
                     },
                     location: {
                         type: String

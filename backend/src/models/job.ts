@@ -1,4 +1,3 @@
-import { Int32 } from "mongodb";
 import mongoose from "mongoose";
 
 const Schema = mongoose.Schema
@@ -23,10 +22,10 @@ let Job = new Schema({
         type: String
     },
     deadline: {
-        type: Date
+        type: Number
     },
     date_posted: {
-        type: Date
+        type: Number
     },
     applicants: [
         {

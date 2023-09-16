@@ -1,6 +1,7 @@
 package com.example.workhub.ui.elements.screens
 
-import androidx.compose.foundation.*
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
@@ -14,14 +15,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.workhub.R
-import com.example.workhub.SnippetViewModel
 import com.example.workhub.ui.elements.theme.Blue
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun NewPostScreen (
-    viewModelFromActivity: SnippetViewModel
-) {
+fun NewPostScreen () {
     var state by remember { mutableStateOf(true) }
 
     val postTypes = arrayOf("Classic", "New position", "Poll")

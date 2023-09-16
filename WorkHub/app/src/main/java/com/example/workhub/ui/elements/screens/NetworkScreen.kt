@@ -8,28 +8,20 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import com.example.workhub.SnippetViewModel
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun NetworkScreen(
-    viewModelFromActivity: SnippetViewModel,
     navController: NavHostController
 ) {
-    val viewModelFromRoute: SnippetViewModel = viewModel()
-
-    val uiStateFromRoute by viewModelFromRoute.uiState.collectAsState()
-    val uiStateFromActivity by viewModelFromActivity.uiState.collectAsState()
-
     LazyColumn {
         item {
             Row(modifier = Modifier.padding(5.dp, 10.dp, 5.dp, 0.dp)) {

@@ -6,39 +6,29 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.AddComment
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Send
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import com.example.workhub.SnippetViewModel
 import com.example.workhub.ui.elements.theme.Shapes
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ChatScreen(
-    viewModelFromActivity: SnippetViewModel,
     navController: NavHostController
 ) {
-    val viewModelFromRoute: SnippetViewModel = viewModel()
-
-    val uiStateFromRoute by viewModelFromRoute.uiState.collectAsState()
-    val uiStateFromActivity by viewModelFromActivity.uiState.collectAsState()
-
     Scaffold(
         bottomBar = {
             Card(
                 backgroundColor = if (isSystemInDarkTheme()) Color(0xFF202020) else Color(0xFFEEEEEE),
                 shape = Shapes.large
             ) {
-                Column() {
+                Column {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.padding(vertical = 10.dp)

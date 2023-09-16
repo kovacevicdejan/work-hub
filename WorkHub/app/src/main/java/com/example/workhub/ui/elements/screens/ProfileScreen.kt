@@ -1,34 +1,35 @@
 package com.example.workhub.ui.elements.screens
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.example.workhub.R
-import com.example.workhub.SnippetViewModel
-import com.example.workhub.ui.elements.theme.Blue
+import com.example.workhub.HomeDestination
 import com.example.workhub.ui.elements.theme.Shapes
+import com.example.workhub.ui.stateholders.WorkHubViewModel
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ProfileScreen (
-    viewModelFromActivity: SnippetViewModel,
+    workHubViewModel: WorkHubViewModel,
     navController: NavHostController
 ) {
     // about, education, experience, skills, languages, contact info
+    val uiState by workHubViewModel.uiState.collectAsState()
 
     LazyColumn {
         item {
@@ -55,13 +56,14 @@ fun ProfileScreen (
                     ) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Text(
-                                text = "Dejan Kovacevic",
+                                text = (uiState.curr_user?.firstname ?: "") + " " + (uiState.curr_user?.lastname
+                                    ?: ""),
                                 fontSize = 30.sp,
                                 modifier = Modifier.padding(horizontal = 12.dp)
                             )
 
                             Text(
-                                text = "Software Engineering Student",
+                                text = uiState.curr_user?.headline ?: "",
                                 fontSize = 20.sp,
                                 modifier = Modifier.padding(horizontal = 12.dp)
                             )
@@ -73,7 +75,7 @@ fun ProfileScreen (
                             )
 
                             Text(
-                                text = "Belgrade, Serbia",
+                                text = uiState.curr_user?.location ?: "",
                                 fontSize = 16.sp,
                                 modifier = Modifier.padding(horizontal = 12.dp)
                             )
@@ -87,7 +89,7 @@ fun ProfileScreen (
                                 },
                                 modifier = Modifier.padding(horizontal = 2.dp)
                             ) {
-                                Text(text = "225 connections", color = Color(0xFF0077B5))
+                                Text(text = "${uiState.curr_user?.connections?.size} connections", color = Color(0xFF0077B5))
                             }
                         }
                     }
@@ -126,6 +128,30 @@ fun ProfileScreen (
                                 Text(text = "Edit profile", color = Color.White)
                             }
                         }
+
+                        Column(
+                            modifier = Modifier.weight(1f),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Button(
+                                onClick = {
+                                    navController.navigate("Login") {
+                                        launchSingleTop = true
+                                        restoreState = true
+                                        popUpTo(HomeDestination.route) {
+                                            saveState = false
+                                            inclusive = false
+                                        }
+                                    }
+
+                                    workHubViewModel.logout()
+                                },
+                                modifier = Modifier
+                                    .padding(horizontal = 10.dp)
+                            ) {
+                                Text(text = "Logout", color = Color.White)
+                            }
+                        }
                     }
                 }
             }
@@ -149,15 +175,7 @@ fun ProfileScreen (
 
                     Row(modifier = Modifier.padding(horizontal = 10.dp)) {
                         Text(
-                            text = "Below doc contains all useful shortcuts for quick navigation in VS Code and also extensions which will increase your productivity as well as beautify your code.\n" +
-                                    "\n" +
-                                    "Save this pdf and Repost if you find this helpful.\n" +
-                                    "\n" +
-                                    "Learn programming from W3Schools.com\n" +
-                                    "\n" +
-                                    "Follow Ajit Kumar Gupta for more.\n" +
-                                    "\n" +
-                                    "Credit - JSMastery , Maheshpal.",
+                            text = uiState.curr_user?.about ?: "",
                             modifier = Modifier.padding(vertical = 10.dp),
                             fontSize = 16.sp
                         )
@@ -181,7 +199,7 @@ fun ProfileScreen (
                     ) {
                         Text(text = "Experience", fontSize = 20.sp)
 
-                        Spacer(modifier = Modifier.weight(1f));
+                        Spacer(modifier = Modifier.weight(1f))
 
                         IconButton(onClick = { /*TODO*/ }) {
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -267,7 +285,7 @@ fun ProfileScreen (
                         Text(text = "Education", fontSize = 20.sp)
 
 
-                        Spacer(modifier = Modifier.weight(1f));
+                        Spacer(modifier = Modifier.weight(1f))
 
                         IconButton(onClick = { /*TODO*/ }) {
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -321,7 +339,7 @@ fun ProfileScreen (
                         Text(text = "Skills", fontSize = 20.sp)
 
 
-                        Spacer(modifier = Modifier.weight(1f));
+                        Spacer(modifier = Modifier.weight(1f))
 
                         IconButton(onClick = { /*TODO*/ }) {
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -373,7 +391,7 @@ fun ProfileScreen (
                         Text(text = "Contact info", fontSize = 20.sp)
 
 
-                        Spacer(modifier = Modifier.weight(1f));
+                        Spacer(modifier = Modifier.weight(1f))
 
                         IconButton(onClick = { /*TODO*/ }) {
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -384,9 +402,9 @@ fun ProfileScreen (
 
                     Row(modifier = Modifier.padding(10.dp, 0.dp, 10.dp, 10.dp)) {
                         Column {
-                            Text(text = "Email: dejankovacevic10@gmail.com", fontSize = 16.sp, modifier = Modifier.padding(vertical = 5.dp))
+                            Text(text = "Email: ${uiState.curr_user!!.email}", fontSize = 16.sp, modifier = Modifier.padding(vertical = 5.dp))
 
-                            Text(text = "Phone: +381694625077", fontSize = 16.sp, modifier = Modifier.padding(vertical = 5.dp))
+                            Text(text = "Phone: ${uiState.curr_user!!.phone_number}", fontSize = 16.sp, modifier = Modifier.padding(vertical = 5.dp))
                         }
                     }
                 }

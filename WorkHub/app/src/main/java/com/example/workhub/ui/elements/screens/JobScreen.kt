@@ -1,40 +1,31 @@
 package com.example.workhub.ui.elements.screens
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.*
+import androidx.compose.material.Button
+import androidx.compose.material.Card
+import androidx.compose.material.Icon
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.Apartment
+import androidx.compose.material.icons.filled.Group
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Work
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import com.example.workhub.R
-import com.example.workhub.SnippetViewModel
-import com.example.workhub.ui.elements.composables.Post
 import com.example.workhub.ui.elements.theme.Shapes
 
 @Composable
 fun JobScreen(
-    viewModelFromActivity: SnippetViewModel,
     navController: NavHostController
 ) {
-    val viewModelFromRoute: SnippetViewModel = viewModel()
-
-    val uiStateFromRoute by viewModelFromRoute.uiState.collectAsState()
-    val uiStateFromActivity by viewModelFromActivity.uiState.collectAsState()
-
-    LazyColumn() {
+    LazyColumn {
         item {
             Card(
                 modifier = Modifier
@@ -110,7 +101,7 @@ fun JobScreen(
                                 .padding(0.dp, 0.dp, 10.dp, 0.dp)
                         )
 
-                        Column() {
+                        Column {
                             Text(text = "5 connections work here", fontSize = 18.sp)
 
                             Text(text = "30 school alumni work here", fontSize = 18.sp)

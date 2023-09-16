@@ -3,10 +3,8 @@ package com.example.workhub.ui.elements.screens
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.selection.toggleable
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Tune
 import androidx.compose.runtime.*
@@ -16,26 +14,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
-import com.example.workhub.HomeDestination
-import com.example.workhub.JobsDestination
-import com.example.workhub.SnippetViewModel
 import com.example.workhub.ui.elements.theme.Shapes
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun JobsScreen(
-    viewModelFromActivity: SnippetViewModel,
     navController: NavHostController
 ) {
-    val viewModelFromRoute: SnippetViewModel = viewModel()
-
-    val uiStateFromRoute by viewModelFromRoute.uiState.collectAsState()
-    val uiStateFromActivity by viewModelFromActivity.uiState.collectAsState()
-
     val sortTypes = arrayOf("Date posted", "Deadline")
     var expanded by remember { mutableStateOf(false) }
     var selectedText by rememberSaveable { mutableStateOf(sortTypes[0]) }
