@@ -1,0 +1,32 @@
+package com.example.workhub.ui.elements.composables
+
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import com.example.workhub.data.retrofit.BASE_URL
+
+@Composable
+fun ProfileImage(
+    image_name: String,
+    size: Int,
+    padding: Int
+) {
+    AsyncImage(
+        model = BASE_URL + "image/get_image/" + image_name,
+        contentDescription = "profile_image",
+        contentScale = ContentScale.Crop,
+        modifier = Modifier
+            .padding(padding.dp)
+            .size(size.dp)
+            .clip(CircleShape)
+//            .border(2.dp, Color.Gray, CircleShape)
+    )
+}

@@ -16,7 +16,7 @@ data class User(
     val followed_pages: List<FollowedPage>,
     val saved_jobs: List<SavedJob>,
     val sent_invitations: List<Invitation>,
-    val received_invitations: List<Invitation>,
+    var received_invitations: List<Invitation>,
     val experience: List<Experience>,
     val education: List<Education>,
     val skills: List<Skill>,
@@ -35,7 +35,7 @@ data class SavedJob(
 )
 
 data class Invitation(
-    val email: String
+    val user: String
 )
 
 data class Experience(
@@ -66,9 +66,4 @@ data class EducationPosition(
 
 data class Skill(
     val name: String
-)
-
-data class Credentials(
-    val email: String,
-    val password: String
 )

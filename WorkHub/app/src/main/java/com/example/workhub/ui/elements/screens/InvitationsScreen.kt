@@ -12,15 +12,27 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.example.workhub.ui.elements.composables.ProfileImage
 import com.example.workhub.ui.elements.theme.Shapes
+import com.example.workhub.ui.stateholders.InvitationsViewModel
+import com.example.workhub.ui.stateholders.WorkHubViewModel
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun InvitationsScreen(
+    workHubViewModel: WorkHubViewModel,
+    invitationsViewModel: InvitationsViewModel = hiltViewModel(),
     navController: NavHostController
 ) {
+    val uiState by workHubViewModel.uiState.collectAsState()
+    val invitationsUiState by invitationsViewModel.uiState.collectAsState()
     var state by remember { mutableStateOf(0) }
+
+    LaunchedEffect(Unit) {
+        uiState.curr_user?.let { invitationsViewModel.getInvitations(it) }
+    }
 
     Column {
         TabRow(
@@ -42,7 +54,7 @@ fun InvitationsScreen(
 
         if(state == 0) {
             LazyColumn {
-                for (i in 0..10) {
+                for (user in invitationsUiState.received_invitation) {
                     item {
                         Card(
                             backgroundColor = if (isSystemInDarkTheme()) Color(0xFF202020) else Color(0xFFEEEEEE),
@@ -57,19 +69,17 @@ fun InvitationsScreen(
                             Row(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Icon(
-                                    imageVector = Icons.Default.Person,
-                                    contentDescription = null,
-                                    modifier = Modifier
-                                        .width(60.dp)
-                                        .height(60.dp)
+                                ProfileImage(
+                                    image_name = user.profile_image,
+                                    size = 60,
+                                    padding = 5
                                 )
 
                                 Column {
-                                    Text(text = "Petar Petrovic", fontSize = 20.sp)
+                                    Text(text = user.firstname + " " + user.lastname, fontSize = 20.sp)
 
                                     Text(
-                                        text = "Software engineer at Microsoft",
+                                        text = user.headline,
                                         fontSize = 14.sp
                                     )
                                 }
@@ -100,7 +110,7 @@ fun InvitationsScreen(
         }
         else {
             LazyColumn {
-                for (i in 0..10) {
+                for (user in invitationsUiState.sent_invitations!!) {
                     item {
                         Card(
                             backgroundColor = if (isSystemInDarkTheme()) Color(0xFF202020) else Color(0xFFEEEEEE),
@@ -116,19 +126,17 @@ fun InvitationsScreen(
                                 verticalAlignment = Alignment.CenterVertically,
                                 modifier = Modifier.padding(vertical = 10.dp)
                             ) {
-                                Icon(
-                                    imageVector = Icons.Default.Person,
-                                    contentDescription = null,
-                                    modifier = Modifier
-                                        .width(60.dp)
-                                        .height(60.dp)
+                                ProfileImage(
+                                    image_name = user.profile_image,
+                                    size = 60,
+                                    padding = 5
                                 )
 
                                 Column {
-                                    Text(text = "Petar Petrovic", fontSize = 20.sp)
+                                    Text(text = user.firstname + " " + user.lastname, fontSize = 20.sp)
 
                                     Text(
-                                        text = "Software engineer at Nutanix",
+                                        text = user.headline,
                                         fontSize = 14.sp
                                     )
                                 }

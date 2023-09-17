@@ -1,9 +1,11 @@
 package com.example.workhub.ui.elements.screens
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.border
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -14,11 +16,16 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import coil.compose.AsyncImage
 import com.example.workhub.HomeDestination
+import com.example.workhub.data.retrofit.BASE_URL
+import com.example.workhub.ui.elements.composables.ProfileImage
 import com.example.workhub.ui.elements.theme.Shapes
 import com.example.workhub.ui.stateholders.WorkHubViewModel
 
@@ -42,13 +49,11 @@ fun ProfileScreen (
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            imageVector = Icons.Default.Person,
-                            contentDescription = null,
-                            modifier = Modifier
-                                .width(100.dp)
-                                .height(100.dp)
-                        )
+                       ProfileImage(
+                           image_name = uiState.curr_user?.profile_image ?: "",
+                           size = 120,
+                           padding = 10
+                       )
                     }
 
                     Row(
@@ -135,7 +140,7 @@ fun ProfileScreen (
                         ) {
                             Button(
                                 onClick = {
-                                    navController.navigate("Login") {
+                                    navController.navigate("Sign In") {
                                         launchSingleTop = true
                                         restoreState = true
                                         popUpTo(HomeDestination.route) {
@@ -144,12 +149,12 @@ fun ProfileScreen (
                                         }
                                     }
 
-                                    workHubViewModel.logout()
+                                    workHubViewModel.signOut()
                                 },
                                 modifier = Modifier
                                     .padding(horizontal = 10.dp)
                             ) {
-                                Text(text = "Logout", color = Color.White)
+                                Text(text = "Sign Out", color = Color.White)
                             }
                         }
                     }

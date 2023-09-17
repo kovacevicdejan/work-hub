@@ -5,46 +5,27 @@ const bcrypt = require('bcrypt');
 const fs = require('fs');
 const folderPath = './uploads';
 
-function getLastFile(folderPath) {
-    try {
-      const files = fs.readdirSync(folderPath);
-  
-      files.sort((a, b) => {
-        return b.localeCompare(a);
-      });
-  
-      if (files.length > 0) {
-        const lastFile = files[0];
-        return lastFile;
-      } else {
-        return null;
-      }
-    } catch (err) {
-      throw err;
-    }
-}
-
 export class UserController {
-    login = (req: express.Request, res: express.Response) => {
+    sign_in = (req: express.Request, res: express.Response) => {
         const email = req.body.email;
         const password = req.body.password;
 
         User.findOne({
             'email': email
-        }, 
+        },
             (err, user) => {
-                if(err)
-                    res.status(500).json('Login failed');
-                else if(!user)
+                if (err)
+                    res.status(500).json('Sign In failed');
+                else if (!user)
                     res.json('Invalid credentials');
-                else { 
+                else {
                     bcrypt.compare(password, user.password).then(match => {
-                            if(!match)
-                                res.json('Invalid credentials');
-                            else {
-                                res.json("Login successful!");
-                            }
+                        if (!match)
+                            res.json('Invalid credentials');
+                        else {
+                            res.json("Sign In successful!");
                         }
+                    }
                     )
                 }
             }
@@ -58,6 +39,7 @@ export class UserController {
                 password: hashed,
                 firstname: req.body.firstname,
                 lastname: req.body.lastname,
+                profile_image: req.body.profile_image,
                 about: req.body.about,
                 headline: req.body.headline,
                 location: req.body.location,
@@ -79,15 +61,45 @@ export class UserController {
 
         User.findOne({
             'email': email
-        }, 
-            (err, user) => {
-                if(err)
-                    res.status(500).json({ error: 'Login failed' });
-                else if(!user)
-                    res.status(401).json({ error: 'Invalid email' });
-                else
-                    res.json(user);
-            }
+        }, (err, user) => {
+            if (err)
+                res.status(500).json({ error: 'Login failed' });
+            else if (!user)
+                res.json('Invalid email');
+            else
+                res.json(user);
+        }
+        )
+    }
+
+    get_users_by_industry = (req: express.Request, res: express.Response) => {
+        const industry = req.params.industry;
+
+        User.find({
+            'industry': industry
+        }, (err, users) => {
+            res.json(users);
+        }
+        )
+    }
+
+    connect = (req: express.Request, res: express.Response) => {
+        const email1 = req.body.user1;
+        const email2 = req.body.user2;
+
+        User.findOneAndUpdate({
+            'email': email1
+        }, {
+            $push: { sent_invitations: { 'user': email2 } }
+        }, (err, user1) => {
+            User.findOneAndUpdate({
+                'email': email2
+            }, {
+                $push: { received_invitations: { 'user': email1 } }
+            }, (err, user1) => {
+                res.json('success')
+            })
+        }
         )
     }
 }

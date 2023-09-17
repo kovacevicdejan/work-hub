@@ -29,22 +29,27 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import com.example.workhub.HomeDestination
 import com.example.workhub.R
+import com.example.workhub.ui.elements.theme.Blue
 
 @Composable
-fun LoginScreen(
-    workHubViewModel: WorkHubViewModel, authViewModel: AuthViewModel = hiltViewModel()
+fun SignInScreen(
+    workHubViewModel: WorkHubViewModel,
+    authViewModel: AuthViewModel = hiltViewModel(),
+    navController: NavHostController
 ) {
     val uiState by authViewModel.uiState.collectAsState()
     val context = LocalContext.current
 
     OnEvent(authViewModel.event) {
         when (it) {
-            LoginEvent.LoginSuccess -> {
+            SignInEvent.SignInSuccess -> {
                 workHubViewModel.setCurrUser(uiState.email)
             }
 
-            LoginEvent.LoginFailure -> Toast.makeText(
+            SignInEvent.SignInFailure -> Toast.makeText(
                 context,
                 "Invalid credentials!",
                 Toast.LENGTH_SHORT
@@ -89,25 +94,30 @@ fun LoginScreen(
         Box(modifier = Modifier.padding(40.dp, 0.dp, 40.dp, 0.dp)) {
             Button(
                 onClick = {
-                    authViewModel.login()
+                    authViewModel.signIn()
                 },
                 shape = RoundedCornerShape(50.dp),
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp)
             ) {
-                Text(text = "Login", color = Color.White)
+                Text(text = "Sign In", color = Color.White)
             }
         }
 
         Spacer(modifier = Modifier.height(20.dp))
         ClickableText(
-            text = AnnotatedString("Sign up here"),
-            onClick = { },
+            text = AnnotatedString("Register here"),
+            onClick = {
+                navController.navigate("Registration") {
+                    launchSingleTop = true
+                    restoreState = false
+                }
+            },
             style = TextStyle(
                 fontSize = 14.sp,
                 fontFamily = FontFamily.Default,
-                color = if(isSystemInDarkTheme()) Color.White else Color.Black
+                color = Blue
             )
         )
     }

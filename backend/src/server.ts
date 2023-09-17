@@ -3,6 +3,7 @@ import cors from 'cors'
 import bodyParser from 'body-parser'
 import mongoose from 'mongoose';
 import userRouter from './routers/user.routes';
+import imageRouter from './routers/image.routes';
 
 const app = express();
 app.use(cors())
@@ -19,9 +20,11 @@ connect.once('open', () => {
 
 const router = express.Router();
 router.use('/user', userRouter);
+router.use('/image', imageRouter);
 
 app.use(express.json());
 app.use('/', router);
+
 app.get('/', (req, res) => {
     res.send('Hello World!')
 })

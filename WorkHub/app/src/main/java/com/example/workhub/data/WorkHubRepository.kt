@@ -1,14 +1,15 @@
 package com.example.workhub.data
 
 import android.content.Context
-import android.util.Log
-import com.example.workhub.data.WorkHubRepository.Companion.LOGGED_USER_KEY
 import com.example.workhub.data.retrofit.WorkHubApi
-import com.example.workhub.data.retrofit.models.Credentials
 import com.example.workhub.data.retrofit.models.User
-import com.google.gson.Gson
+import com.example.workhub.data.retrofit.requests.ConnectRequest
+import com.example.workhub.data.retrofit.requests.RegistrationRequest
+import com.example.workhub.data.retrofit.requests.SignInRequest
 import dagger.hilt.android.qualifiers.ApplicationContext
-import retrofit2.HttpException
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import java.io.File
 import javax.inject.Inject
 
 class WorkHubRepository @Inject constructor(
@@ -41,15 +42,33 @@ class WorkHubRepository @Inject constructor(
         editor.apply()
     }
 
-    suspend fun register(user: User) {
-        workHubApi.register(user = user)
+    suspend fun register(registrationRequest: RegistrationRequest) {
+        workHubApi.register(registrationRequest = registrationRequest)
     }
 
-    suspend fun login(credentials: Credentials): String {
-        return workHubApi.login(credentials = credentials)
+    suspend fun signIn(signInRequest: SignInRequest): String {
+        return workHubApi.signIn(signInRequest = signInRequest)
     }
 
     suspend fun getUserByEmail(email: String): User {
         return workHubApi.getUserByEmail(email = email)
+    }
+
+    suspend fun uploadImage(file: File) {
+        workHubApi.uploadImage(
+            file = MultipartBody.Part.createFormData(
+                name = "image",
+                filename = file.name,
+                body = file.asRequestBody()
+            )
+        )
+    }
+
+    suspend fun getUsersByIndustry(industry: String): List<User> {
+        return workHubApi.getUsersByIndustry(industry = industry)
+    }
+
+    suspend fun connect(connectRequest: ConnectRequest) {
+        return workHubApi.connect(connectRequest = connectRequest)
     }
 }

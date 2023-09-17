@@ -32,15 +32,13 @@ class WorkHubViewModel @Inject constructor(
     fun setCurrUser(email: String) = viewModelScope.launch {
         val user = workHubRepository.getUserByEmail(email)
         _uiState.update { it.copy(curr_user = user) }
-        sendEvent(LoginEvent.LoginSuccess)
+        sendEvent(SignInEvent.SignInSuccess)
     }
 
     fun getLoggedUser() = viewModelScope.launch {
         val email = workHubRepository.getLoggedUser()
-        Log.d("print", email.toString())
 
         if(email != null) {
-            Log.d("print", "jsckjs")
             val user = workHubRepository.getUserByEmail(email)
             _uiState.update { it.copy(curr_user = user) }
             sendEvent(GetUserEvent.GetUserSuccess)
@@ -50,12 +48,11 @@ class WorkHubViewModel @Inject constructor(
                 Thread.sleep(500)
             }
 
-            Log.d("print", "kjabcka")
             sendEvent(GetUserEvent.GetUserFailure)
         }
     }
 
-    fun logout() {
+    fun signOut() {
         _uiState.update { it.copy(curr_user = null) }
         workHubRepository.removeLoggedUser()
     }

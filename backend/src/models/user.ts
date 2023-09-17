@@ -59,14 +59,14 @@ let User = new Schema({
     ],
     sent_invitations: [
         {
-            email: {
+            user: {
                 type: String
             }
         }
     ],
     received_invitations: [
         {
-            email: {
+            user: {
                 type: String
             }
         }

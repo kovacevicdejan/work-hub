@@ -3,19 +3,23 @@ package com.example.workhub.ui
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -24,10 +28,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.workhub.*
+import com.example.workhub.ui.elements.composables.ProfileImage
 import com.example.workhub.ui.elements.screens.*
 import com.example.workhub.ui.elements.theme.WorkHubTheme
-import com.example.workhub.ui.stateholders.LoginEvent
 import com.example.workhub.ui.stateholders.OnEvent
+import com.example.workhub.ui.stateholders.SignInEvent
 import com.example.workhub.ui.stateholders.WorkHubViewModel
 
 @Composable
@@ -42,7 +47,7 @@ fun WorkHubApp() {
 
     OnEvent(workHubViewModel.event) {
         when (it) {
-            LoginEvent.LoginSuccess -> {
+            SignInEvent.SignInSuccess -> {
                 navController.navigate(HomeDestination.route) {
                     launchSingleTop = true
                     restoreState = false
@@ -52,7 +57,7 @@ fun WorkHubApp() {
                     }
                 }
             }
-            is LoginEvent.LoginFailure ->
+            is SignInEvent.SignInFailure ->
                 Toast.makeText(context, "error", Toast.LENGTH_SHORT).show()
         }
     }
@@ -84,13 +89,10 @@ fun WorkHubApp() {
                                     }
                                 }
                             }) {
-                                Icon(
-                                    imageVector = Icons.Default.Person,
-                                    contentDescription = null,
-                                    modifier = Modifier
-                                        .size(54.dp)
-                                        .weight(1f),
-                                    tint = if (isSystemInDarkTheme()) Color.White else Color.Black,
+                                ProfileImage(
+                                    image_name = uiState.curr_user?.profile_image ?: "",
+                                    size = 55,
+                                    padding = 0
                                 )
                             }
 
@@ -195,6 +197,7 @@ fun WorkHubApp() {
 
                 composable(route = NetworkDestination.route) {
                     NetworkScreen(
+                        workHubViewModel = workHubViewModel,
                         navController = navController
                     )
                 }
@@ -211,6 +214,26 @@ fun WorkHubApp() {
 
                 composable(route = ChatsDestination.route) {
                     ChatsScreen(
+                        navController = navController
+                    )
+                }
+
+                composable(route = "Sign In") {
+                    SignInScreen(
+                        workHubViewModel = workHubViewModel,
+                        navController = navController
+                    )
+                }
+
+                composable(route = "Registration") {
+                    RegistrationScreen(
+                        workHubViewModel = workHubViewModel
+                    )
+                }
+
+                composable(route = "Loading") {
+                    LoadingScreen(
+                        workHubViewModel = workHubViewModel,
                         navController = navController
                     )
                 }
@@ -246,6 +269,7 @@ fun WorkHubApp() {
 
                 composable(route = "Invitations") {
                     InvitationsScreen(
+                        workHubViewModel = workHubViewModel,
                         navController = navController
                     )
                 }
@@ -278,25 +302,6 @@ fun WorkHubApp() {
 
                 composable(route = "Select New Chat") {
                     SelectNewChatScreen(
-                        navController = navController
-                    )
-                }
-
-                composable(route = "Login") {
-                    LoginScreen(
-                        workHubViewModel = workHubViewModel
-                    )
-                }
-
-                composable(route = "Registration") {
-                    RegistrationScreen(
-                        workHubViewModel = workHubViewModel
-                    )
-                }
-
-                composable(route = "Loading") {
-                    LoadingScreen(
-                        workHubViewModel = workHubViewModel,
                         navController = navController
                     )
                 }

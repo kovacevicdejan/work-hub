@@ -1,7 +1,6 @@
 package com.example.workhub.ui.elements.screens
 
 import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
@@ -11,11 +10,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import com.example.workhub.HomeDestination
 import com.example.workhub.ui.stateholders.GetUserEvent
-import com.example.workhub.ui.stateholders.LoginEvent
 import com.example.workhub.ui.stateholders.OnEvent
 import com.example.workhub.ui.stateholders.WorkHubViewModel
 
@@ -30,21 +27,21 @@ fun LoadingScreen(
                 navController.navigate(HomeDestination.route) {
                     launchSingleTop = true
                     restoreState = false
-                    popUpTo(HomeDestination.route) {
+                    popUpTo("Loading") {
                         saveState = false
-                        inclusive = false
+                        inclusive = true
                     }
                 }
             }
 
             GetUserEvent.GetUserFailure -> {
                 Log.d("print", "kjdcbjsd")
-                navController.navigate("Login") {
+                navController.navigate("Sign In") {
                     launchSingleTop = true
                     restoreState = false
-                    popUpTo(HomeDestination.route) {
+                    popUpTo("Loading") {
                         saveState = false
-                        inclusive = false
+                        inclusive = true
                     }
                 }
             }

@@ -31,10 +31,10 @@ fun <E : Event> OnEvent(event: Flow<E>, onEvent: (E) -> Unit) {
     }
 }
 
-sealed interface LoginEvent : Event {
-    object LoginSuccess : LoginEvent
-    object LoginFailure: LoginEvent
-    data class LoginFailure1(val exception: Throwable) : LoginEvent
+sealed interface SignInEvent : Event {
+    object SignInSuccess : SignInEvent
+    object SignInFailure: SignInEvent
+    data class SignInFailure1(val exception: Throwable) : SignInEvent
 }
 
 sealed interface RegistrationEvent : Event {
@@ -45,4 +45,8 @@ sealed interface RegistrationEvent : Event {
 sealed interface GetUserEvent : Event {
     object GetUserSuccess: GetUserEvent
     object GetUserFailure: GetUserEvent
+}
+
+sealed interface ConnectEvent : Event {
+    object ConnectSuccess: ConnectEvent
 }
