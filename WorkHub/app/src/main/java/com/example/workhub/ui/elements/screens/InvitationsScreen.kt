@@ -16,8 +16,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.workhub.ui.elements.composables.ProfileImage
 import com.example.workhub.ui.elements.theme.Shapes
-import com.example.workhub.ui.stateholders.InvitationsViewModel
-import com.example.workhub.ui.stateholders.WorkHubViewModel
+import com.example.workhub.ui.stateholders.*
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -34,53 +33,53 @@ fun InvitationsScreen(
         uiState.curr_user?.let { invitationsViewModel.getInvitations(it) }
     }
 
+    OnEvent(invitationsViewModel.event) {
+        when (it) {
+            InvitationEvent.AcceptInvitationEvent,
+            InvitationEvent.DeclineInvitationEvent,
+            InvitationEvent.WithdrawInvitationEvent -> {
+                workHubViewModel.getLoggedUser()
+            }
+        }
+    }
+
     Column {
         TabRow(
             selectedTabIndex = state,
             backgroundColor = if (isSystemInDarkTheme()) Color(0xFF202020) else Color(0xFFEEEEEE)
         ) {
-            Tab(
-                text = { Text("RECEIVED") },
-                selected = state == 0,
-                onClick = { state = 0 }
-            )
+            Tab(text = { Text("RECEIVED") }, selected = state == 0, onClick = { state = 0 })
 
-            Tab(
-                text = { Text("SENT") },
-                selected = state == 1,
-                onClick = { state = 1 }
-            )
+            Tab(text = { Text("SENT") }, selected = state == 1, onClick = { state = 1 })
         }
 
-        if(state == 0) {
+        if (state == 0) {
             LazyColumn {
                 for (user in invitationsUiState.received_invitation) {
                     item {
-                        Card(
-                            backgroundColor = if (isSystemInDarkTheme()) Color(0xFF202020) else Color(0xFFEEEEEE),
-                            shape = Shapes.large,
-                            onClick = {
-                                navController.navigate("Profile") {
-                                    launchSingleTop = true
-                                    restoreState = true
-                                }
+                        Card(backgroundColor = if (isSystemInDarkTheme()) Color(0xFF202020) else Color(
+                            0xFFEEEEEE
+                        ), shape = Shapes.large, onClick = {
+                            navController.navigate("Profile") {
+                                launchSingleTop = true
+                                restoreState = true
                             }
-                        ) {
+                        }) {
                             Row(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 ProfileImage(
-                                    image_name = user.profile_image,
-                                    size = 60,
-                                    padding = 5
+                                    image_name = user.profile_image, size = 60, horizontal_padding = 5
                                 )
 
                                 Column {
-                                    Text(text = user.firstname + " " + user.lastname, fontSize = 20.sp)
+                                    Text(
+                                        text = user.firstname + " " + user.lastname,
+                                        fontSize = 20.sp
+                                    )
 
                                     Text(
-                                        text = user.headline,
-                                        fontSize = 14.sp
+                                        text = user.headline, fontSize = 14.sp
                                     )
                                 }
 
@@ -88,15 +87,24 @@ fun InvitationsScreen(
 
                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                     Button(
-                                        onClick = {},
-                                        modifier = Modifier.padding(horizontal = 10.dp)
-                                    )
-                                    {
+                                        onClick = {
+                                            invitationsViewModel.acceptInvitation(
+                                                user1 = uiState.curr_user?.email ?: "",
+                                                user2 = user.email
+                                            )
+                                        }, modifier = Modifier.padding(horizontal = 10.dp)
+                                    ) {
                                         Text(text = "Accept", color = Color.White)
                                     }
 
-                                    Button(onClick = {}, modifier = Modifier.padding(horizontal = 10.dp))
-                                    {
+                                    Button(
+                                        onClick = {
+                                            invitationsViewModel.declineInvitation(
+                                                user1 = uiState.curr_user?.email ?: "",
+                                                user2 = user.email
+                                            )
+                                        }, modifier = Modifier.padding(horizontal = 10.dp)
+                                    ) {
                                         Text(text = "Decline", color = Color.White)
                                     }
                                 }
@@ -107,44 +115,47 @@ fun InvitationsScreen(
                     }
                 }
             }
-        }
-        else {
+        } else {
             LazyColumn {
                 for (user in invitationsUiState.sent_invitations!!) {
                     item {
-                        Card(
-                            backgroundColor = if (isSystemInDarkTheme()) Color(0xFF202020) else Color(0xFFEEEEEE),
-                            shape = Shapes.large,
-                            onClick = {
-                                navController.navigate("Profile") {
-                                    launchSingleTop = true
-                                    restoreState = true
-                                }
+                        Card(backgroundColor = if (isSystemInDarkTheme()) Color(0xFF202020) else Color(
+                            0xFFEEEEEE
+                        ), shape = Shapes.large, onClick = {
+                            navController.navigate("Profile") {
+                                launchSingleTop = true
+                                restoreState = true
                             }
-                        ) {
+                        }) {
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
                                 modifier = Modifier.padding(vertical = 10.dp)
                             ) {
                                 ProfileImage(
-                                    image_name = user.profile_image,
-                                    size = 60,
-                                    padding = 5
+                                    image_name = user.profile_image, size = 60, horizontal_padding = 5
                                 )
 
                                 Column {
-                                    Text(text = user.firstname + " " + user.lastname, fontSize = 20.sp)
+                                    Text(
+                                        text = user.firstname + " " + user.lastname,
+                                        fontSize = 20.sp
+                                    )
 
                                     Text(
-                                        text = user.headline,
-                                        fontSize = 14.sp
+                                        text = user.headline, fontSize = 14.sp
                                     )
                                 }
 
                                 Spacer(modifier = Modifier.weight(1f))
 
-                                Button(onClick = {}, modifier = Modifier.padding(horizontal = 10.dp))
-                                {
+                                Button(
+                                    onClick = {
+                                        invitationsViewModel.withdrawInvitation(
+                                            user1 = uiState.curr_user?.email ?: "",
+                                            user2 = user.email
+                                        )
+                                    }, modifier = Modifier.padding(horizontal = 10.dp)
+                                ) {
                                     Text(text = "Withdraw", color = Color.White)
                                 }
                             }

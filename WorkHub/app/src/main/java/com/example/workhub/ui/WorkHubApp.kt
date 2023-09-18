@@ -92,7 +92,7 @@ fun WorkHubApp() {
                                 ProfileImage(
                                     image_name = uiState.curr_user?.profile_image ?: "",
                                     size = 55,
-                                    padding = 0
+                                    horizontal_padding = 0
                                 )
                             }
 
@@ -203,7 +203,10 @@ fun WorkHubApp() {
                 }
 
                 composable(route = PostDestination.route) {
-                    NewPostScreen()
+                    NewPostScreen(
+                        workHubViewModel = workHubViewModel,
+                        navController = navController
+                    )
                 }
 
                 composable(route = JobsDestination.route) {
@@ -263,6 +266,7 @@ fun WorkHubApp() {
 
                 composable(route = "Manage Network") {
                     ManageNetworkScreen(
+                        workHubViewModel = workHubViewModel,
                         navController = navController
                     )
                 }
@@ -302,6 +306,12 @@ fun WorkHubApp() {
 
                 composable(route = "Select New Chat") {
                     SelectNewChatScreen(
+                        navController = navController
+                    )
+                }
+
+                composable(route = "User Posts") {
+                    UserPostsScreen(
                         navController = navController
                     )
                 }

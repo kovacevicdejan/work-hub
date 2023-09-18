@@ -1,31 +1,20 @@
 package com.example.workhub.data.retrofit.models
 
 data class Page(
-    val visibility: String,
-    val post_type: String,
-    val creator_type: String,
-    val creator: String,
-    val text: String,
-    val image: String,
-    val job_title: String,
-    val page: String,
-    val options: List<Option>,
-    val date_posted: Long,
-    val comments: List<Comment>,
-    val likes: List<Like>
+    val name: String?,
+    val headline: String?,
+    val industry: String?,
+    val location: String?,
+    val profile_image: String?,
+    val about: String?,
+    val website: String?,
+    val size: String?,
+    val date_created: Long?,
+    val admin: String?,
+    val reviews: List<PageReview>?
 )
 
-data class Option(
-    val option: String
-)
-
-data class Comment(
-    val user: String,
-    val text: String,
-    val replying_user: String,
-    val replying_text: String
-)
-
-data class Like(
-    val user: String
+data class PageReview(
+    val user: String?,
+    val text: String?
 )

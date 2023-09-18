@@ -12,15 +12,36 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.example.workhub.ui.elements.composables.ConnectionCard
+import com.example.workhub.ui.elements.composables.ProfileImage
 import com.example.workhub.ui.elements.theme.Shapes
+import com.example.workhub.ui.stateholders.ConnectEvent
+import com.example.workhub.ui.stateholders.ManageNetworkViewModel
+import com.example.workhub.ui.stateholders.OnEvent
+import com.example.workhub.ui.stateholders.WorkHubViewModel
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ManageNetworkScreen(
+    workHubViewModel: WorkHubViewModel,
+    manageNetworkViewModel: ManageNetworkViewModel = hiltViewModel(),
     navController: NavHostController
 ) {
+    val uiState by workHubViewModel.uiState.collectAsState()
+    val manageNetworkUiState by manageNetworkViewModel.uiState.collectAsState()
     var state by remember { mutableStateOf(0) }
+
+    LaunchedEffect(Unit) {
+        uiState.curr_user?.let { manageNetworkViewModel.getConnections(curr_user = it) }
+    }
+
+    OnEvent(manageNetworkViewModel.event) {
+        if(it == ConnectEvent.RemoveConnection) {
+            workHubViewModel.getLoggedUser()
+        }
+    }
 
     Column {
         TabRow(
@@ -40,61 +61,29 @@ fun ManageNetworkScreen(
             )
         }
 
-        if(state == 0) {
+        if (state == 0) {
             LazyColumn {
-                for (i in 0..10) {
+                for (connection in manageNetworkUiState.connections) {
                     item {
-                        Card(
-                            backgroundColor = if (isSystemInDarkTheme()) Color(0xFF202020) else Color(0xFFEEEEEE),
-                            shape = Shapes.large,
-                            onClick = {
-                                navController.navigate("Profile") {
-                                    launchSingleTop = true
-                                    restoreState = true
-                                }
-                            }
-                        ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier.padding(vertical = 10.dp)
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Person,
-                                    contentDescription = null,
-                                    modifier = Modifier
-                                        .width(60.dp)
-                                        .height(60.dp)
-                                )
-
-                                Column {
-                                    Text(text = "Petar Petrovic", fontSize = 20.sp)
-
-                                    Text(
-                                        text = "Software engineer at Microsoft",
-                                        fontSize = 14.sp
-                                    )
-                                }
-
-                                Spacer(modifier = Modifier.weight(1f))
-
-                                Button(onClick = {}, modifier = Modifier.padding(horizontal = 10.dp))
-                                {
-                                    Text(text = "Remove", color = Color.White)
-                                }
-                            }
-                        }
+                        ConnectionCard(
+                            connection = connection,
+                            curr_user = uiState.curr_user,
+                            navController = navController,
+                            manageNetworkViewModel = manageNetworkViewModel
+                        )
 
                         Divider()
                     }
                 }
             }
-        }
-        else {
+        } else {
             LazyColumn {
                 for (i in 0..10) {
                     item {
                         Card(
-                            backgroundColor = if (isSystemInDarkTheme()) Color(0xFF202020) else Color(0xFFEEEEEE),
+                            backgroundColor = if (isSystemInDarkTheme()) Color(0xFF202020) else Color(
+                                0xFFEEEEEE
+                            ),
                             shape = Shapes.large,
                             onClick = {
                                 navController.navigate("Profile") {
@@ -126,7 +115,10 @@ fun ManageNetworkScreen(
 
                                 Spacer(modifier = Modifier.weight(1f))
 
-                                Button(onClick = {}, modifier = Modifier.padding(horizontal = 10.dp))
+                                Button(
+                                    onClick = {},
+                                    modifier = Modifier.padding(horizontal = 10.dp)
+                                )
                                 {
                                     Text(text = "Unfollow", color = Color.White)
                                 }

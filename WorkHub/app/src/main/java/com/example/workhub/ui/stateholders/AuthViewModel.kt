@@ -4,7 +4,8 @@ import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.viewModelScope
-import com.example.workhub.data.WorkHubRepository
+import com.example.workhub.data.repository.ImageRepository
+import com.example.workhub.data.repository.UserRepository
 import com.example.workhub.data.retrofit.requests.RegistrationRequest
 import com.example.workhub.data.retrofit.requests.SignInRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -35,7 +36,8 @@ data class AuthUiState(
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val workHubRepository: WorkHubRepository,
+    private val userRepository: UserRepository,
+    private val imageRepository: ImageRepository
 ) : BaseViewModel<Event>() {
     private val _uiState = MutableStateFlow(
         AuthUiState(
@@ -105,7 +107,7 @@ class AuthViewModel @Inject constructor(
         }
 
         if(file != null)
-            workHubRepository.uploadImage(file = file)
+            imageRepository.uploadImage(file = file)
 
         val registrationRequest = RegistrationRequest(
             email = uiState.value.email,
@@ -120,8 +122,8 @@ class AuthViewModel @Inject constructor(
             industry = uiState.value.industry,
         )
 
-        workHubRepository.register(registrationRequest = registrationRequest)
-        workHubRepository.setLoggedUser(uiState.value.email)
+        userRepository.register(registrationRequest = registrationRequest)
+        userRepository.setLoggedUser(uiState.value.email)
         sendEvent(RegistrationEvent.RegistrationSuccess)
     }
 
@@ -131,10 +133,10 @@ class AuthViewModel @Inject constructor(
             password = uiState.value.password
         )
 
-        val message = workHubRepository.signIn(signInRequest = signInRequest)
+        val message = userRepository.signIn(signInRequest = signInRequest)
 
         if(message == "Sign In successful!") {
-            workHubRepository.setLoggedUser(uiState.value.email)
+            userRepository.setLoggedUser(uiState.value.email)
             sendEvent(SignInEvent.SignInSuccess)
         }
         else

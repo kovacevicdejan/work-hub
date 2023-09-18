@@ -21,6 +21,7 @@ abstract class BaseViewModel<E : Event> : ViewModel() {
         Log.d("print", _event.isClosedForReceive.toString())
         _event.send(event)
     }
+
     protected fun sendEventSync(event: E) = viewModelScope.launch { _event.send(event) }
 }
 
@@ -33,7 +34,7 @@ fun <E : Event> OnEvent(event: Flow<E>, onEvent: (E) -> Unit) {
 
 sealed interface SignInEvent : Event {
     object SignInSuccess : SignInEvent
-    object SignInFailure: SignInEvent
+    object SignInFailure : SignInEvent
     data class SignInFailure1(val exception: Throwable) : SignInEvent
 }
 
@@ -43,10 +44,17 @@ sealed interface RegistrationEvent : Event {
 }
 
 sealed interface GetUserEvent : Event {
-    object GetUserSuccess: GetUserEvent
-    object GetUserFailure: GetUserEvent
+    object GetUserSuccess : GetUserEvent
+    object GetUserFailure : GetUserEvent
 }
 
 sealed interface ConnectEvent : Event {
-    object ConnectSuccess: ConnectEvent
+    object ConnectSuccess : ConnectEvent
+    object RemoveConnection: ConnectEvent
+}
+
+sealed interface InvitationEvent : Event {
+    object AcceptInvitationEvent: InvitationEvent
+    object DeclineInvitationEvent: InvitationEvent
+    object WithdrawInvitationEvent: InvitationEvent
 }

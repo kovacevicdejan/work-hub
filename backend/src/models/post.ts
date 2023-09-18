@@ -15,16 +15,16 @@ let Post = new Schema({
     creator: {
         type: String
     },
-    text: {
+    post_text: {
         type: String
     },
-    image: {
+    post_image: {
         type: String
     },
     job_title: {
         type: String
     },
-    page: {
+    post_page: {
         type: String
     },
     options: [
@@ -32,6 +32,11 @@ let Post = new Schema({
             option: {
                 type: String
             },
+            voters: {
+                user: {
+                    type: String
+                }
+            }
         }
     ],
     date_posted: {

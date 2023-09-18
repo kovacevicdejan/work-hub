@@ -153,38 +153,36 @@ fun RegistrationScreen(
                     }
                 }
 
-                if(ActivityResultContracts.PickVisualMedia.isPhotoPickerAvailable()) {
-                    item {
-                        Row(
-                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
-                            verticalAlignment = Alignment.CenterVertically
+                item {
+                    Row(
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier.weight(1f)
                         ) {
-                            Column(
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                modifier = Modifier.weight(1f)
-                            ) {
-                                Button(
-                                    onClick = {
-                                        launcher.launch(arrayOf("image/*"))
-                                    }
-                                ) {
-                                    Text(text = "Pick Image", color = Color.White)
+                            Button(
+                                onClick = {
+                                    launcher.launch(arrayOf("image/*"))
                                 }
-                            }
-
-                            Column(
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                modifier = Modifier.weight(1f)
                             ) {
-                                AsyncImage(
-                                    model = uiState.image_uri,
-                                    contentDescription = null,
-                                    modifier = Modifier
-                                        .size(100.dp)
-                                        .clip(CircleShape),
-                                    contentScale = ContentScale.Crop
-                                )
+                                Text(text = "Pick Image", color = Color.White)
                             }
+                        }
+
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            AsyncImage(
+                                model = uiState.image_uri,
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .size(100.dp)
+                                    .clip(CircleShape),
+                                contentScale = ContentScale.Crop
+                            )
                         }
                     }
                 }

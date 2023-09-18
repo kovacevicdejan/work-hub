@@ -1,4 +1,4 @@
-package com.example.workhub.data
+package com.example.workhub.data.repository
 
 import android.content.Context
 import com.example.workhub.data.retrofit.WorkHubApi
@@ -7,12 +7,9 @@ import com.example.workhub.data.retrofit.requests.ConnectRequest
 import com.example.workhub.data.retrofit.requests.RegistrationRequest
 import com.example.workhub.data.retrofit.requests.SignInRequest
 import dagger.hilt.android.qualifiers.ApplicationContext
-import okhttp3.MultipartBody
-import okhttp3.RequestBody.Companion.asRequestBody
-import java.io.File
 import javax.inject.Inject
 
-class WorkHubRepository @Inject constructor(
+class UserRepository @Inject constructor(
     private val workHubApi: WorkHubApi,
     @ApplicationContext private val context: Context
 ) {
@@ -54,21 +51,52 @@ class WorkHubRepository @Inject constructor(
         return workHubApi.getUserByEmail(email = email)
     }
 
-    suspend fun uploadImage(file: File) {
-        workHubApi.uploadImage(
-            file = MultipartBody.Part.createFormData(
-                name = "image",
-                filename = file.name,
-                body = file.asRequestBody()
-            )
-        )
-    }
-
     suspend fun getUsersByIndustry(industry: String): List<User> {
         return workHubApi.getUsersByIndustry(industry = industry)
     }
 
-    suspend fun connect(connectRequest: ConnectRequest) {
+    suspend fun connect(user1: String, user2: String) {
+        val connectRequest = ConnectRequest(
+            user1 = user1,
+            user2 = user2
+        )
+
         return workHubApi.connect(connectRequest = connectRequest)
+    }
+
+    suspend fun acceptInvitation(user1: String, user2: String) {
+        val connectRequest = ConnectRequest(
+            user1 = user1,
+            user2 = user2
+        )
+
+        return workHubApi.acceptInvitation(connectRequest = connectRequest)
+    }
+
+    suspend fun declineInvitation(user1: String, user2: String) {
+        val connectRequest = ConnectRequest(
+            user1 = user1,
+            user2 = user2
+        )
+
+        return workHubApi.declineInvitation(connectRequest = connectRequest)
+    }
+
+    suspend fun withdrawInvitation(user1: String, user2: String) {
+        val connectRequest = ConnectRequest(
+            user1 = user1,
+            user2 = user2
+        )
+
+        return workHubApi.withdrawInvitation(connectRequest = connectRequest)
+    }
+
+    suspend fun removeConnection(user1: String, user2: String) {
+        val connectRequest = ConnectRequest(
+            user1 = user1,
+            user2 = user2
+        )
+
+        return workHubApi.removeConnection(connectRequest = connectRequest)
     }
 }

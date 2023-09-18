@@ -2,6 +2,7 @@ package com.example.workhub.data.retrofit
 
 import com.example.workhub.data.retrofit.models.User
 import com.example.workhub.data.retrofit.requests.ConnectRequest
+import com.example.workhub.data.retrofit.requests.NewPostRequest
 import com.example.workhub.data.retrofit.requests.RegistrationRequest
 import com.example.workhub.data.retrofit.requests.SignInRequest
 import okhttp3.MultipartBody
@@ -11,9 +12,8 @@ import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
 import retrofit2.http.Path
-import java.io.File
 
-const val BASE_URL = "https://13c8-2a06-5b00-800-8400-73b5-96a9-ddb7-3fa.ngrok-free.app/"
+const val BASE_URL = "https://396d-178-237-217-94.ngrok-free.app/"
 
 interface WorkHubApi {
     @POST("user/register")
@@ -34,4 +34,19 @@ interface WorkHubApi {
 
     @POST("user/connect")
     suspend fun connect(@Body connectRequest: ConnectRequest)
+
+    @POST("user/accept_invitation")
+    suspend fun acceptInvitation(@Body connectRequest: ConnectRequest)
+
+    @POST("user/decline_invitation")
+    suspend fun declineInvitation(@Body connectRequest: ConnectRequest)
+
+    @POST("user/withdraw_invitation")
+    suspend fun withdrawInvitation(@Body connectRequest: ConnectRequest)
+
+    @POST("user/remove_connection")
+    suspend fun removeConnection(@Body connectRequest: ConnectRequest)
+
+    @POST("post/new_post")
+    suspend fun newPost(@Body newPostRequest: NewPostRequest)
 }

@@ -4,6 +4,7 @@ import bodyParser from 'body-parser'
 import mongoose from 'mongoose';
 import userRouter from './routers/user.routes';
 import imageRouter from './routers/image.routes';
+import postRouter from './routers/post.routes';
 
 const app = express();
 app.use(cors())
@@ -21,6 +22,7 @@ connect.once('open', () => {
 const router = express.Router();
 router.use('/user', userRouter);
 router.use('/image', imageRouter);
+router.use('/post', postRouter)
 
 app.use(express.json());
 app.use('/', router);

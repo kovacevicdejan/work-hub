@@ -52,7 +52,8 @@ fun ProfileScreen (
                        ProfileImage(
                            image_name = uiState.curr_user?.profile_image ?: "",
                            size = 120,
-                           padding = 10
+                           vertical_padding = 10,
+                           horizontal_padding = 10
                        )
                     }
 
@@ -108,7 +109,12 @@ fun ProfileScreen (
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Button(
-                                onClick = {},
+                                onClick = {
+                                    navController.navigate("User Posts") {
+                                        launchSingleTop = true
+                                        restoreState = true
+                                    }
+                                },
                                 modifier = Modifier
                                     .padding(horizontal = 10.dp)
                             ) {

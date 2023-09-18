@@ -1,8 +1,7 @@
 package com.example.workhub.ui.stateholders
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
-import com.example.workhub.data.WorkHubRepository
+import com.example.workhub.data.repository.UserRepository
 import com.example.workhub.data.retrofit.models.User
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -19,7 +18,7 @@ data class UiState(
 
 @HiltViewModel
 class WorkHubViewModel @Inject constructor(
-    private val workHubRepository: WorkHubRepository,
+    private val userRepository: UserRepository,
 ) : BaseViewModel<Event>() {
     private val _uiState = MutableStateFlow(
         UiState(
@@ -30,16 +29,16 @@ class WorkHubViewModel @Inject constructor(
     val uiState = _uiState.asStateFlow()
 
     fun setCurrUser(email: String) = viewModelScope.launch {
-        val user = workHubRepository.getUserByEmail(email)
+        val user = userRepository.getUserByEmail(email)
         _uiState.update { it.copy(curr_user = user) }
         sendEvent(SignInEvent.SignInSuccess)
     }
 
     fun getLoggedUser() = viewModelScope.launch {
-        val email = workHubRepository.getLoggedUser()
+        val email = userRepository.getLoggedUser()
 
         if(email != null) {
-            val user = workHubRepository.getUserByEmail(email)
+            val user = userRepository.getUserByEmail(email)
             _uiState.update { it.copy(curr_user = user) }
             sendEvent(GetUserEvent.GetUserSuccess)
         }
@@ -54,6 +53,6 @@ class WorkHubViewModel @Inject constructor(
 
     fun signOut() {
         _uiState.update { it.copy(curr_user = null) }
-        workHubRepository.removeLoggedUser()
+        userRepository.removeLoggedUser()
     }
 }

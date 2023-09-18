@@ -1,20 +1,36 @@
 package com.example.workhub.data.retrofit.models
 
 data class Post(
-    val name: String?,
-    val headline: String?,
-    val industry: String?,
-    val location: String?,
-    val profile_image: String?,
-    val about: String?,
-    val website: String?,
-    val size: String?,
-    val date_created: Long?,
-    val admin: String?,
-    val reviews: List<PostReview>?
+    val visibility: Int,
+    val post_type: String,
+    val creator_type: Int,
+    val creator: String,
+    val post_text: String,
+    val post_image: String,
+    val job_title: String,
+    val page_name: String,
+    val options: List<Option>,
+    val date_posted: Long,
+    val comments: List<Comment>,
+    val likes: List<Like>
 )
 
-data class PostReview(
-    val user: String?,
-    val text: String?
+data class Option(
+    val option: String,
+    val voters: List<Voter>
+)
+
+data class Comment(
+    val user: String,
+    val text: String,
+    val replying_user: String,
+    val replying_text: String
+)
+
+data class Like(
+    val user: String
+)
+
+data class Voter(
+    val user: String
 )

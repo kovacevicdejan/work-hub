@@ -109,9 +109,9 @@ fun CommentsScreen(
                             Column {
                                 Text(text = "Pera Peric", fontSize = 20.sp)
 
-                                Text(text = "Backend engineer", fontSize = 10.sp)
+                                Text(text = "Backend engineer", fontSize = 12.sp)
 
-                                Text(text = "1d", fontSize = 10.sp)
+                                Text(text = "1d", fontSize = 12.sp)
                             }
 
                             Spacer(modifier = Modifier.weight(1f))

@@ -2,9 +2,6 @@ import * as express from "express"
 import User from "../models/user"
 const bcrypt = require('bcrypt');
 
-const fs = require('fs');
-const folderPath = './uploads';
-
 export class UserController {
     sign_in = (req: express.Request, res: express.Response) => {
         const email = req.body.email;
@@ -101,5 +98,83 @@ export class UserController {
             })
         }
         )
+    }
+
+    accept_invitation = async (req: express.Request, res: express.Response) => {
+        const email1 = req.body.user1;
+        const email2 = req.body.user2;
+
+        await User.findOneAndUpdate({
+            'email': email1
+        }, {
+            $push: { connections: { 'user': email2 } },
+            $pull: {received_invitations: {user: email2}}
+        })
+
+        await User.findOneAndUpdate({
+            'email': email2
+        }, {
+            $push: { connections: { 'user': email1 } },
+            $pull: {sent_invitations: {user: email1}}
+        })
+
+        res.json("success")
+    }
+
+    decline_invitation = async (req: express.Request, res: express.Response) => {
+        const email1 = req.body.user1;
+        const email2 = req.body.user2;
+
+        await User.findOneAndUpdate({
+            'email': email1
+        }, {
+            $pull: {received_invitations: {user: email2}}
+        })
+
+        await User.findOneAndUpdate({
+            'email': email2
+        }, {
+            $pull: {sent_invitations: {user: email1}}
+        })
+
+        res.json("success")
+    }
+
+    withdraw_invitation = async (req: express.Request, res: express.Response) => {
+        const email1 = req.body.user1;
+        const email2 = req.body.user2;
+
+        await User.findOneAndUpdate({
+            'email': email1
+        }, {
+            $pull: {sent_invitations: {user: email2}}
+        })
+
+        await User.findOneAndUpdate({
+            'email': email2
+        }, {
+            $pull: {received_invitations: {user: email1}}
+        })
+
+        res.json("success")
+    }
+
+    remove_connection = async (req: express.Request, res: express.Response) => {
+        const email1 = req.body.user1;
+        const email2 = req.body.user2;
+
+        await User.findOneAndUpdate({
+            'email': email1
+        }, {
+            $pull: {connections: {user: email2}}
+        })
+
+        await User.findOneAndUpdate({
+            'email': email2
+        }, {
+            $pull: {connections: {user: email1}}
+        })
+
+        res.json("success")
     }
 }

@@ -1,52 +1,93 @@
 package com.example.workhub.ui.elements.screens
 
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import coil.compose.AsyncImage
 import com.example.workhub.R
 import com.example.workhub.ui.elements.theme.Blue
+import com.example.workhub.ui.stateholders.NewPostViewModel
+import com.example.workhub.ui.stateholders.WorkHubViewModel
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun NewPostScreen () {
-    var state by remember { mutableStateOf(true) }
-
+fun NewPostScreen(
+    workHubViewModel: WorkHubViewModel,
+    newPostViewModel: NewPostViewModel = hiltViewModel(),
+    navController: NavHostController
+) {
+    val uiState by workHubViewModel.uiState.collectAsState()
+    val newPostUiState by newPostViewModel.uiState.collectAsState()
     val postTypes = arrayOf("Classic", "New position", "Poll")
     var expanded by remember { mutableStateOf(false) }
-    var selectedText by rememberSaveable { mutableStateOf(postTypes[0]) }
-    var jobTitle by rememberSaveable { mutableStateOf("") }
-    var company by remember { mutableStateOf("") }
-    var optionsList: List<String> by remember { mutableStateOf(listOf()) }
-    var option by remember { mutableStateOf("") }
+    val context = LocalContext.current
 
-    Card(modifier = Modifier.padding(10.dp), backgroundColor = if(isSystemInDarkTheme()) Color(0xFF202020) else Color(0xFFEEEEEE)) {
+    val launcher =
+        rememberLauncherForActivityResult(contract = ActivityResultContracts.OpenDocument()) {
+            it?.let { uri ->
+                newPostViewModel.setImageUri(image_uri = uri)
+
+                val file = newPostViewModel.createFileFromImageUri(
+                    context = context,
+                    imageUri = uri,
+                    newFileName = "image"
+                )
+            }
+        }
+
+    Card(
+        modifier = Modifier.padding(10.dp),
+        backgroundColor = if (isSystemInDarkTheme()) Color(0xFF202020) else Color(0xFFEEEEEE)
+    ) {
         Column {
             LazyColumn {
                 item {
-                    Row(modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Row(
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         Text(
                             text = "New post",
                             modifier = Modifier.weight(1f),
                             fontSize = 30.sp
                         )
 
-                        Button(onClick = { /*TODO*/ }) {
+                        Button(
+                            onClick = {
+                                newPostViewModel.post(
+                                    context = context,
+                                    curr_user = uiState.curr_user
+                                )
+                            }
+                        ) {
                             Text(text = "Post", color = Color.White, fontSize = 20.sp)
                         }
                     }
 
-                    Row(modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Row(
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         Text(
                             text = "Visibility: ",
                             modifier = Modifier.weight(1.2f),
@@ -54,8 +95,8 @@ fun NewPostScreen () {
                         )
 
                         RadioButton(
-                            selected = state,
-                            onClick = { state = true },
+                            selected = newPostUiState.visibility,
+                            onClick = { newPostViewModel.setVisibility(true) }
                         )
 
                         Text(
@@ -65,8 +106,8 @@ fun NewPostScreen () {
                         )
 
                         RadioButton(
-                            selected = !state,
-                            onClick = { state = false }
+                            selected = !newPostUiState.visibility,
+                            onClick = { newPostViewModel.setVisibility(false) }
                         )
 
                         Text(
@@ -76,7 +117,10 @@ fun NewPostScreen () {
                         )
                     }
 
-                    Row(modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Row(
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         Text(
                             text = "Post type: ",
                             modifier = Modifier.weight(1f),
@@ -91,10 +135,14 @@ fun NewPostScreen () {
                                 }
                             ) {
                                 TextField(
-                                    value = selectedText,
+                                    value = newPostUiState.post_type,
                                     onValueChange = {},
                                     readOnly = true,
-                                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                                    trailingIcon = {
+                                        ExposedDropdownMenuDefaults.TrailingIcon(
+                                            expanded = expanded
+                                        )
+                                    },
                                 )
 
                                 ExposedDropdownMenu(
@@ -104,7 +152,7 @@ fun NewPostScreen () {
                                     postTypes.forEach { item ->
                                         DropdownMenuItem(
                                             onClick = {
-                                                selectedText = item
+                                                newPostViewModel.setPostType(item)
                                                 expanded = false
                                             }
                                         ) {
@@ -116,23 +164,16 @@ fun NewPostScreen () {
                         }
                     }
 
-                    when(selectedText) {
+                    when (newPostUiState.post_type) {
                         "Classic" -> {
                             Row(modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp)) {
-                                Text(
-                                    text = "Post text: ",
-                                    modifier = Modifier.weight(1f),
-                                    fontSize = 20.sp
-                                )
-                            }
-
-                            Row(modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp)) {
                                 OutlinedTextField(
-                                    value = "",
-                                    onValueChange = {},
+                                    value = newPostUiState.post_text,
+                                    onValueChange = {newPostViewModel.setPostText(it)},
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .height(250.dp)
+                                        .height(250.dp),
+                                    label = {Text(text = "Post text")}
                                 )
                             }
 
@@ -143,22 +184,33 @@ fun NewPostScreen () {
                                 Text(
                                     text = "Post image: ",
                                     modifier = Modifier.weight(1f),
-                                    fontSize = 20.sp
+                                    fontSize = 18.sp
                                 )
 
-                                Button(onClick = {}) {
-                                    Text(text = "Select image", color = Color.White)
+                                Button(
+                                    onClick = {
+                                        launcher.launch(arrayOf("image/*"))
+                                    },
+                                    modifier = Modifier.padding(5.dp)
+                                ) {
+                                    Text(text = "Select Image", color = Color.White)
+                                }
+
+                                Button(
+                                    onClick = {
+                                        newPostViewModel.removeImage()
+                                    },
+                                    modifier = Modifier.padding(5.dp)
+                                ) {
+                                    Text(text = "Remove Image", color = Color.White)
                                 }
                             }
 
                             Row(modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp)) {
-                                Image(
-                                    painter = painterResource(id = R.drawable.overflowai),
-                                    contentDescription = "linkedin",
-                                    contentScale = ContentScale.Crop,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(vertical = 5.dp)
+                                AsyncImage(
+                                    model = newPostUiState.image_uri,
+                                    contentDescription = null,
+                                    contentScale = ContentScale.Crop
                                 )
                             }
                         }
@@ -168,16 +220,11 @@ fun NewPostScreen () {
                                 modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Text(
-                                    text = "Job title: ",
-                                    modifier = Modifier.weight(1f),
-                                    fontSize = 20.sp
-                                )
-
                                 OutlinedTextField(
-                                    value = jobTitle,
-                                    onValueChange = { jobTitle = it },
-                                    modifier = Modifier.weight(2f)
+                                    value = newPostUiState.job_title,
+                                    onValueChange = { newPostViewModel.setJobTitle(it) },
+                                    label = {Text(text = "Job title")},
+                                    modifier = Modifier.fillMaxWidth()
                                 )
                             }
 
@@ -185,20 +232,15 @@ fun NewPostScreen () {
                                 modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Text(
-                                    text = "Company/school: ",
-                                    modifier = Modifier.weight(1f),
-                                    fontSize = 20.sp
-                                )
-
                                 OutlinedTextField(
-                                    value = company,
-                                    onValueChange = { company = it },
-                                    modifier = Modifier.weight(2f)
+                                    value = newPostUiState.page_name,
+                                    onValueChange = { newPostViewModel.setPageName(it) },
+                                    label = {Text(text = "Company or school")},
+                                    modifier = Modifier.fillMaxWidth()
                                 )
                             }
 
-                            if(jobTitle != "" && company != "") {
+                            if (newPostUiState.job_title != "" && newPostUiState.page_name != "") {
                                 Divider()
 
                                 Row(
@@ -208,7 +250,7 @@ fun NewPostScreen () {
                                     )
                                 ) {
                                     Text(
-                                        text = "I'm happy to share that I'm starting a new position as $jobTitle at $company!",
+                                        text = "I'm happy to share that I'm starting a new position as ${newPostUiState.job_title} at ${newPostUiState.page_name}>!",
                                         fontSize = 20.sp
                                     )
                                 }
@@ -233,20 +275,13 @@ fun NewPostScreen () {
 
                         "Poll" -> {
                             Row(modifier = Modifier.padding(horizontal = 10.dp, vertical = 10.dp)) {
-                                Text(
-                                    text = "Post text: ",
-                                    modifier = Modifier.weight(1f),
-                                    fontSize = 20.sp
-                                )
-                            }
-
-                            Row(modifier = Modifier.padding(horizontal = 10.dp, vertical = 10.dp)) {
                                 OutlinedTextField(
-                                    value = "",
-                                    onValueChange = {},
+                                    value = newPostUiState.post_text,
+                                    onValueChange = {newPostViewModel.setPostText(it)},
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .height(200.dp)
+                                        .height(200.dp),
+                                    label = {Text(text = "Post text")}
                                 )
                             }
 
@@ -256,26 +291,30 @@ fun NewPostScreen () {
                                     fontSize = 20.sp
                                 )
 
-                                for(opt in optionsList) {
-                                    Text(
-                                        text = "$opt   ",
-                                        fontSize = 20.sp,
-                                        color = Blue
-                                    )
-                                }
+                                Text(
+                                    text = newPostViewModel.getOptionsText(),
+                                    fontSize = 20.sp,
+                                    color = Blue,
+                                    maxLines = 5
+                                )
                             }
 
-                            Row(modifier = Modifier.padding(horizontal = 10.dp, vertical = 10.dp),
-                            verticalAlignment = Alignment.CenterVertically) {
+                            Row(
+                                modifier = Modifier.padding(horizontal = 10.dp, vertical = 10.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
                                 OutlinedTextField(
-                                    value = option,
-                                    onValueChange = {option = it},
-                                    modifier = Modifier.weight(2.4f).padding(0.dp, 0.dp, 10.dp, 0.dp).weight(3f)
+                                    value = newPostUiState.option,
+                                    onValueChange = { newPostViewModel.setOption(it) },
+                                    modifier = Modifier
+                                        .weight(2.4f)
+                                        .padding(0.dp, 0.dp, 10.dp, 0.dp)
+                                        .weight(3f)
                                 )
 
                                 Button(
                                     onClick = {
-                                        optionsList = optionsList.plus(option)
+                                        newPostViewModel.addOption(newPostUiState.option)
                                     },
                                     modifier = Modifier.weight(1f)
                                 ) {
