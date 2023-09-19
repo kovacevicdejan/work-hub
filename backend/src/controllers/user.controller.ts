@@ -177,4 +177,46 @@ export class UserController {
 
         res.json("success")
     }
+
+    edit_profile = async (req: express.Request, res: express.Response) => {
+        await User.findOneAndUpdate({
+            email: req.body.email
+        }, {
+            firstname: req.body.firstname,
+            lastname: req.body.lastname,
+            about: req.body.about,
+            headline: req.body.headline,
+            location: req.body.location,
+            phone_number: req.body.phone_number
+        })
+
+        res.json("success")
+    }
+
+    add_skill = async (req: express.Request, res: express.Response) => {
+        await User.findOneAndUpdate({
+            email: req.body.user
+        }, {
+            $push: {skills: {name: req.body.skill}}
+        })
+
+        res.json("success")
+    }
+
+    add_experience = async (req: express.Request, res: express.Response) => {
+        await User.findOneAndUpdate({
+            email: req.body.email
+        }, {
+            $push: {experience: {
+                company: req.body.company,
+                job_title: req.body.job_title,
+                job_type: req.body.job_type,
+                start_date: req.body.start_date,
+                end_date: req.body.end_date,
+                location: req.body.location
+            }}
+        })
+
+        res.json("success")
+    }
 }

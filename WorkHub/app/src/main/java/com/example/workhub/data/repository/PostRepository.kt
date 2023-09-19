@@ -2,6 +2,7 @@ package com.example.workhub.data.repository
 
 import com.example.workhub.data.retrofit.WorkHubApi
 import com.example.workhub.data.retrofit.models.Option
+import com.example.workhub.data.retrofit.models.Post
 import com.example.workhub.data.retrofit.requests.NewPostRequest
 import javax.inject.Inject
 
@@ -32,5 +33,9 @@ class PostRepository @Inject constructor(
         )
 
         workHubApi.newPost(newPostRequest)
+    }
+
+    suspend fun getUserPosts(user: String): List<Post> {
+        return workHubApi.getUserPosts(user = user)
     }
 }

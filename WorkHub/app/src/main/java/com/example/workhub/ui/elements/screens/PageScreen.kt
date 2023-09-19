@@ -1,6 +1,8 @@
 package com.example.workhub.ui.elements.screens
 
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -12,20 +14,34 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat.startActivity
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.example.workhub.ui.elements.composables.Post
+import com.example.workhub.ui.elements.composables.PageImage
 import com.example.workhub.ui.elements.theme.Shapes
+import com.example.workhub.ui.stateholders.PageViewModel
+import com.example.workhub.ui.stateholders.WorkHubViewModel
 
 @OptIn(ExperimentalMaterialApi::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun PageScreen (
+    workHubViewModel: WorkHubViewModel,
+    pageViewModel: PageViewModel = hiltViewModel(),
     navController: NavHostController
 ) {
+    val uiState by workHubViewModel.uiState.collectAsState()
+    val pageUiState by pageViewModel.uiState.collectAsState()
     var state by remember { mutableStateOf(0) }
     val titles = listOf("ABOUT", "POSTS", "JOBS", "REVIEWS")
+    val context = LocalContext.current
+
+    LaunchedEffect(Unit) {
+        pageViewModel.getPage(uiState.page)
+    }
 
     Scaffold(
         bottomBar = {
@@ -81,13 +97,7 @@ fun PageScreen (
                 ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(
-                                imageVector = Icons.Default.Person,
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .width(100.dp)
-                                    .height(100.dp)
-                            )
+                            PageImage(image_name = pageUiState.page?.profile_image ?: "", size = 100)
                         }
 
                         Row(
@@ -95,31 +105,25 @@ fun PageScreen (
                         ) {
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                 Text(
-                                    text = "TomTom",
+                                    text = pageUiState.page?.name ?: "",
                                     fontSize = 30.sp,
                                     modifier = Modifier.padding(horizontal = 12.dp)
                                 )
 
                                 Text(
-                                    text = "It takes the world to map the world.",
+                                    text = pageUiState.page?.headline ?: "",
                                     fontSize = 20.sp,
                                     modifier = Modifier.padding(horizontal = 12.dp)
                                 )
 
                                 Text(
-                                    text = "IT services and IT consulting.",
-                                    fontSize = 16.sp,
-                                    modifier = Modifier.padding(12.dp, 10.dp, 0.dp, 0.dp)
-                                )
-
-                                Text(
-                                    text = "Amsterdam, Netherlands",
+                                    text = pageUiState.page?.location ?: "",
                                     fontSize = 16.sp,
                                     modifier = Modifier.padding(horizontal = 12.dp)
                                 )
 
                                 Text(
-                                    text = "225 followers",
+                                    text = "${pageUiState.page?.followers?.size ?: 0} followers",
                                     fontSize = 16.sp,
                                     modifier = Modifier.padding(horizontal = 12.dp)
                                 )
@@ -135,7 +139,12 @@ fun PageScreen (
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
                                 Button(
-                                    onClick = {},
+                                    onClick = {
+                                        val webIntent = Intent(Intent.ACTION_VIEW,
+                                            Uri.parse("https://${pageUiState.page?.website ?: ""}")
+                                        )
+                                        startActivity(context, webIntent, null)
+                                    },
                                     modifier = Modifier
                                         .padding(horizontal = 10.dp)
                                 ) {
@@ -204,15 +213,49 @@ fun PageScreen (
 
                                 Row(modifier = Modifier.padding(horizontal = 10.dp)) {
                                     Text(
-                                        text = "Below doc contains all useful shortcuts for quick navigation in VS Code and also extensions which will increase your productivity as well as beautify your code.\n" +
-                                                "\n" +
-                                                "Save this pdf and Repost if you find this helpful.\n" +
-                                                "\n" +
-                                                "Learn programming from W3Schools.com\n" +
-                                                "\n" +
-                                                "Follow Ajit Kumar Gupta for more.\n" +
-                                                "\n" +
-                                                "Credit - JSMastery , Maheshpal.",
+                                        text = pageUiState.page?.about ?: "",
+                                        modifier = Modifier.padding(vertical = 10.dp),
+                                        fontSize = 16.sp
+                                    )
+                                }
+
+                                Row(modifier = Modifier.padding(horizontal = 10.dp)) {
+                                    Text(
+                                        text = "Website: ",
+                                        modifier = Modifier.padding(vertical = 10.dp),
+                                        fontSize = 16.sp
+                                    )
+
+                                    Text(
+                                        text = pageUiState.page?.website ?: "",
+                                        modifier = Modifier.padding(vertical = 10.dp),
+                                        fontSize = 16.sp
+                                    )
+                                }
+
+                                Row(modifier = Modifier.padding(horizontal = 10.dp)) {
+                                    Text(
+                                        text = "IT fields: ",
+                                        modifier = Modifier.padding(vertical = 10.dp),
+                                        fontSize = 16.sp
+                                    )
+
+                                    Text(
+                                        text = pageUiState.page?.industry ?: "",
+                                        modifier = Modifier.padding(vertical = 10.dp),
+                                        fontSize = 16.sp
+                                    )
+                                }
+
+                                Row(modifier = Modifier.padding(horizontal = 10.dp)) {
+                                    Text(
+                                        text = "Headquarters: ",
+                                        modifier = Modifier.padding(vertical = 10.dp),
+                                        fontSize = 16.sp
+                                    )
+
+                                    Text(
+                                        text = pageUiState.page?.location ?: "",
                                         modifier = Modifier.padding(vertical = 10.dp),
                                         fontSize = 16.sp
                                     )
@@ -223,11 +266,9 @@ fun PageScreen (
                 }
 
                 1 -> {
-                    items(count = 2) {
-                        Post(last = false, navController = navController)
-                    }
-
-                    item { Post(last = true, navController = navController) }
+//                    items(count = 3) {
+//                        Post(navController = navController)
+//                    }
                 }
 
                 2 -> {
@@ -290,12 +331,14 @@ fun PageScreen (
                                 backgroundColor = if (isSystemInDarkTheme()) Color(0xFF202020) else Color(
                                     0xFFEEEEEE
                                 ),
-                                modifier = Modifier.padding(
-                                    0.dp,
-                                    0.dp,
-                                    0.dp,
-                                    if (i == 5) 85.dp else 10.dp
-                                ).fillMaxWidth(),
+                                modifier = Modifier
+                                    .padding(
+                                        0.dp,
+                                        0.dp,
+                                        0.dp,
+                                        if (i == 5) 85.dp else 10.dp
+                                    )
+                                    .fillMaxWidth(),
                                 shape = Shapes.large
                             ) {
                                 Column {

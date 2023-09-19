@@ -5,7 +5,9 @@ import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.viewModelScope
 import com.example.workhub.data.repository.ImageRepository
+import com.example.workhub.data.repository.PageRepository
 import com.example.workhub.data.repository.UserRepository
+import com.example.workhub.data.retrofit.requests.CreatePageRequest
 import com.example.workhub.data.retrofit.requests.RegistrationRequest
 import com.example.workhub.data.retrofit.requests.SignInRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,57 +22,49 @@ import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
-data class AuthUiState(
-    val email: String,
-    val password: String,
-    val firstname: String,
-    val lastname: String,
+data class CreatePageUiState(
+    val name: String,
+    val headline: String,
+    val industry: String,
+    val location: String,
     val image_uri: Uri?,
     val about: String,
-    val headline: String,
-    val location: String,
-    val phone_number: String,
-    val industry: String,
-    val valid_user: Boolean
+    val website: String
 )
 
 @HiltViewModel
-class AuthViewModel @Inject constructor(
-    private val userRepository: UserRepository,
+class CreatePageViewModel @Inject constructor(
+    private val pageRepository: PageRepository,
     private val imageRepository: ImageRepository
-) : BaseViewModel<Event>() {
+) : BaseViewModel<PageEvent>() {
     private val _uiState = MutableStateFlow(
-        AuthUiState(
-            email = "",
-            password = "",
-            firstname = "",
-            lastname = "",
+        CreatePageUiState(
+            name = "",
+            headline = "",
+            industry = "",
+            location = "",
             image_uri = null,
             about = "",
-            headline = "",
-            location = "",
-            phone_number = "",
-            industry = "",
-            valid_user = false
+            website = ""
         )
     )
 
     val uiState = _uiState.asStateFlow()
 
-    fun setEmail(email: String) {
-        _uiState.update { it.copy(email = email) }
+    fun setName(name: String) {
+        _uiState.update { it.copy(name = name) }
     }
 
-    fun setPassword(password: String) {
-        _uiState.update { it.copy(password = password) }
+    fun setHeadline(headline: String) {
+        _uiState.update { it.copy(headline = headline) }
     }
 
-    fun setFirstname(firstname: String) {
-        _uiState.update { it.copy(firstname = firstname) }
+    fun setIndustry(industry: String) {
+        _uiState.update { it.copy(industry = industry) }
     }
 
-    fun setLastname(lastname: String) {
-        _uiState.update { it.copy(lastname = lastname) }
+    fun setLocation(location: String) {
+        _uiState.update { it.copy(location = location) }
     }
 
     fun setImageUri(image_uri: Uri) {
@@ -81,23 +75,11 @@ class AuthViewModel @Inject constructor(
         _uiState.update { it.copy(about = about) }
     }
 
-    fun setHeadline(headline: String) {
-        _uiState.update { it.copy(headline = headline) }
+    fun setWebsite(website: String) {
+        _uiState.update { it.copy(website = website) }
     }
 
-    fun setLocation(location: String) {
-        _uiState.update { it.copy(location = location) }
-    }
-
-    fun setPhoneNumber(phone_number: String) {
-        _uiState.update { it.copy(phone_number = phone_number) }
-    }
-
-    fun setIndustry(industry: String) {
-        _uiState.update { it.copy(industry = industry) }
-    }
-
-    fun register(context: Context) = viewModelScope.launch {
+    fun createPage(context: Context, admin: String) = viewModelScope.launch {
         val file = uiState.value.image_uri?.let {
             createFileFromImageUri(
                 context = context,
@@ -109,38 +91,19 @@ class AuthViewModel @Inject constructor(
         if(file != null)
             imageRepository.uploadImage(file = file)
 
-        val registrationRequest = RegistrationRequest(
-            email = uiState.value.email,
-            password = uiState.value.password,
-            firstname = uiState.value.firstname,
-            lastname = uiState.value.lastname,
+        val createPageRequest = CreatePageRequest(
+            name = uiState.value.name,
+            headline = uiState.value.headline,
+            industry = uiState.value.industry,
+            location = uiState.value.location,
             profile_image = file?.name ?: "",
             about = uiState.value.about,
-            headline = uiState.value.headline,
-            location = uiState.value.location,
-            phone_number = uiState.value.phone_number,
-            industry = uiState.value.industry
+            website = uiState.value.website,
+            admin = admin
         )
 
-        userRepository.register(registrationRequest = registrationRequest)
-        userRepository.setLoggedUser(uiState.value.email)
-        sendEvent(RegistrationEvent.RegistrationSuccess)
-    }
-
-    fun signIn() = viewModelScope.launch {
-        val signInRequest = SignInRequest(
-            email = uiState.value.email,
-            password = uiState.value.password
-        )
-
-        val message = userRepository.signIn(signInRequest = signInRequest)
-
-        if(message == "Sign In successful!") {
-            userRepository.setLoggedUser(uiState.value.email)
-            sendEvent(SignInEvent.SignInSuccess)
-        }
-        else
-            sendEvent(SignInEvent.SignInFailure)
+        pageRepository.createPage(createPageRequest = createPageRequest)
+        sendEvent(PageEvent.CreatePageEvent)
     }
 
     fun createFileFromImageUri(context: Context, imageUri: Uri, newFileName: String): File? {

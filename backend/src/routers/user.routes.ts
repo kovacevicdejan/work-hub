@@ -38,4 +38,16 @@ userRouter.route('/remove_connection').post(
     (req, res) => new UserController().remove_connection(req, res)
 )
 
+userRouter.route('/edit_profile').post(
+    (req, res) => new UserController().edit_profile(req, res)
+)
+
+userRouter.route('/add_skill').post(
+    (req, res) => new UserController().add_skill(req, res)
+)
+
+userRouter.route('/add_experience').post(
+    (req, res) => new UserController().add_experience(req, res)
+)
+
 export default userRouter

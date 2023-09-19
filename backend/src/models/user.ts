@@ -76,51 +76,21 @@ let User = new Schema({
             company: {
                 type: String
             },
-            positions: [
-                {
-                    job_title: {
-                        type: String
-                    },
-                    job_type: {
-                        type: String
-                    },
-                    start_date: {
-                        type: Number
-                    },
-                    end_date: {
-                        type: Number
-                    },
-                    location: {
-                        type: String
-                    },
-                    description: {
-                        type: String
-                    }
-                }
-            ]
-        }
-    ],
-    education: [
-        {
-            school: {
+            job_title: {
                 type: String
             },
-            positions: [
-                {
-                    title: {
-                        type: String
-                    },
-                    start_year: {
-                        type: Number
-                    },
-                    end_year: {
-                        type: Number
-                    },
-                    location: {
-                        type: String
-                    }
-                }
-            ]
+            job_type: {
+                type: String
+            },
+            start_date: {
+                type: String
+            },
+            end_date: {
+                type: String
+            },
+            location: {
+                type: String
+            }
         }
     ],
     skills: [

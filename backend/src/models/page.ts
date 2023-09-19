@@ -24,15 +24,19 @@ let Page = new Schema({
     website: {
         type: String
     },
-    size: {
-        type: String
-    },
     date_created: {
         type: Number
     },
     admin: {
         type: String
     },
+    followers: [
+        {
+            user: {
+                type: String
+            }
+        }
+    ],
     reviews: [
         {
             user: {

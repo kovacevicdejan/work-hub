@@ -3,9 +3,7 @@ package com.example.workhub.data.repository
 import android.content.Context
 import com.example.workhub.data.retrofit.WorkHubApi
 import com.example.workhub.data.retrofit.models.User
-import com.example.workhub.data.retrofit.requests.ConnectRequest
-import com.example.workhub.data.retrofit.requests.RegistrationRequest
-import com.example.workhub.data.retrofit.requests.SignInRequest
+import com.example.workhub.data.retrofit.requests.*
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
@@ -98,5 +96,43 @@ class UserRepository @Inject constructor(
         )
 
         return workHubApi.removeConnection(connectRequest = connectRequest)
+    }
+
+    suspend fun editProfile(
+        email: String,
+        firstname: String,
+        lastname: String,
+        about: String,
+        headline: String,
+        location: String,
+        phone_number: String
+    ) {
+        val editProfileRequest = EditProfileRequest(
+            email = email,
+            firstname = firstname,
+            lastname = lastname,
+            about = about,
+            headline = headline,
+            location = location,
+            phone_number = phone_number,
+        )
+
+        workHubApi.editProfile(editProfileRequest = editProfileRequest)
+    }
+
+    suspend fun addSKill(
+        user: String,
+        skill: String
+    ) {
+        val addSkillRequest = AddSkillRequest(
+            user = user,
+            skill = skill
+        )
+
+        workHubApi.addSkill(addSkillRequest = addSkillRequest)
+    }
+
+    suspend fun addExperience(addExperienceRequest: AddExperienceRequest) {
+        workHubApi.addExperience(addExperienceRequest = addExperienceRequest)
     }
 }

@@ -289,11 +289,15 @@ fun WorkHubApp() {
                 }
 
                 composable(route = "Edit Profile") {
-                    EditProfileScreen()
+                    EditProfileScreen(
+                        workHubViewModel = workHubViewModel,
+                        navController = navController
+                    )
                 }
 
                 composable(route = "Page") {
                     PageScreen(
+                        workHubViewModel = workHubViewModel,
                         navController = navController
                     )
                 }
@@ -312,6 +316,21 @@ fun WorkHubApp() {
 
                 composable(route = "User Posts") {
                     UserPostsScreen(
+                        workHubViewModel = workHubViewModel,
+                        navController = navController
+                    )
+                }
+
+                composable(route = "Add Experience") {
+                    AddExperienceScreen(
+                        workHubViewModel = workHubViewModel,
+                        navController = navController
+                    )
+                }
+
+                composable(route = "Create Page") {
+                    CreatePageScreen(
+                        workHubViewModel = workHubViewModel,
                         navController = navController
                     )
                 }

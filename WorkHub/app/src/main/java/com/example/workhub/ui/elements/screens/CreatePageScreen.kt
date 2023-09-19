@@ -1,67 +1,59 @@
 package com.example.workhub.ui.elements.screens
 
-import android.icu.number.NumberFormatter.with
-import android.icu.number.NumberRangeFormatter.with
-import android.net.Uri
-import android.util.Log
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
-import coil.compose.rememberAsyncImagePainter
-import coil.request.ImageRequest
-import com.example.workhub.ui.stateholders.AuthViewModel
+import com.example.workhub.ui.stateholders.CreatePageViewModel
 import com.example.workhub.ui.stateholders.OnEvent
-import com.example.workhub.ui.stateholders.RegistrationEvent
+import com.example.workhub.ui.stateholders.PageEvent
 import com.example.workhub.ui.stateholders.WorkHubViewModel
-import com.google.android.gms.cast.framework.media.ImagePicker
-import java.io.File
 
 @Composable
-fun RegistrationScreen(
+fun CreatePageScreen(
     workHubViewModel: WorkHubViewModel,
-    authViewModel: AuthViewModel = hiltViewModel()
+    createPageViewModel: CreatePageViewModel = hiltViewModel(),
+    navController: NavHostController
 ) {
-    val uiState by authViewModel.uiState.collectAsState()
+    val uiState by workHubViewModel.uiState.collectAsState()
+    val createPageUiState by createPageViewModel.uiState.collectAsState()
     val context = LocalContext.current
 
     val launcher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.OpenDocument()) {
             it?.let { uri ->
-                authViewModel.setImageUri(image_uri = uri)
+                createPageViewModel.setImageUri(image_uri = uri)
             }
         }
 
-    OnEvent(authViewModel.event) {
-        when (it) {
-            RegistrationEvent.RegistrationSuccess -> {
-                workHubViewModel.setCurrUser(uiState.email)
+    OnEvent(createPageViewModel.event) {
+        if (it == PageEvent.CreatePageEvent) {
+            workHubViewModel.setPage(createPageUiState.name)
+
+            navController.navigate("Page") {
+                launchSingleTop = true
+                restoreState = true
             }
-            is RegistrationEvent.RegistrationFailure ->
-                Toast.makeText(context, "error", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -77,7 +69,7 @@ fun RegistrationScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "Registration",
+                            text = "Create page",
                             modifier = Modifier.weight(1f),
                             fontSize = 30.sp
                         )
@@ -90,9 +82,9 @@ fun RegistrationScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         OutlinedTextField(
-                            value = uiState.email,
-                            onValueChange = { authViewModel.setEmail(it) },
-                            label = { Text("Email") },
+                            value = createPageUiState.name,
+                            onValueChange = { createPageViewModel.setName(it) },
+                            label = { Text("Name") },
                             modifier = Modifier.weight(2f)
                         )
                     }
@@ -104,25 +96,9 @@ fun RegistrationScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         OutlinedTextField(
-                            value = uiState.password,
-                            onValueChange = { authViewModel.setPassword(it) },
-                            modifier = Modifier.weight(2f),
-                            label = { Text("Password") },
-                            visualTransformation = PasswordVisualTransformation(),
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
-                        )
-                    }
-                }
-
-                item {
-                    Row(
-                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        OutlinedTextField(
-                            value = uiState.firstname,
-                            onValueChange = { authViewModel.setFirstname(it) },
-                            label = { Text("Firstname") },
+                            value = createPageUiState.headline,
+                            onValueChange = { createPageViewModel.setHeadline(it) },
+                            label = { Text("Headline") },
                             modifier = Modifier.weight(2f)
                         )
                     }
@@ -134,9 +110,9 @@ fun RegistrationScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         OutlinedTextField(
-                            value = uiState.lastname,
-                            onValueChange = { authViewModel.setLastname(it) },
-                            label = { Text("Lastname") },
+                            value = createPageUiState.about,
+                            onValueChange = { createPageViewModel.setAbout(it) },
+                            label = { Text("About") },
                             modifier = Modifier.weight(2f)
                         )
                     }
@@ -165,11 +141,10 @@ fun RegistrationScreen(
                             modifier = Modifier.weight(1f)
                         ) {
                             AsyncImage(
-                                model = uiState.image_uri,
+                                model = createPageUiState.image_uri,
                                 contentDescription = null,
                                 modifier = Modifier
-                                    .size(100.dp)
-                                    .clip(CircleShape),
+                                    .size(100.dp),
                                 contentScale = ContentScale.Crop
                             )
                         }
@@ -179,67 +154,34 @@ fun RegistrationScreen(
                 item {
                     Row(modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp)) {
                         OutlinedTextField(
-                            value = uiState.about,
-                            onValueChange = { authViewModel.setAbout(it) },
-                            label = { Text("About") },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(150.dp)
-                        )
-                    }
-                }
-
-                item {
-                    Row(
-                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        OutlinedTextField(
-                            value = uiState.headline,
-                            onValueChange = { authViewModel.setHeadline(it) },
-                            label = { Text("Headline") },
-                            modifier = Modifier.weight(2f)
-                        )
-                    }
-                }
-
-                item {
-                    Row(
-                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        OutlinedTextField(
-                            value = uiState.location,
-                            onValueChange = { authViewModel.setLocation(it) },
-                            label = { Text("Location") },
-                            modifier = Modifier.weight(2f)
-                        )
-                    }
-                }
-
-                item {
-                    Row(
-                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        OutlinedTextField(
-                            value = uiState.phone_number,
-                            onValueChange = { authViewModel.setPhoneNumber(it) },
-                            label = { Text("Phone number") },
-                            modifier = Modifier.weight(2f)
-                        )
-                    }
-                }
-
-                item {
-                    Row(
-                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        OutlinedTextField(
-                            value = uiState.industry,
-                            onValueChange = { authViewModel.setIndustry(it) },
+                            value = createPageUiState.industry,
+                            onValueChange = { createPageViewModel.setIndustry(it) },
                             label = { Text("Industry") },
+                            modifier = Modifier.weight(2f)
+                        )
+                    }
+                }
+
+                item {
+                    Row(modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp)) {
+                        OutlinedTextField(
+                            value = createPageUiState.website,
+                            onValueChange = { createPageViewModel.setWebsite(it) },
+                            label = { Text("Website") },
+                            modifier = Modifier.weight(2f)
+                        )
+                    }
+                }
+
+                item {
+                    Row(
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        OutlinedTextField(
+                            value = createPageUiState.location,
+                            onValueChange = { createPageViewModel.setLocation(it) },
+                            label = { Text("Location") },
                             modifier = Modifier.weight(2f)
                         )
                     }
@@ -254,10 +196,10 @@ fun RegistrationScreen(
 
                         Button(
                             onClick = {
-                                authViewModel.register(context = context)
+                                uiState.curr_user?.let { createPageViewModel.createPage(context = context, it.email) }
                             }
                         ) {
-                            Text(text = "Register", color = Color.White, fontSize = 20.sp)
+                            Text(text = "Create", color = Color.White, fontSize = 20.sp)
                         }
                     }
                 }

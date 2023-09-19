@@ -2,6 +2,7 @@ package com.example.workhub.ui.stateholders
 
 import androidx.lifecycle.viewModelScope
 import com.example.workhub.data.repository.UserRepository
+import com.example.workhub.data.retrofit.models.Skill
 import com.example.workhub.data.retrofit.models.User
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -13,7 +14,10 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 data class UiState(
-    val curr_user: User?
+    val curr_user: User?,
+    val user: String,
+    val skill: String,
+    val page: String
 )
 
 @HiltViewModel
@@ -22,7 +26,10 @@ class WorkHubViewModel @Inject constructor(
 ) : BaseViewModel<Event>() {
     private val _uiState = MutableStateFlow(
         UiState(
-            curr_user = null
+            curr_user = null,
+            user = "",
+            skill = "",
+            page = "Microsoft"
         )
     )
 
@@ -54,5 +61,27 @@ class WorkHubViewModel @Inject constructor(
     fun signOut() {
         _uiState.update { it.copy(curr_user = null) }
         userRepository.removeLoggedUser()
+    }
+
+    fun setUser(user: String) {
+        _uiState.update { it.copy(user = user) }
+    }
+
+    fun setPage(page: String) {
+        _uiState.update { it.copy(page = page) }
+    }
+
+    fun setSkill(skill: String) {
+        _uiState.update { it.copy(skill = skill) }
+    }
+
+    fun addSkill() = viewModelScope.launch {
+        userRepository.addSKill(
+            user = uiState.value.curr_user?.email ?: "",
+            skill = uiState.value.skill
+        )
+
+        val user = uiState.value.curr_user?.let { userRepository.getUserByEmail(it.email) }
+        _uiState.update { it.copy(curr_user = user) }
     }
 }

@@ -5,7 +5,9 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -15,11 +17,22 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import coil.compose.AsyncImage
 import com.example.workhub.R
+import com.example.workhub.data.retrofit.BASE_URL
+import com.example.workhub.data.retrofit.models.Post
+import com.example.workhub.data.retrofit.models.User
+import com.example.workhub.ui.elements.theme.Blue
+import com.example.workhub.ui.stateholders.WorkHubViewModel
 
 @Composable
-fun Post(last: Boolean, navController: NavHostController) {
-    Card(modifier = Modifier.padding(start = 10.dp, top = 10.dp, end = 10.dp, bottom = if (last) 10.dp else 0.dp), backgroundColor = if(isSystemInDarkTheme()) Color(0xFF202020) else Color(0xFFEEEEEE)) {
+fun Post(
+    post: Post,
+    creator: User,
+    navController: NavHostController,
+    curr_user: String
+) {
+    Card(modifier = Modifier.padding(start = 5.dp, top = 5.dp, end = 5.dp, bottom = 5.dp), backgroundColor = if(isSystemInDarkTheme()) Color(0xFF202020) else Color(0xFFEEEEEE)) {
         Column {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 IconButton(
@@ -30,51 +43,105 @@ fun Post(last: Boolean, navController: NavHostController) {
                         }
                     }
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Person,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .width(70.dp)
-                            .height(70.dp)
+                    ProfileImage(
+                        image_name = creator.profile_image,
+                        size = 60,
+                        vertical_padding = 5,
+                        horizontal_padding = 5
                     )
                 }
 
                 Column {
-                    Text(text = "Pera Peric", fontSize = 20.sp)
+                    Text(text = creator.firstname + " " + creator.lastname, fontSize = 20.sp)
 
-                    Text(text = "Backend engineer", fontSize = 12.sp)
+                    Text(text = creator.headline, fontSize = 12.sp)
 
                     Text(text = "1d", fontSize = 12.sp)
                 }
 
-                Spacer(modifier = Modifier.weight(1f))
+                if(creator.email != curr_user) {
+                    Spacer(modifier = Modifier.weight(1f))
 
-                TextButton(onClick = {}) {
-                    Text(text = "+ Connect", color = Color(0xFF0077B5), fontSize = 20.sp)
+                    TextButton(onClick = {}) {
+                        Text(text = "+ Connect", color = Color(0xFF0077B5), fontSize = 20.sp)
+                    }
                 }
             }
 
-            Row(modifier = Modifier.padding(horizontal = 10.dp)) {
-                Text(text = "Below doc contains all useful shortcuts for quick navigation in VS Code and also extensions which will increase your productivity as well as beautify your code.\n" +
-                        "\n" +
-                        "Save this pdf and Repost if you find this helpful.\n" +
-                        "\n" +
-                        "Learn programming from W3Schools.com\n" +
-                        "\n" +
-                        "Follow Ajit Kumar Gupta for more.\n" +
-                        "\n" +
-                        "Credit - JSMastery , Maheshpal.", modifier = Modifier.padding(vertical = 10.dp), fontSize = 16.sp)
-            }
+            when(post.post_type) {
+                "Classic" -> {
+                    Row(modifier = Modifier.padding(horizontal = 10.dp)) {
+                        Text(
+                            text = post.post_text,
+                            modifier = Modifier.padding(vertical = 10.dp),
+                            fontSize = 16.sp
+                        )
+                    }
 
-            Row(modifier = Modifier.padding(horizontal = 10.dp)) {
-                Image(
-                    painter = painterResource(id = R.drawable.overflowai),
-                    contentDescription = "linkedin"
-                    ,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                )
+                    Row(modifier = Modifier.padding(horizontal = 10.dp)) {
+                        AsyncImage(
+                            model = BASE_URL + "image/get_image/" + post.post_image,
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop
+                        )
+                    }
+                }
+
+                "New position" -> {
+                    Row(modifier = Modifier.padding(horizontal = 10.dp)) {
+                        Text(
+                            text = "I'm happy to share that I'm starting a new position as ${post.job_title} at ${post.page_name}!",
+                            fontSize = 16.sp,
+                            modifier = Modifier.padding(vertical = 10.dp)
+                        )
+                    }
+
+                    Row(modifier = Modifier.padding(horizontal = 10.dp)) {
+                        Image(
+                            painter = painterResource(id = R.drawable.overflowai),
+                            contentDescription = "linkedin"
+                            ,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        )
+                    }
+                }
+
+                "Poll" -> {
+                    Row(modifier = Modifier.padding(horizontal = 10.dp)) {
+                        Text(
+                            text = post.post_text,
+                            modifier = Modifier.padding(vertical = 10.dp),
+                            fontSize = 16.sp
+                        )
+                    }
+
+                    Column() {
+                        for (option in post.options) {
+                            Row(
+                                modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                RadioButton(
+                                    selected = false,
+                                    onClick = {  }
+                                )
+
+                                Text(
+                                    text = option.text,
+                                    fontSize = 20.sp,
+                                    color = Blue
+                                )
+
+                                Text(
+                                    text = "   (${option.voters.size} votes)",
+                                    fontSize = 16.sp
+                                )
+                            }
+                        }
+                    }
+                }
             }
             
             Row(modifier = Modifier.padding(10.dp)) {
@@ -86,11 +153,11 @@ fun Post(last: Boolean, navController: NavHostController) {
                         .height(16.dp)
                 )
                 
-                Text(text = " 1234", fontSize = 12.sp)
+                Text(text = " ${post.likes.size}", fontSize = 12.sp)
                 
                 Spacer(modifier = Modifier.weight(1f))
                 
-                Text(text = "27 comments", fontSize = 12.sp)
+                Text(text = "${post.comments.size} comments", fontSize = 12.sp)
             }
             
             Divider()
@@ -120,15 +187,6 @@ fun Post(last: Boolean, navController: NavHostController) {
                         }
                     }
                 }
-
-//                Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.weight(1f)) {
-//                    IconButton(onClick = { /*TODO*/ }) {
-//                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-//                            Icon(imageVector = Icons.Default.ArrowForward, contentDescription = "Repost", modifier = Modifier.size(20.dp))
-//                            Text(text = "Repost", fontSize = 12.sp)
-//                        }
-//                    }
-//                }
             }
         }
     }

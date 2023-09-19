@@ -18,8 +18,7 @@ data class User(
     val sent_invitations: List<Invitation>,
     var received_invitations: List<Invitation>,
     val experience: List<Experience>,
-    val education: List<Education>,
-    val skills: List<Skill>,
+    var skills: List<Skill>,
 )
 
 data class Connection(
@@ -39,28 +38,12 @@ data class Invitation(
 )
 
 data class Experience(
+    val _id: String,
     val company: String,
-    val positions: List<JobPosition>
-)
-
-data class JobPosition(
     val job_title: String,
     val job_type: String,
-    val start_date: Long,
-    val end_date: Long,
-    val location: String,
-    val description: String
-)
-
-data class Education(
-    val school: String,
-    val positions: List<EducationPosition>
-)
-
-data class EducationPosition(
-    val title: String,
-    val start_year: Int,
-    val end_year: Int,
+    val start_date: String,
+    val end_date: String,
     val location: String
 )
 

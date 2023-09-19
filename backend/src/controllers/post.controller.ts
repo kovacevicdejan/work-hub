@@ -12,7 +12,7 @@ export class PostController {
             post_text: req.body.post_text,
             post_image: req.body.post_image,
             job_title: req.body.job_title,
-            post_page: req.body.post_page,
+            page_name: req.body.page_name,
             options: req.body.options,
             date_posted: Date.now()
         });
@@ -24,13 +24,10 @@ export class PostController {
 
     get_user_posts = async (req: express.Request, res: express.Response) => {
         const user = req.params.user
-        console.log(user)
 
         let posts = await Post.find({
             creator: user
         })
-
-        console.log(posts)
 
         res.json(posts)
     }

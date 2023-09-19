@@ -75,27 +75,76 @@ fun ProfileScreen (
                             )
 
                             Text(
-                                text = "University of Belgrade",
-                                fontSize = 16.sp,
-                                modifier = Modifier.padding(12.dp, 10.dp, 0.dp, 0.dp)
-                            )
-
-                            Text(
                                 text = uiState.curr_user?.location ?: "",
                                 fontSize = 16.sp,
                                 modifier = Modifier.padding(horizontal = 12.dp)
                             )
 
-                            TextButton(
-                                onClick = {
-                                    navController.navigate("Manage Network") {
-                                        launchSingleTop = true
-                                        restoreState = true
-                                    }
-                                },
-                                modifier = Modifier.padding(horizontal = 2.dp)
+                            Row(
+                                modifier = Modifier.padding(horizontal = 10.dp),
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Text(text = "${uiState.curr_user?.connections?.size} connections", color = Color(0xFF0077B5))
+                                Column(
+                                    modifier = Modifier.weight(1f),
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Button(
+                                        onClick = {
+                                            navController.navigate("Edit Profile") {
+                                                launchSingleTop = true
+                                                restoreState = true
+                                            }
+                                        },
+                                        modifier = Modifier
+                                            .padding(horizontal = 10.dp)
+                                    ) {
+                                        Text(text = "Edit profile", color = Color.White)
+                                    }
+                                }
+
+                                Column(
+                                    modifier = Modifier.weight(1f),
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    TextButton(
+                                        onClick = {
+                                            navController.navigate("Manage Network") {
+                                                launchSingleTop = true
+                                                restoreState = true
+                                            }
+                                        },
+                                        modifier = Modifier.padding(horizontal = 2.dp)
+                                    ) {
+                                        Text(
+                                            text = "${uiState.curr_user?.connections?.size} connections",
+                                            color = Color(0xFF0077B5)
+                                        )
+                                    }
+                                }
+
+                                Column(
+                                    modifier = Modifier.weight(1f),
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Button(
+                                        onClick = {
+                                            navController.navigate("Sign In") {
+                                                launchSingleTop = true
+                                                restoreState = true
+                                                popUpTo(HomeDestination.route) {
+                                                    saveState = false
+                                                    inclusive = false
+                                                }
+                                            }
+
+                                            workHubViewModel.signOut()
+                                        },
+                                        modifier = Modifier
+                                            .padding(horizontal = 10.dp)
+                                    ) {
+                                        Text(text = "Sign Out", color = Color.White)
+                                    }
+                                }
                             }
                         }
                     }
@@ -110,6 +159,8 @@ fun ProfileScreen (
                         ) {
                             Button(
                                 onClick = {
+                                    workHubViewModel.setUser(uiState.curr_user?.email ?: "")
+
                                     navController.navigate("User Posts") {
                                         launchSingleTop = true
                                         restoreState = true
@@ -128,7 +179,7 @@ fun ProfileScreen (
                         ) {
                             Button(
                                 onClick = {
-                                    navController.navigate("Edit Profile") {
+                                    navController.navigate("Create Page") {
                                         launchSingleTop = true
                                         restoreState = true
                                     }
@@ -136,31 +187,7 @@ fun ProfileScreen (
                                 modifier = Modifier
                                     .padding(horizontal = 10.dp)
                             ) {
-                                Text(text = "Edit profile", color = Color.White)
-                            }
-                        }
-
-                        Column(
-                            modifier = Modifier.weight(1f),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Button(
-                                onClick = {
-                                    navController.navigate("Sign In") {
-                                        launchSingleTop = true
-                                        restoreState = true
-                                        popUpTo(HomeDestination.route) {
-                                            saveState = false
-                                            inclusive = false
-                                        }
-                                    }
-
-                                    workHubViewModel.signOut()
-                                },
-                                modifier = Modifier
-                                    .padding(horizontal = 10.dp)
-                            ) {
-                                Text(text = "Sign Out", color = Color.White)
+                                Text(text = "Create page", color = Color.White)
                             }
                         }
                     }
@@ -206,13 +233,20 @@ fun ProfileScreen (
                 Column {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(10.dp, 0.dp, 10.dp, 0.dp)
+                        modifier = Modifier.padding(horizontal = 10.dp)
                     ) {
                         Text(text = "Experience", fontSize = 20.sp)
 
                         Spacer(modifier = Modifier.weight(1f))
 
-                        IconButton(onClick = { /*TODO*/ }) {
+                        IconButton(
+                            onClick = {
+                                navController.navigate("Add Experience") {
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
+                            }
+                        ) {
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                 Icon(imageVector = Icons.Default.Add, contentDescription = "Add", modifier = Modifier.size(30.dp))
                             }
@@ -225,55 +259,29 @@ fun ProfileScreen (
                         }
                     }
 
-                    Row(modifier = Modifier.padding(10.dp, 0.dp, 10.dp, 10.dp)) {
-                        Icon(
-                            imageVector = Icons.Default.Person,
-                            contentDescription = null,
-                            modifier = Modifier
-                                .width(70.dp)
-                                .height(70.dp)
-                        )
+                    if(uiState.curr_user != null) {
+                        for(i in uiState.curr_user!!.experience.size - 1 downTo 0) {
+                            val exp = uiState.curr_user!!.experience[i]
 
-                        Column {
-                            Text(text = "Microsoft", fontSize = 20.sp, modifier = Modifier.padding(vertical = 5.dp))
+                            Row(modifier = Modifier.padding(10.dp, 0.dp, 10.dp, 10.dp)) {
+                                Icon(
+                                    imageVector = Icons.Default.Person,
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .width(70.dp)
+                                        .height(70.dp)
+                                )
 
-                            Text(text = "6 years", fontSize = 16.sp, modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 5.dp))
+                                Column {
+                                    Text(text = exp.job_title, fontSize = 16.sp, modifier = Modifier.padding(0.dp, 5.dp, 0.dp, 0.dp))
 
-                            Text(text = "Software Engineer Intern", fontSize = 16.sp)
+                                    Text(text = "${exp.company} | ${exp.job_type}", fontSize = 14.sp)
 
-                            Text(text = "Internship", fontSize = 14.sp)
+                                    Text(text = "${exp.start_date} - ${exp.end_date}", fontSize = 14.sp)
 
-                            Text(text = "Nov 2022 - Feb 2023 | 4 months", fontSize = 14.sp)
-
-                            Text(text = "Belgrade, Serbia", fontSize = 14.sp, modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 5.dp))
-
-                            Text(text = "Software Engineer Intern", fontSize = 16.sp)
-
-                            Text(text = "Internship", fontSize = 14.sp)
-
-                            Text(text = "Nov 2022 - Feb 2023 | 4 months", fontSize = 14.sp)
-
-                            Text(text = "Belgrade, Serbia", fontSize = 14.sp)
-                        }
-                    }
-
-                    Row(modifier = Modifier.padding(10.dp, 0.dp, 10.dp, 10.dp)) {
-                        Icon(
-                            imageVector = Icons.Default.Person,
-                            contentDescription = null,
-                            modifier = Modifier
-                                .width(70.dp)
-                                .height(70.dp)
-                        )
-
-                        Column {
-                            Text(text = "Software Engineer Intern", fontSize = 16.sp, modifier = Modifier.padding(0.dp, 5.dp, 0.dp, 0.dp))
-
-                            Text(text = "Microsoft | Internship", fontSize = 14.sp)
-
-                            Text(text = "Nov 2022 - Feb 2023 | 4 months", fontSize = 14.sp)
-
-                            Text(text = "Belgrade, Serbia", fontSize = 14.sp)
+                                    Text(text = exp.location, fontSize = 14.sp)
+                                }
+                            }
                         }
                     }
                 }
@@ -291,95 +299,48 @@ fun ProfileScreen (
                 Column {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(horizontal = 10.dp)
-                    ) {
-                        Text(text = "Education", fontSize = 20.sp)
-
-
-                        Spacer(modifier = Modifier.weight(1f))
-
-                        IconButton(onClick = { /*TODO*/ }) {
-                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                Icon(imageVector = Icons.Default.Add, contentDescription = "Add", modifier = Modifier.size(30.dp))
-                            }
-                        }
-
-                        IconButton(onClick = { /*TODO*/ }) {
-                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                Icon(imageVector = Icons.Default.Edit, contentDescription = "Edit", modifier = Modifier.size(30.dp))
-                            }
-                        }
-                    }
-
-                    Row(modifier = Modifier.padding(10.dp, 0.dp, 10.dp, 10.dp)) {
-                        Icon(
-                            imageVector = Icons.Default.Person,
-                            contentDescription = null,
-                            modifier = Modifier
-                                .width(70.dp)
-                                .height(70.dp)
-                        )
-
-                        Column {
-                            Text(text = "University of Belgrade", fontSize = 16.sp, modifier = Modifier.padding(0.dp, 5.dp, 0.dp, 0.dp))
-
-                            Text(text = "Bachelors of Science - BS, Computer Science", fontSize = 14.sp)
-
-                            Text(text = "Engineering", fontSize = 14.sp)
-
-                            Text(text = "2019 - 2023", fontSize = 14.sp)
-                        }
-                    }
-                }
-            }
-        }
-
-        item {
-            Card(
-                modifier = Modifier
-                    .padding(0.dp, 0.dp, 0.dp, 10.dp)
-                    .fillMaxWidth(),
-                backgroundColor = if(isSystemInDarkTheme()) Color(0xFF202020) else Color(0xFFEEEEEE),
-                shape = Shapes.large
-            ) {
-                Column {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(horizontal = 10.dp)
+                        modifier = Modifier.padding(10.dp, 10.dp, 10.dp, 0.dp)
                     ) {
                         Text(text = "Skills", fontSize = 20.sp)
-
-
-                        Spacer(modifier = Modifier.weight(1f))
-
-                        IconButton(onClick = { /*TODO*/ }) {
-                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                Icon(imageVector = Icons.Default.Add, contentDescription = "Add", modifier = Modifier.size(30.dp))
-                            }
-                        }
-
-                        IconButton(onClick = { /*TODO*/ }) {
-                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                Icon(imageVector = Icons.Default.Edit, contentDescription = "Edit", modifier = Modifier.size(30.dp))
-                            }
-                        }
                     }
 
                     Row(modifier = Modifier.padding(10.dp, 0.dp, 10.dp, 10.dp)) {
                         Column {
-                            Text(text = "Android", fontSize = 16.sp, modifier = Modifier.padding(vertical = 5.dp))
+                            if(uiState.curr_user != null) {
+                                for (skill in uiState.curr_user!!.skills) {
+                                    Text(
+                                        text = skill.name,
+                                        fontSize = 16.sp,
+                                        modifier = Modifier.padding(vertical = 5.dp)
+                                    )
 
-                            Divider()
+                                    Divider()
+                                }
+                            }
 
-                            Text(text = "Kotlin", fontSize = 16.sp, modifier = Modifier.padding(vertical = 5.dp))
+                            Row(
+                                modifier = Modifier.padding(horizontal = 10.dp, vertical = 10.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                OutlinedTextField(
+                                    value = uiState.skill,
+                                    onValueChange = { workHubViewModel.setSkill(it) },
+                                    modifier = Modifier
+                                        .weight(2.4f)
+                                        .padding(0.dp, 0.dp, 10.dp, 0.dp)
+                                        .weight(3f)
+                                )
 
-                            Divider()
-
-                            Text(text = "Jetpack Compose", fontSize = 16.sp, modifier = Modifier.padding(vertical = 5.dp))
-
-                            Divider()
-
-                            Text(text = "socket.io", fontSize = 16.sp, modifier = Modifier.padding(vertical = 5.dp))
+                                Button(
+                                    onClick = {
+                                        workHubViewModel.addSkill()
+                                        workHubViewModel.setSkill("")
+                                    },
+                                    modifier = Modifier.weight(1f)
+                                ) {
+                                    Text(text = "Add skill", color = Color.White)
+                                }
+                            }
                         }
                     }
                 }
@@ -400,15 +361,6 @@ fun ProfileScreen (
                         modifier = Modifier.padding(horizontal = 10.dp)
                     ) {
                         Text(text = "Contact info", fontSize = 20.sp)
-
-
-                        Spacer(modifier = Modifier.weight(1f))
-
-                        IconButton(onClick = { /*TODO*/ }) {
-                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                Icon(imageVector = Icons.Default.Edit, contentDescription = "Edit", modifier = Modifier.size(30.dp))
-                            }
-                        }
                     }
 
                     Row(modifier = Modifier.padding(10.dp, 0.dp, 10.dp, 10.dp)) {

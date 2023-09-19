@@ -18,39 +18,25 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.example.workhub.ui.stateholders.EditProfileEvent
-import com.example.workhub.ui.stateholders.EditProfileViewModel
-import com.example.workhub.ui.stateholders.OnEvent
-import com.example.workhub.ui.stateholders.WorkHubViewModel
+import com.example.workhub.ui.stateholders.*
 
 
 @Composable
-fun EditProfileScreen(
+fun AddExperienceScreen(
     workHubViewModel: WorkHubViewModel,
-    editProfileViewModel: EditProfileViewModel = hiltViewModel(),
+    addExperienceViewModel: AddExperienceViewModel = hiltViewModel(),
     navController: NavHostController
 ) {
     val uiState by workHubViewModel.uiState.collectAsState()
-    val editProfileUiState by editProfileViewModel.uiState.collectAsState()
+    val addExperienceUiState by addExperienceViewModel.uiState.collectAsState()
 
-    LaunchedEffect(Unit) {
-        uiState.curr_user?.let { editProfileViewModel.setFirstname(it.firstname) }
-        uiState.curr_user?.let { editProfileViewModel.setLastname(it.lastname) }
-        uiState.curr_user?.let { editProfileViewModel.setAbout(it.about) }
-        uiState.curr_user?.let { editProfileViewModel.setHeadline(it.headline) }
-        uiState.curr_user?.let { editProfileViewModel.setPhoneNumber(it.phone_number) }
-        uiState.curr_user?.let { editProfileViewModel.setLocation(it.location) }
-    }
+    OnEvent(addExperienceViewModel.event) {
+        if (it == EditProfileEvent.AddExperienceEvent) {
+            workHubViewModel.getLoggedUser()
 
-    OnEvent(editProfileViewModel.event) {
-        when (it) {
-            EditProfileEvent.EditProfileSuccess -> {
-                workHubViewModel.getLoggedUser()
-
-                navController.navigate("Profile") {
-                    launchSingleTop = true
-                    restoreState = true
-                }
+            navController.navigate("Profile") {
+                launchSingleTop = true
+                restoreState = true
             }
         }
     }
@@ -67,7 +53,7 @@ fun EditProfileScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "Edit profile",
+                            text = "Add experience",
                             modifier = Modifier.weight(1f),
                             fontSize = 30.sp
                         )
@@ -80,9 +66,9 @@ fun EditProfileScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         OutlinedTextField(
-                            value = editProfileUiState.firstname,
-                            onValueChange = { editProfileViewModel.setFirstname(it) },
-                            label = { Text(text = "Firstname") },
+                            value = addExperienceUiState.company,
+                            onValueChange = { addExperienceViewModel.setCompany(it) },
+                            label = { Text(text = "Company") },
                             modifier = Modifier.fillMaxWidth()
                         )
                     }
@@ -94,9 +80,9 @@ fun EditProfileScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         OutlinedTextField(
-                            value = editProfileUiState.lastname,
-                            onValueChange = { editProfileViewModel.setLastname(it) },
-                            label = { Text(text = "Lastname") },
+                            value = addExperienceUiState.job_title,
+                            onValueChange = { addExperienceViewModel.setJobTitle(it) },
+                            label = { Text(text = "Job title") },
                             modifier = Modifier.fillMaxWidth()
                         )
                     }
@@ -108,9 +94,9 @@ fun EditProfileScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         OutlinedTextField(
-                            value = editProfileUiState.headline,
-                            onValueChange = { editProfileViewModel.setHeadline(it) },
-                            label = { Text(text = "Headline") },
+                            value = addExperienceUiState.job_type,
+                            onValueChange = { addExperienceViewModel.setJobType(it) },
+                            label = { Text(text = "Job type") },
                             modifier = Modifier.fillMaxWidth()
                         )
                     }
@@ -119,25 +105,9 @@ fun EditProfileScreen(
                 item {
                     Row(modifier = Modifier.padding(horizontal = 10.dp, vertical = 10.dp)) {
                         OutlinedTextField(
-                            value = editProfileUiState.about,
-                            onValueChange = { editProfileViewModel.setAbout(it) },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(150.dp),
-                            label = { Text(text = "About") },
-                        )
-                    }
-                }
-
-                item {
-                    Row(
-                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        OutlinedTextField(
-                            value = editProfileUiState.location,
-                            onValueChange = { editProfileViewModel.setLocation(it) },
-                            label = { Text(text = "Location") },
+                            value = addExperienceUiState.start_date,
+                            onValueChange = { addExperienceViewModel.setStartDate(it) },
+                            label = { Text(text = "Start date") },
                             modifier = Modifier.fillMaxWidth()
                         )
                     }
@@ -149,9 +119,23 @@ fun EditProfileScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         OutlinedTextField(
-                            value = editProfileUiState.phone_number,
-                            onValueChange = { editProfileViewModel.setPhoneNumber(it) },
-                            label = { Text(text = "Phone number") },
+                            value = addExperienceUiState.end_date,
+                            onValueChange = { addExperienceViewModel.setEndDate(it) },
+                            label = { Text(text = "End date") },
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                }
+
+                item {
+                    Row(
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        OutlinedTextField(
+                            value = addExperienceUiState.location,
+                            onValueChange = { addExperienceViewModel.setLocation(it) },
+                            label = { Text(text = "Location") },
                             modifier = Modifier.fillMaxWidth()
                         )
                     }
@@ -166,10 +150,10 @@ fun EditProfileScreen(
 
                         Button(
                             onClick = {
-                                uiState.curr_user?.let { editProfileViewModel.editProfile(it.email) }
+                                uiState.curr_user?.let { addExperienceViewModel.addExperience(it.email) }
                             }
                         ) {
-                            Text(text = "Save", color = Color.White, fontSize = 20.sp)
+                            Text(text = "Add", color = Color.White, fontSize = 20.sp)
                         }
                     }
                 }

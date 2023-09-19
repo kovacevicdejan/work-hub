@@ -24,19 +24,21 @@ let Post = new Schema({
     job_title: {
         type: String
     },
-    post_page: {
+    page_name: {
         type: String
     },
     options: [
         {
-            option: {
+            text: {
                 type: String
             },
-            voters: {
-                user: {
-                    type: String
+            voters: [
+                {
+                    user: {
+                        type: String
+                    }
                 }
-            }
+            ]
         }
     ],
     date_posted: {

@@ -58,3 +58,12 @@ sealed interface InvitationEvent : Event {
     object DeclineInvitationEvent: InvitationEvent
     object WithdrawInvitationEvent: InvitationEvent
 }
+
+sealed interface EditProfileEvent : Event {
+    object EditProfileSuccess : EditProfileEvent
+    object AddExperienceEvent: EditProfileEvent
+}
+
+sealed interface PageEvent : Event {
+    object CreatePageEvent : PageEvent
+}

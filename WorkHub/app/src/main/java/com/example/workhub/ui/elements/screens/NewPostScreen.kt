@@ -250,7 +250,7 @@ fun NewPostScreen(
                                     )
                                 ) {
                                     Text(
-                                        text = "I'm happy to share that I'm starting a new position as ${newPostUiState.job_title} at ${newPostUiState.page_name}>!",
+                                        text = "I'm happy to share that I'm starting a new position as ${newPostUiState.job_title} at ${newPostUiState.page_name}!",
                                         fontSize = 20.sp
                                     )
                                 }
