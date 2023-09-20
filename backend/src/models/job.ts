@@ -15,14 +15,23 @@ let Job = new Schema({
     location: {
         type: String
     },
+    job_type: {
+        type: Number
+    },
     level: {
         type: String
     },
     description: {
         type: String
     },
+    tech_stack: {
+        type: String
+    },
     deadline: {
         type: Number
+    },
+    area: {
+        type: String
     },
     date_posted: {
         type: Number

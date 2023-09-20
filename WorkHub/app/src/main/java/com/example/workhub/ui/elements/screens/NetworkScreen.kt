@@ -22,6 +22,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.workhub.data.retrofit.models.Invitation
 import com.example.workhub.ui.elements.composables.ProfileImage
+import com.example.workhub.ui.elements.composables.RecommendedPage
 import com.example.workhub.ui.elements.composables.RecommendedUser
 import com.example.workhub.ui.elements.theme.Blue
 import com.example.workhub.ui.stateholders.*
@@ -37,15 +38,24 @@ fun NetworkScreen(
     val networkUiState by networkViewModel.uiState.collectAsState()
 
     LaunchedEffect(Unit) {
-        networkViewModel.getUsersByIndustry(
-            user = uiState.curr_user?.email ?: "",
-            industry = uiState.curr_user?.industry ?: ""
+        networkViewModel.getRecommendedUsers(
+            email = uiState.curr_user?.email ?: ""
+        )
+
+        networkViewModel.getRecommendedPages(
+            email = uiState.curr_user?.email ?: ""
         )
     }
 
     OnEvent(networkViewModel.event) {
-        if(it == ConnectEvent.ConnectSuccess) {
-            workHubViewModel.getLoggedUser()
+        when(it) {
+            ConnectEvent.ConnectSuccess -> {
+                workHubViewModel.getLoggedUser()
+            }
+
+            PageEvent.FollowPageEvent -> {
+                workHubViewModel.getLoggedUser()
+            }
         }
     }
 
@@ -58,6 +68,8 @@ fun NetworkScreen(
                 ) {
                     TextButton(
                         onClick = {
+                            uiState.curr_user?.let { workHubViewModel.setUser(it.email) }
+
                             navController.navigate("Manage Network") {
                                 launchSingleTop = true
                                 restoreState = true
@@ -98,7 +110,7 @@ fun NetworkScreen(
                             .fillMaxWidth()
                             .padding(10.dp)
                     ) {
-                        Text(text = "People you may know from University of Belgrade")
+                        Text(text = "Recommended users to connect with")
                     }
 
                     Row {
@@ -116,7 +128,8 @@ fun NetworkScreen(
                                             user1 = it,
                                             user2 = user,
                                             navController = navController,
-                                            networkViewModel = networkViewModel
+                                            networkViewModel = networkViewModel,
+                                            workHubViewModel = workHubViewModel
                                         )
                                     }
                                 }
@@ -139,7 +152,7 @@ fun NetworkScreen(
                             .fillMaxWidth()
                             .padding(10.dp)
                     ) {
-                        Text(text = "Popular pages across Linkedin")
+                        Text(text = "Recommended pages to follow")
                     }
 
                     Row {
@@ -150,93 +163,16 @@ fun NetworkScreen(
                             contentPadding = PaddingValues(all = 10.dp),
                             modifier = Modifier.height(360.dp)
                         ) {
-                            items(count = 4) {
-                                Card(
-                                    onClick = {
-                                        navController.navigate("Page") {
-                                            launchSingleTop = true
-                                            restoreState = true
-                                        }
-                                    }
-                                ) {
-                                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                        Icon(
-                                            imageVector = Icons.Default.Person,
-                                            contentDescription = "jdd",
-                                            modifier = Modifier.size(70.dp)
+                            for (page in networkUiState.pages!!) {
+                                item {
+                                    uiState.curr_user?.let {
+                                        RecommendedPage(
+                                            user = it,
+                                            page = page,
+                                            navController = navController,
+                                            networkViewModel = networkViewModel,
+                                            workHubViewModel = workHubViewModel
                                         )
-
-                                        Text(text = "TomTom", fontSize = 20.sp)
-
-                                        Text(
-                                            text = "20 connections follow this page",
-                                            fontSize = 12.sp
-                                        )
-
-                                        Button(onClick = { /*TODO*/ }) {
-                                            Text(text = "Follow", color = Color.White)
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        item {
-            Card(
-                backgroundColor = if (isSystemInDarkTheme()) Color(0xFF1a1a1a)
-                else Color(0xFFEEEEEE),
-                modifier = Modifier.padding(10.dp)
-            ) {
-                Column {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(10.dp)
-                    ) {
-                        Text(text = "More suggestions")
-                    }
-
-                    Row {
-                        LazyVerticalGrid(
-                            columns = GridCells.Fixed(2),
-                            verticalArrangement = Arrangement.spacedBy(space = 16.dp),
-                            horizontalArrangement = Arrangement.spacedBy(space = 16.dp),
-                            contentPadding = PaddingValues(all = 10.dp),
-                            modifier = Modifier.height(400.dp)
-                        ) {
-                            items(count = 4) {
-                                Card(
-                                    onClick = {
-                                        navController.navigate("Profile") {
-                                            launchSingleTop = true
-                                            restoreState = true
-                                        }
-                                    }
-                                ) {
-                                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                        Icon(
-                                            imageVector = Icons.Default.Person,
-                                            contentDescription = "jdd",
-                                            modifier = Modifier.size(70.dp)
-                                        )
-
-                                        Text(text = "Pera Peric", fontSize = 20.sp)
-
-                                        Text(
-                                            text = "Software Engineer at TomTom",
-                                            fontSize = 12.sp,
-                                            textAlign = TextAlign.Center
-                                        )
-
-                                        Text(text = "20 mutual connections", fontSize = 12.sp)
-
-                                        Button(onClick = { /*TODO*/ }) {
-                                            Text(text = "Connect", color = Color.White)
-                                        }
                                     }
                                 }
                             }

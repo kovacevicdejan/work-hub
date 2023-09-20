@@ -6,6 +6,7 @@ import userRouter from './routers/user.routes';
 import imageRouter from './routers/image.routes';
 import postRouter from './routers/post.routes';
 import pageRouter from './routers/page.routes';
+import jobRouter from './routers/job.routes';
 
 const app = express();
 app.use(cors())
@@ -25,6 +26,7 @@ router.use('/user', userRouter);
 router.use('/image', imageRouter);
 router.use('/post', postRouter);
 router.use('/page', pageRouter);
+router.use('/job', jobRouter);
 
 app.use(express.json());
 app.use('/', router);

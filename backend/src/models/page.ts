@@ -30,6 +30,9 @@ let Page = new Schema({
     admin: {
         type: String
     },
+    specialties: {
+        type: String
+    },
     followers: [
         {
             user: {

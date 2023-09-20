@@ -30,7 +30,7 @@ data class AuthUiState(
     val headline: String,
     val location: String,
     val phone_number: String,
-    val industry: String,
+    val interests: String,
     val valid_user: Boolean
 )
 
@@ -50,7 +50,7 @@ class AuthViewModel @Inject constructor(
             headline = "",
             location = "",
             phone_number = "",
-            industry = "",
+            interests = "",
             valid_user = false
         )
     )
@@ -93,8 +93,8 @@ class AuthViewModel @Inject constructor(
         _uiState.update { it.copy(phone_number = phone_number) }
     }
 
-    fun setIndustry(industry: String) {
-        _uiState.update { it.copy(industry = industry) }
+    fun setInterests(interests: String) {
+        _uiState.update { it.copy(interests = interests) }
     }
 
     fun register(context: Context) = viewModelScope.launch {
@@ -119,7 +119,7 @@ class AuthViewModel @Inject constructor(
             headline = uiState.value.headline,
             location = uiState.value.location,
             phone_number = uiState.value.phone_number,
-            industry = uiState.value.industry
+            interests = uiState.value.interests
         )
 
         userRepository.register(registrationRequest = registrationRequest)

@@ -17,6 +17,7 @@ data class EditProfileUiState(
     val about: String,
     val headline: String,
     val location: String,
+    val interests: String,
     val phone_number: String,
 )
 
@@ -31,6 +32,7 @@ class EditProfileViewModel @Inject constructor(
             about = "",
             headline = "",
             location = "",
+            interests = "",
             phone_number = ""
         )
     )
@@ -57,6 +59,10 @@ class EditProfileViewModel @Inject constructor(
         _uiState.update { it.copy(location = location) }
     }
 
+    fun setInterests(interests: String) {
+        _uiState.update { it.copy(interests = interests) }
+    }
+
     fun setPhoneNumber(phone_number: String) {
         _uiState.update { it.copy(phone_number = phone_number) }
     }
@@ -69,6 +75,7 @@ class EditProfileViewModel @Inject constructor(
             about = uiState.value.about,
             headline = uiState.value.headline,
             location = uiState.value.location,
+            interests = uiState.value.interests,
             phone_number = uiState.value.phone_number
         )
 

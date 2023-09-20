@@ -50,7 +50,7 @@ fun UserPostsScreen(
                 userPostsUiState.user?.let {
                     Post(
                         post = post,
-                        creator = it,
+                        workHubViewModel = workHubViewModel,
                         navController = navController,
                         curr_user = uiState.curr_user?.email ?: ""
                     )

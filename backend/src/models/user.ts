@@ -30,7 +30,7 @@ let User = new Schema({
     phone_number: {
         type: String
     },
-    industry: {
+    interests: {
         type: String
     },
     registration_date: {

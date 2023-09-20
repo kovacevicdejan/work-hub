@@ -27,6 +27,8 @@ import coil.compose.AsyncImage
 import com.example.workhub.R
 import com.example.workhub.ui.elements.theme.Blue
 import com.example.workhub.ui.stateholders.NewPostViewModel
+import com.example.workhub.ui.stateholders.OnEvent
+import com.example.workhub.ui.stateholders.PostEvent
 import com.example.workhub.ui.stateholders.WorkHubViewModel
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -55,6 +57,27 @@ fun NewPostScreen(
             }
         }
 
+    OnEvent(newPostViewModel.event) {
+        when(it) {
+            PostEvent.NewPostEvent -> {
+                if(uiState.creator_type == 0) {
+                    workHubViewModel.setUser(uiState.post_creator)
+
+                    navController.navigate("User Posts") {
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                }
+                else {
+                    navController.navigate("Page") {
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                }
+            }
+        }
+    }
+
     Card(
         modifier = Modifier.padding(10.dp),
         backgroundColor = if (isSystemInDarkTheme()) Color(0xFF202020) else Color(0xFFEEEEEE)
@@ -76,7 +99,8 @@ fun NewPostScreen(
                             onClick = {
                                 newPostViewModel.post(
                                     context = context,
-                                    curr_user = uiState.curr_user
+                                    post_creator = uiState.post_creator,
+                                    creator_type = uiState.creator_type
                                 )
                             }
                         ) {
@@ -111,7 +135,7 @@ fun NewPostScreen(
                         )
 
                         Text(
-                            text = "Connections",
+                            text = if(uiState.creator_type == 0) "Connections" else "Followers",
                             modifier = Modifier.weight(1.5f),
                             fontSize = 20.sp
                         )

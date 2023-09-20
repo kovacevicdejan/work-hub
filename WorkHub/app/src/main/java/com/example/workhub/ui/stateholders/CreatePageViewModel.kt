@@ -25,7 +25,7 @@ import javax.inject.Inject
 data class CreatePageUiState(
     val name: String,
     val headline: String,
-    val industry: String,
+    val specialties: String,
     val location: String,
     val image_uri: Uri?,
     val about: String,
@@ -41,7 +41,7 @@ class CreatePageViewModel @Inject constructor(
         CreatePageUiState(
             name = "",
             headline = "",
-            industry = "",
+            specialties = "",
             location = "",
             image_uri = null,
             about = "",
@@ -59,8 +59,8 @@ class CreatePageViewModel @Inject constructor(
         _uiState.update { it.copy(headline = headline) }
     }
 
-    fun setIndustry(industry: String) {
-        _uiState.update { it.copy(industry = industry) }
+    fun setSpecialties(specialties: String) {
+        _uiState.update { it.copy(specialties = specialties) }
     }
 
     fun setLocation(location: String) {
@@ -94,7 +94,7 @@ class CreatePageViewModel @Inject constructor(
         val createPageRequest = CreatePageRequest(
             name = uiState.value.name,
             headline = uiState.value.headline,
-            industry = uiState.value.industry,
+            specialties = uiState.value.specialties,
             location = uiState.value.location,
             profile_image = file?.name ?: "",
             about = uiState.value.about,

@@ -209,6 +209,20 @@ fun RegistrationScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         OutlinedTextField(
+                            value = uiState.interests,
+                            onValueChange = { authViewModel.setInterests(it) },
+                            label = { Text("Interests") },
+                            modifier = Modifier.weight(2f)
+                        )
+                    }
+                }
+
+                item {
+                    Row(
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        OutlinedTextField(
                             value = uiState.location,
                             onValueChange = { authViewModel.setLocation(it) },
                             label = { Text("Location") },
@@ -226,20 +240,6 @@ fun RegistrationScreen(
                             value = uiState.phone_number,
                             onValueChange = { authViewModel.setPhoneNumber(it) },
                             label = { Text("Phone number") },
-                            modifier = Modifier.weight(2f)
-                        )
-                    }
-                }
-
-                item {
-                    Row(
-                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        OutlinedTextField(
-                            value = uiState.industry,
-                            onValueChange = { authViewModel.setIndustry(it) },
-                            label = { Text("Industry") },
                             modifier = Modifier.weight(2f)
                         )
                     }

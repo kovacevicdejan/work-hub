@@ -1,5 +1,8 @@
 package com.example.workhub.ui.stateholders
 
+import android.os.Build
+import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.viewModelScope
 import com.example.workhub.data.repository.UserRepository
 import com.example.workhub.data.retrofit.models.Skill
@@ -17,7 +20,9 @@ data class UiState(
     val curr_user: User?,
     val user: String,
     val skill: String,
-    val page: String
+    val page: String,
+    val post_creator: String,
+    val creator_type: Int
 )
 
 @HiltViewModel
@@ -29,7 +34,9 @@ class WorkHubViewModel @Inject constructor(
             curr_user = null,
             user = "",
             skill = "",
-            page = "Microsoft"
+            page = "Microsoft",
+            post_creator = "",
+            creator_type = 0
         )
     )
 
@@ -43,6 +50,9 @@ class WorkHubViewModel @Inject constructor(
 
     fun getLoggedUser() = viewModelScope.launch {
         val email = userRepository.getLoggedUser()
+        if (email != null) {
+            Log.d("print", email)
+        }
 
         if(email != null) {
             val user = userRepository.getUserByEmail(email)
@@ -73,6 +83,14 @@ class WorkHubViewModel @Inject constructor(
 
     fun setSkill(skill: String) {
         _uiState.update { it.copy(skill = skill) }
+    }
+
+    fun setPostCreator(post_creator: String) {
+        _uiState.update { it.copy(post_creator = post_creator) }
+    }
+
+    fun setCreatorType(creator_type: Int) {
+        _uiState.update { it.copy(creator_type = creator_type) }
     }
 
     fun addSkill() = viewModelScope.launch {

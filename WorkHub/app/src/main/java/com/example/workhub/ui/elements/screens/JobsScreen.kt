@@ -170,40 +170,6 @@ fun JobsScreen(
             }
         ) {
             Column {
-                Row(modifier = Modifier.padding(5.dp, 10.dp, 5.dp, 0.dp)) {
-                    Column(
-                        modifier = Modifier.weight(1f),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        TextButton(
-                            onClick = {
-                                navController.navigate("Saved Jobs") {
-                                    launchSingleTop = true
-                                    restoreState = true
-                                }
-                            }
-                        ) {
-                            Text(text = "Saved jobs", color = Color(0xFF0077B5))
-                        }
-                    }
-
-                    Column(
-                        modifier = Modifier.weight(1f),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        TextButton(
-                            onClick = {
-                                navController.navigate("New Job Post") {
-                                    launchSingleTop = true
-                                    restoreState = true
-                                }
-                            }
-                        ) {
-                            Text(text = "Post a job", color = Color(0xFF0077B5))
-                        }
-                    }
-                }
-
                 Card(
                     modifier = Modifier
                         .padding(vertical = 10.dp)

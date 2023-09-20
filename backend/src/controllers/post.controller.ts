@@ -1,6 +1,5 @@
 import * as express from "express"
 import Post from "../models/post"
-const bcrypt = require('bcrypt');
 
 export class PostController {
     new_post = async (req: express.Request, res: express.Response) => {
@@ -26,7 +25,19 @@ export class PostController {
         const user = req.params.user
 
         let posts = await Post.find({
-            creator: user
+            creator: user,
+            creator_type: 0
+        })
+
+        res.json(posts)
+    }
+
+    get_page_posts = async (req: express.Request, res: express.Response) => {
+        const page = req.params.page
+
+        let posts = await Post.find({
+            creator: page,
+            creator_type: 1
         })
 
         res.json(posts)

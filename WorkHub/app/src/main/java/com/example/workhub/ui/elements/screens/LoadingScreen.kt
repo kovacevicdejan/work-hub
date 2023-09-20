@@ -35,7 +35,6 @@ fun LoadingScreen(
             }
 
             GetUserEvent.GetUserFailure -> {
-                Log.d("print", "kjdcbjsd")
                 navController.navigate("Sign In") {
                     launchSingleTop = true
                     restoreState = false

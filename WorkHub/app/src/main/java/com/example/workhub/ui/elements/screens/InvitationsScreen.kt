@@ -57,14 +57,19 @@ fun InvitationsScreen(
             LazyColumn {
                 for (user in invitationsUiState.received_invitation) {
                     item {
-                        Card(backgroundColor = if (isSystemInDarkTheme()) Color(0xFF202020) else Color(
-                            0xFFEEEEEE
-                        ), shape = Shapes.large, onClick = {
-                            navController.navigate("Profile") {
-                                launchSingleTop = true
-                                restoreState = true
+                        Card(
+                            backgroundColor = if (isSystemInDarkTheme()) Color(0xFF202020) else Color(
+                            0xFFEEEEEE),
+                            shape = Shapes.large,
+                            onClick = {
+                                workHubViewModel.setUser(user.email)
+
+                                navController.navigate("Profile") {
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
                             }
-                        }) {
+                        ) {
                             Row(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
@@ -119,14 +124,19 @@ fun InvitationsScreen(
             LazyColumn {
                 for (user in invitationsUiState.sent_invitations!!) {
                     item {
-                        Card(backgroundColor = if (isSystemInDarkTheme()) Color(0xFF202020) else Color(
-                            0xFFEEEEEE
-                        ), shape = Shapes.large, onClick = {
-                            navController.navigate("Profile") {
-                                launchSingleTop = true
-                                restoreState = true
+                        Card(
+                            backgroundColor = if (isSystemInDarkTheme()) Color(0xFF202020) else Color(
+                            0xFFEEEEEE),
+                            shape = Shapes.large,
+                            onClick = {
+                                workHubViewModel.setUser(user.email)
+
+                                navController.navigate("Profile") {
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
                             }
-                        }) {
+                        ) {
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
                                 modifier = Modifier.padding(vertical = 10.dp)

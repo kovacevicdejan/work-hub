@@ -66,4 +66,10 @@ sealed interface EditProfileEvent : Event {
 
 sealed interface PageEvent : Event {
     object CreatePageEvent : PageEvent
+    object FollowPageEvent : PageEvent
+    object UnfollowPageEvent: PageEvent
+}
+
+sealed interface PostEvent : Event {
+    object NewPostEvent: PostEvent
 }

@@ -5,7 +5,7 @@ import android.net.Uri
 data class CreatePageRequest(
     val name: String,
     val headline: String,
-    val industry: String,
+    val specialties: String,
     val location: String,
     val profile_image: String,
     val about: String,

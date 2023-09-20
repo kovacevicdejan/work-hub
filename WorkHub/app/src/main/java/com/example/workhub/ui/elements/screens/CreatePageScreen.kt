@@ -154,8 +154,8 @@ fun CreatePageScreen(
                 item {
                     Row(modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp)) {
                         OutlinedTextField(
-                            value = createPageUiState.industry,
-                            onValueChange = { createPageViewModel.setIndustry(it) },
+                            value = createPageUiState.specialties,
+                            onValueChange = { createPageViewModel.setSpecialties(it) },
                             label = { Text("Industry") },
                             modifier = Modifier.weight(2f)
                         )

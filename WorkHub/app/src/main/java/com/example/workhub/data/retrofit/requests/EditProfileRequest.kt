@@ -7,5 +7,6 @@ data class EditProfileRequest(
     val about: String,
     val headline: String,
     val location: String,
+    val interests: String,
     val phone_number: String,
 )

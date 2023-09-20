@@ -80,6 +80,8 @@ fun WorkHubApp() {
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             IconButton(onClick = {
+                                workHubViewModel.setUser(uiState.curr_user!!.email)
+
                                 navController.navigate("Profile") {
                                     launchSingleTop = true
                                     restoreState = true
@@ -167,7 +169,11 @@ fun WorkHubApp() {
                                 selected = currentRoute.startsWith(navDestination.route),
                                 onClick = {
                                     val newRoute = navDestination.route
-                                    Log.d("print", newRoute)
+
+                                    if(newRoute == PostDestination.route) {
+                                        workHubViewModel.setPostCreator(uiState.curr_user?.email ?: "")
+                                        workHubViewModel.setCreatorType(0)
+                                    }
 
                                     navController.navigate(newRoute) {
                                         launchSingleTop = true
@@ -248,12 +254,6 @@ fun WorkHubApp() {
                     )
                 }
 
-                composable(route = "Saved Jobs") {
-                    SavedJobsScreen(
-                        navController = navController
-                    )
-                }
-
                 composable(route = "Single Chat") {
                     ChatScreen(
                         navController = navController
@@ -279,7 +279,10 @@ fun WorkHubApp() {
                 }
 
                 composable(route = "New Job Post") {
-                    PostJobScreen()
+                    PostJobScreen(
+                        workHubViewModel = workHubViewModel,
+                        navController = navController
+                    )
                 }
 
                 composable(route = "Job Post") {

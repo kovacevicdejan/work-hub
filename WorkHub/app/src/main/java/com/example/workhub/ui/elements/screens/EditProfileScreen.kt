@@ -34,12 +34,15 @@ fun EditProfileScreen(
     val editProfileUiState by editProfileViewModel.uiState.collectAsState()
 
     LaunchedEffect(Unit) {
-        uiState.curr_user?.let { editProfileViewModel.setFirstname(it.firstname) }
-        uiState.curr_user?.let { editProfileViewModel.setLastname(it.lastname) }
-        uiState.curr_user?.let { editProfileViewModel.setAbout(it.about) }
-        uiState.curr_user?.let { editProfileViewModel.setHeadline(it.headline) }
-        uiState.curr_user?.let { editProfileViewModel.setPhoneNumber(it.phone_number) }
-        uiState.curr_user?.let { editProfileViewModel.setLocation(it.location) }
+        uiState.curr_user?.let {
+            editProfileViewModel.setFirstname(it.firstname)
+            editProfileViewModel.setLastname(it.lastname)
+            editProfileViewModel.setAbout(it.about)
+            editProfileViewModel.setHeadline(it.headline)
+            editProfileViewModel.setPhoneNumber(it.phone_number)
+            editProfileViewModel.setLocation(it.location)
+            editProfileViewModel.setInterests(it.interests)
+        }
     }
 
     OnEvent(editProfileViewModel.event) {
@@ -138,6 +141,20 @@ fun EditProfileScreen(
                             value = editProfileUiState.location,
                             onValueChange = { editProfileViewModel.setLocation(it) },
                             label = { Text(text = "Location") },
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                }
+
+                item {
+                    Row(
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        OutlinedTextField(
+                            value = editProfileUiState.interests,
+                            onValueChange = { editProfileViewModel.setInterests(it) },
+                            label = { Text(text = "Interests") },
                             modifier = Modifier.fillMaxWidth()
                         )
                     }

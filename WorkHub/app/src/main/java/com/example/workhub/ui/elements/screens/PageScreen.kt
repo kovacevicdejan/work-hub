@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AddComment
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.runtime.*
@@ -20,15 +22,18 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.example.workhub.PostDestination
+import com.example.workhub.data.retrofit.models.FollowedPage
 import com.example.workhub.ui.elements.composables.PageImage
+import com.example.workhub.ui.elements.composables.Post
+import com.example.workhub.ui.elements.theme.Blue
 import com.example.workhub.ui.elements.theme.Shapes
-import com.example.workhub.ui.stateholders.PageViewModel
-import com.example.workhub.ui.stateholders.WorkHubViewModel
+import com.example.workhub.ui.stateholders.*
 
 @OptIn(ExperimentalMaterialApi::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun PageScreen (
+fun PageScreen(
     workHubViewModel: WorkHubViewModel,
     pageViewModel: PageViewModel = hiltViewModel(),
     navController: NavHostController
@@ -43,9 +48,17 @@ fun PageScreen (
         pageViewModel.getPage(uiState.page)
     }
 
+    OnEvent(pageViewModel.event) {
+        when(it) {
+            PageEvent.FollowPageEvent -> {
+                workHubViewModel.getLoggedUser()
+            }
+        }
+    }
+
     Scaffold(
         bottomBar = {
-            if(state == 3) {
+            if (state == 3) {
                 Card(
                     backgroundColor = if (isSystemInDarkTheme()) Color(0xFF202020) else Color(
                         0xFFEEEEEE
@@ -82,6 +95,35 @@ fun PageScreen (
                     }
                 }
             }
+        },
+        floatingActionButton = {
+            if(state == 1) {
+                FloatingActionButton(
+                    onClick = {
+                        workHubViewModel.setPostCreator(pageUiState.page?.name ?: "")
+                        workHubViewModel.setCreatorType(1)
+
+                        navController.navigate(PostDestination.route) {
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    }
+                ) {
+                    Icon(imageVector = Icons.Default.Add, contentDescription = null)
+                }
+            }
+            else if(state == 2) {
+                FloatingActionButton(
+                    onClick = {
+                        navController.navigate("New Job Post") {
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    }
+                ) {
+                    Icon(imageVector = Icons.Default.Add, contentDescription = null)
+                }
+            }
         }
     ) {
         LazyColumn {
@@ -97,7 +139,10 @@ fun PageScreen (
                 ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            PageImage(image_name = pageUiState.page?.profile_image ?: "", size = 100)
+                            PageImage(
+                                image_name = pageUiState.page?.profile_image ?: "",
+                                size = 100
+                            )
                         }
 
                         Row(
@@ -140,7 +185,8 @@ fun PageScreen (
                             ) {
                                 Button(
                                     onClick = {
-                                        val webIntent = Intent(Intent.ACTION_VIEW,
+                                        val webIntent = Intent(
+                                            Intent.ACTION_VIEW,
                                             Uri.parse("https://${pageUiState.page?.website ?: ""}")
                                         )
                                         startActivity(context, webIntent, null)
@@ -156,17 +202,31 @@ fun PageScreen (
                                 modifier = Modifier.weight(1f),
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-                                Button(
-                                    onClick = {
-                                        navController.navigate("Edit Profile") {
-                                            launchSingleTop = true
-                                            restoreState = true
-                                        }
-                                    },
-                                    modifier = Modifier
-                                        .padding(horizontal = 10.dp)
+                                if (!uiState.curr_user?.followed_pages?.contains(
+                                        FollowedPage(
+                                            name = pageUiState.page?.name ?: ""
+                                        )
+                                    )!!
                                 ) {
-                                    Text(text = "Follow", color = Color.White)
+                                    Button(
+                                        onClick = {
+                                            pageViewModel.follow(
+                                                user = uiState.curr_user?.email ?: ""
+                                            )
+                                        },
+                                        modifier = Modifier
+                                            .padding(horizontal = 10.dp)
+                                    ) {
+                                        Text(text = "Follow", color = Color.White)
+                                    }
+                                }
+                                else {
+                                    Text(
+                                        text = "Following",
+                                        color = Blue,
+                                        fontSize = 20.sp,
+                                        modifier = Modifier.padding(5.dp)
+                                    )
                                 }
                             }
                         }
@@ -179,7 +239,8 @@ fun PageScreen (
                     selectedTabIndex = state,
                     backgroundColor = if (isSystemInDarkTheme()) Color(0xFF202020) else Color(
                         0xFFEEEEEE
-                    )
+                    ),
+                    modifier = Modifier.padding(0.dp, 0.dp, 0.dp, if(state == 1) 5.dp else 0.dp)
                 ) {
                     titles.forEachIndexed { index, title ->
                         Tab(
@@ -235,13 +296,13 @@ fun PageScreen (
 
                                 Row(modifier = Modifier.padding(horizontal = 10.dp)) {
                                     Text(
-                                        text = "IT fields: ",
+                                        text = "Specialties: ",
                                         modifier = Modifier.padding(vertical = 10.dp),
                                         fontSize = 16.sp
                                     )
 
                                     Text(
-                                        text = pageUiState.page?.industry ?: "",
+                                        text = pageUiState.page?.specialties ?: "",
                                         modifier = Modifier.padding(vertical = 10.dp),
                                         fontSize = 16.sp
                                     )
@@ -266,9 +327,18 @@ fun PageScreen (
                 }
 
                 1 -> {
-//                    items(count = 3) {
-//                        Post(navController = navController)
-//                    }
+                    if(pageUiState.page != null && uiState.curr_user != null) {
+                        for (post in pageUiState.posts) {
+                            item {
+                                Post(
+                                    post = post,
+                                    workHubViewModel = workHubViewModel,
+                                    navController = navController,
+                                    curr_user = uiState.curr_user!!.email
+                                )
+                            }
+                        }
+                    }
                 }
 
                 2 -> {

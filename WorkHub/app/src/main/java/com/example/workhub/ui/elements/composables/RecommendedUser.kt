@@ -20,6 +20,7 @@ import com.example.workhub.data.retrofit.models.Invitation
 import com.example.workhub.data.retrofit.models.User
 import com.example.workhub.ui.elements.theme.Blue
 import com.example.workhub.ui.stateholders.NetworkViewModel
+import com.example.workhub.ui.stateholders.WorkHubViewModel
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -27,10 +28,13 @@ fun RecommendedUser(
     user1: User,
     user2: User,
     navController: NavHostController,
-    networkViewModel: NetworkViewModel
+    networkViewModel: NetworkViewModel,
+    workHubViewModel: WorkHubViewModel
 ) {
     Card(
         onClick = {
+            workHubViewModel.setUser(user2.email)
+
             navController.navigate("Profile") {
                 launchSingleTop = true
                 restoreState = true
@@ -63,10 +67,9 @@ fun RecommendedUser(
 
             Spacer(modifier = Modifier.weight(1f))
 
-            if (!user1.received_invitations.contains(
-                    Invitation(user = user2.email)
-                )
-            )
+            if (!user1.sent_invitations.contains(Invitation(user = user2.email))
+                && !user1.received_invitations.contains(Invitation(user = user2.email))
+            ) {
                 Button(
                     onClick = {
                         networkViewModel.connect(
@@ -77,13 +80,15 @@ fun RecommendedUser(
                 ) {
                     Text(text = "Connect", color = Color.White)
                 }
-            else
+            }
+            else {
                 Text(
                     text = "Pending",
                     color = Blue,
                     fontSize = 20.sp,
                     modifier = Modifier.padding(5.dp)
                 )
+            }
         }
     }
 }

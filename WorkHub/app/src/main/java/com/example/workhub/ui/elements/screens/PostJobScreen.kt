@@ -16,25 +16,28 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.example.workhub.R
+import com.example.workhub.ui.stateholders.PostJobViewModel
+import com.example.workhub.ui.stateholders.WorkHubViewModel
 import java.util.*
-
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun PostJobScreen (
+fun PostJobScreen(
+    workHubViewModel: WorkHubViewModel,
+    postJobViewModel: PostJobViewModel = hiltViewModel(),
+    navController: NavHostController
 ) {
+    val uiState by workHubViewModel.uiState.collectAsState()
+    val postJobUiState by postJobViewModel.uiState.collectAsState()
     var state by remember { mutableStateOf(true) }
-
     val workplaceTypes = arrayOf("Office", "Remote", "Hybrid")
     var expanded by remember { mutableStateOf(false) }
-    var selectedText by rememberSaveable { mutableStateOf(workplaceTypes[0]) }
-    val companies = arrayOf("Microsoft", "TomTom", "Nutanix")
-    var expanded1 by remember { mutableStateOf(false) }
-    var selectedText1 by rememberSaveable { mutableStateOf(companies[0]) }
-    var jobTitle by rememberSaveable { mutableStateOf("") }
-
     val context = LocalContext.current
+
     val year: Int
     val month: Int
     val day: Int
@@ -54,30 +57,6 @@ fun PostJobScreen (
         }, year, month, day
     )
 
-//    industry, expirience level internship medior senior junior entry level director executive
-//    Computer & Network Security
-//    Computer Software
-//            Information Technology & Services
-//
-//            Market Research
-//            Marketing & Advertising
-//    Newspapers
-//    Online Media
-//            Printing
-//    Public Relations & Communications
-//            Publishing
-//    Translation & Localization
-//    Writing & Editing
-//
-//    Computer Hardware
-//            Computer Networking
-//            Telecommunications
-//    Biotechnology
-//    Medicine
-//    Pharmacy
-//    Banking/management/financy
-//    Education/research
-
     Card(modifier = Modifier.padding(10.dp), backgroundColor = if(isSystemInDarkTheme()) Color(0xFF202020) else Color(0xFFEEEEEE)) {
         Column {
             LazyColumn {
@@ -87,12 +66,16 @@ fun PostJobScreen (
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "New post",
+                            text = "New job",
                             modifier = Modifier.weight(1f),
                             fontSize = 30.sp
                         )
 
-                        Button(onClick = { /*TODO*/ }) {
+                        Button(
+                            onClick = {
+                                postJobViewModel.postJob(page = uiState.page)
+                            }
+                        ) {
                             Text(text = "Post", color = Color.White, fontSize = 20.sp)
                         }
                     }
@@ -103,67 +86,11 @@ fun PostJobScreen (
                         modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(
-                            text = "Job title: ",
-                            modifier = Modifier.weight(1f),
-                            fontSize = 20.sp
-                        )
-
                         OutlinedTextField(
-                            value = jobTitle,
-                            onValueChange = { jobTitle = it },
-                            modifier = Modifier.weight(2f)
+                            value = postJobUiState.title,
+                            onValueChange = { postJobViewModel.setTitle(it) },
+                            label = {Text(text = "Job title")}
                         )
-                    }
-                }
-
-                item {
-                    Row(
-                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = "Company: ",
-                            modifier = Modifier.weight(1f),
-                            fontSize = 20.sp
-                        )
-
-                        Box(modifier = Modifier.weight(2f)) {
-                            ExposedDropdownMenuBox(
-                                expanded = expanded1,
-                                onExpandedChange = {
-                                    expanded1 = !expanded1
-                                }
-                            ) {
-                                TextField(
-                                    value = selectedText1,
-                                    onValueChange = {},
-                                    readOnly = true,
-                                    trailingIcon = {
-                                        ExposedDropdownMenuDefaults.TrailingIcon(
-                                            expanded = expanded1
-                                        )
-                                    },
-                                    modifier = Modifier.fillMaxWidth()
-                                )
-
-                                ExposedDropdownMenu(
-                                    expanded = expanded1,
-                                    onDismissRequest = { expanded1 = false }
-                                ) {
-                                    companies.forEach { item ->
-                                        DropdownMenuItem(
-                                            onClick = {
-                                                selectedText1 = item
-                                                expanded1 = false
-                                            }
-                                        ) {
-                                            Text(text = item)
-                                        }
-                                    }
-                                }
-                            }
-                        }
                     }
                 }
 
@@ -186,7 +113,7 @@ fun PostJobScreen (
                                 }
                             ) {
                                 TextField(
-                                    value = selectedText,
+                                    value = postJobUiState.workplace_type,
                                     onValueChange = {},
                                     readOnly = true,
                                     trailingIcon = {
@@ -204,7 +131,7 @@ fun PostJobScreen (
                                     workplaceTypes.forEach { item ->
                                         DropdownMenuItem(
                                             onClick = {
-                                                selectedText = item
+                                                postJobViewModel.setWorkplaceType(item)
                                                 expanded = false
                                             }
                                         ) {
@@ -222,16 +149,23 @@ fun PostJobScreen (
                         modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(
-                            text = "Job location: ",
-                            modifier = Modifier.weight(1f),
-                            fontSize = 20.sp
-                        )
-
                         OutlinedTextField(
-                            value = jobTitle,
-                            onValueChange = { jobTitle = it },
-                            modifier = Modifier.weight(2f)
+                            value = postJobUiState.location,
+                            onValueChange = { postJobViewModel.setLocation(it) },
+                            label = {Text(text = "Job location")}
+                        )
+                    }
+                }
+
+                item {
+                    Row(
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        OutlinedTextField(
+                            value = postJobUiState.level,
+                            onValueChange = { postJobViewModel.setLevel(it) },
+                            label = {Text(text = "Job level")}
                         )
                     }
                 }
@@ -249,7 +183,7 @@ fun PostJobScreen (
 
                         RadioButton(
                             selected = state,
-                            onClick = { state = true },
+                            onClick = { postJobViewModel.setJobType(true) },
                         )
 
                         Text(
@@ -260,7 +194,7 @@ fun PostJobScreen (
 
                         RadioButton(
                             selected = !state,
-                            onClick = { state = false }
+                            onClick = { postJobViewModel.setJobType(false) }
                         )
 
                         Text(
@@ -273,20 +207,39 @@ fun PostJobScreen (
 
                 item {
                     Row(modifier = Modifier.padding(horizontal = 10.dp, vertical = 10.dp)) {
-                        Text(
-                            text = "Job description: ",
-                            modifier = Modifier.weight(1f),
-                            fontSize = 20.sp
-                        )
-                    }
-
-                    Row(modifier = Modifier.padding(horizontal = 10.dp, vertical = 10.dp)) {
                         OutlinedTextField(
-                            value = "",
-                            onValueChange = {},
+                            value = postJobUiState.description,
+                            onValueChange = { postJobViewModel.setDescription(it) },
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(150.dp)
+                                .height(150.dp),
+                            label = {Text(text = "Description")}
+                        )
+                    }
+                }
+
+                item {
+                    Row(
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        OutlinedTextField(
+                            value = postJobUiState.tech_stack,
+                            onValueChange = { postJobViewModel.setTechStack(it) },
+                            label = {Text(text = "Tech stack")}
+                        )
+                    }
+                }
+
+                item {
+                    Row(
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        OutlinedTextField(
+                            value = postJobUiState.area,
+                            onValueChange = { postJobViewModel.setArea(it) },
+                            label = {Text(text = "Job areas")}
                         )
                     }
                 }

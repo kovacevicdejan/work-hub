@@ -35,7 +35,7 @@ data class NewPostUiState(
 class NewPostViewModel @Inject constructor(
     private val postRepository: PostRepository,
     private val imageRepository: ImageRepository
-) : BaseViewModel<ConnectEvent>() {
+) : BaseViewModel<PostEvent>() {
     private val _uiState = MutableStateFlow(
         NewPostUiState(
             visibility = true,
@@ -124,7 +124,11 @@ class NewPostViewModel @Inject constructor(
         _uiState.update { it.copy(image_uri = null) }
     }
 
-    fun post(context: Context, curr_user: User?) = viewModelScope.launch {
+    fun post(
+        context: Context,
+        post_creator: String,
+        creator_type: Int
+    ) = viewModelScope.launch {
         var imageName = ""
 
         if(uiState.value.image_uri != null) {
@@ -151,13 +155,15 @@ class NewPostViewModel @Inject constructor(
         postRepository.newPost(
             visibility = if(uiState.value.visibility) 0 else 1,
             post_type = uiState.value.post_type,
-            creator_type = 0,
-            creator = curr_user?.email ?: "",
+            creator_type = creator_type,
+            creator = post_creator,
             post_text = uiState.value.post_text,
             post_image = imageName,
             job_title = uiState.value.job_title,
             page_name = uiState.value.page_name,
             options = options
         )
+
+        sendEvent(PostEvent.NewPostEvent)
     }
 }

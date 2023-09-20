@@ -1,6 +1,10 @@
 package com.example.workhub.data.repository
 
 import android.content.Context
+import android.content.SharedPreferences
+import android.os.Build
+import android.text.method.TextKeyListener.clear
+import androidx.annotation.RequiresApi
 import com.example.workhub.data.retrofit.WorkHubApi
 import com.example.workhub.data.retrofit.models.User
 import com.example.workhub.data.retrofit.requests.*
@@ -13,27 +17,27 @@ class UserRepository @Inject constructor(
 ) {
     companion object {
         private const val SHARED_PREFERENCES_NAME = "work-hub-out-shared-preferences"
-        private const val LOGGED_USER_KEY = "logged-user-key"
+        private const val SIGNED_USER_KEY = "signed-user-key"
     }
 
     fun setLoggedUser(user: String) {
         val sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
-        editor.putString(LOGGED_USER_KEY, user)
+        editor.putString(SIGNED_USER_KEY, user)
         editor.apply()
     }
 
     fun getLoggedUser(): String? {
         val sharedPreferences =
             context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
-        return sharedPreferences.getString(LOGGED_USER_KEY, null)
+        return sharedPreferences.getString(SIGNED_USER_KEY, null)
     }
 
     fun removeLoggedUser() {
         val sharedPreferences =
             context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
-        editor.remove(LOGGED_USER_KEY)
+        editor.remove(SIGNED_USER_KEY)
         editor.apply()
     }
 
@@ -49,8 +53,8 @@ class UserRepository @Inject constructor(
         return workHubApi.getUserByEmail(email = email)
     }
 
-    suspend fun getUsersByIndustry(industry: String): List<User> {
-        return workHubApi.getUsersByIndustry(industry = industry)
+    suspend fun getRecommendedUsers(email: String): List<User> {
+        return workHubApi.getRecommendedUsers(email = email)
     }
 
     suspend fun connect(user1: String, user2: String) {
@@ -105,6 +109,7 @@ class UserRepository @Inject constructor(
         about: String,
         headline: String,
         location: String,
+        interests: String,
         phone_number: String
     ) {
         val editProfileRequest = EditProfileRequest(
@@ -114,6 +119,7 @@ class UserRepository @Inject constructor(
             about = about,
             headline = headline,
             location = location,
+            interests = interests,
             phone_number = phone_number,
         )
 

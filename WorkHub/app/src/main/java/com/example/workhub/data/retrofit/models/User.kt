@@ -10,7 +10,7 @@ data class User(
     val headline: String,
     val location: String,
     val phone_number: String,
-    val industry: String,
+    val interests: String,
     val registration_date: Long,
     val connections: List<Connection>,
     val followed_pages: List<FollowedPage>,

@@ -1,6 +1,6 @@
 import * as express from "express"
 import Page from "../models/page"
-const bcrypt = require('bcrypt');
+import User from "../models/user"
 
 export class PageController {
     create_page = async (req: express.Request, res: express.Response) => {
@@ -9,7 +9,7 @@ export class PageController {
             headline: req.body.headline,
             about: req.body.about,
             profile_image: req.body.profile_image,
-            industry: req.body.industry,
+            specialties: req.body.specialties,
             website: req.body.website,
             location: req.body.location,
             admin: req.body.admin,
@@ -29,5 +29,55 @@ export class PageController {
         })
 
         res.json(page)
+    }
+
+    get_recommended_pages = async (req: express.Request, res: express.Response) => {
+        const email = req.params.email;
+        const user = await User.findOne({email: email})
+        const followed_pages = user.followed_pages.map(page => page.name)
+
+        Page.find({
+            name: {$nin: followed_pages}
+        }, (err, pages) => {
+            res.json(pages);
+        })
+    }
+
+    follow = async (req: express.Request, res: express.Response) => {
+        const user = req.body.user
+        const page = req.body.page
+
+        await User.findOneAndUpdate({
+            email: user
+        }, {
+            $push: {followed_pages: {name: page}}
+        })
+
+        await Page.findOneAndUpdate({
+            name: page
+        }, {
+            $push: {followers: {user: user}}
+        })
+
+        res.json("success")
+    }
+
+    unfollow = async (req: express.Request, res: express.Response) => {
+        const user = req.body.user
+        const page = req.body.page
+
+        await User.findOneAndUpdate({
+            email: user
+        }, {
+            $pull: {followed_pages: {name: page}}
+        })
+
+        await Page.findOneAndUpdate({
+            name: page
+        }, {
+            $pull: {followers: {user: user}}
+        })
+
+        res.json("success")
     }
 }

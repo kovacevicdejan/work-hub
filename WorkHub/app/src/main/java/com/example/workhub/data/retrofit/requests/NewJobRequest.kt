@@ -1,7 +1,6 @@
-package com.example.workhub.data.retrofit.models
+package com.example.workhub.data.retrofit.requests
 
-data class Job(
-    val _id: String,
+data class NewJobRequest(
     val title: String,
     val page: String,
     val workplace_type: String,
@@ -11,11 +10,5 @@ data class Job(
     val description: String,
     val tech_stack: String,
     val deadline: Long,
-    val area: String,
-    val date_posted: Long,
-    val applicants: List<Applicant>
-)
-
-data class Applicant(
-    val user: String
+    val area: String
 )

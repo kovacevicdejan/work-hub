@@ -10,5 +10,5 @@ data class RegistrationRequest(
     val headline: String,
     val location: String,
     val phone_number: String,
-    val industry: String,
+    val interests: String,
 )

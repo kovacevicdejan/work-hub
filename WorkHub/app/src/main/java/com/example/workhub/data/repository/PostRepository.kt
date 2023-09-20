@@ -38,4 +38,8 @@ class PostRepository @Inject constructor(
     suspend fun getUserPosts(user: String): List<Post> {
         return workHubApi.getUserPosts(user = user)
     }
+
+    suspend fun getPagePosts(page: String): List<Post> {
+        return workHubApi.getPagePosts(page = page)
+    }
 }

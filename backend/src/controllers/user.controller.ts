@@ -41,7 +41,7 @@ export class UserController {
                 headline: req.body.headline,
                 location: req.body.location,
                 phone_number: req.body.phone_number,
-                industry: req.body.industry,
+                interests: req.body.interests,
                 registration_date: Date.now(),
             });
 
@@ -69,15 +69,17 @@ export class UserController {
         )
     }
 
-    get_users_by_industry = (req: express.Request, res: express.Response) => {
-        const industry = req.params.industry;
+    get_recommended_users = async (req: express.Request, res: express.Response) => {
+        const email = req.params.email;
+        const user = await User.findOne({email: email})
+        const connections = user.connections.map(conn => conn.user)
+        const interests = user.interests.split(", ")
 
         User.find({
-            'industry': industry
+            email: {$ne: email, $nin: connections}
         }, (err, users) => {
             res.json(users);
-        }
-        )
+        })
     }
 
     connect = (req: express.Request, res: express.Response) => {

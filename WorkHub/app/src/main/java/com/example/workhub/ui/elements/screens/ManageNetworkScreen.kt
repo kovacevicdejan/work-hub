@@ -15,14 +15,11 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.workhub.ui.elements.composables.ConnectionCard
+import com.example.workhub.ui.elements.composables.FollowedPageCard
 import com.example.workhub.ui.elements.composables.ProfileImage
 import com.example.workhub.ui.elements.theme.Shapes
-import com.example.workhub.ui.stateholders.ConnectEvent
-import com.example.workhub.ui.stateholders.ManageNetworkViewModel
-import com.example.workhub.ui.stateholders.OnEvent
-import com.example.workhub.ui.stateholders.WorkHubViewModel
+import com.example.workhub.ui.stateholders.*
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ManageNetworkScreen(
     workHubViewModel: WorkHubViewModel,
@@ -34,12 +31,19 @@ fun ManageNetworkScreen(
     var state by remember { mutableStateOf(0) }
 
     LaunchedEffect(Unit) {
-        uiState.curr_user?.let { manageNetworkViewModel.getConnections(curr_user = it) }
+        manageNetworkViewModel.getConnections(email = uiState.user)
+        manageNetworkViewModel.getFollowedPages(email = uiState.user)
     }
 
     OnEvent(manageNetworkViewModel.event) {
-        if(it == ConnectEvent.RemoveConnection) {
-            workHubViewModel.getLoggedUser()
+        when(it) {
+            ConnectEvent.RemoveConnection -> {
+                workHubViewModel.getLoggedUser()
+            }
+
+            PageEvent.UnfollowPageEvent -> {
+                workHubViewModel.getLoggedUser()
+            }
         }
     }
 
@@ -69,7 +73,8 @@ fun ManageNetworkScreen(
                             connection = connection,
                             curr_user = uiState.curr_user,
                             navController = navController,
-                            manageNetworkViewModel = manageNetworkViewModel
+                            manageNetworkViewModel = manageNetworkViewModel,
+                            workHubViewModel = workHubViewModel
                         )
 
                         Divider()
@@ -78,52 +83,15 @@ fun ManageNetworkScreen(
             }
         } else {
             LazyColumn {
-                for (i in 0..10) {
+                for (page in manageNetworkUiState.followed_pages) {
                     item {
-                        Card(
-                            backgroundColor = if (isSystemInDarkTheme()) Color(0xFF202020) else Color(
-                                0xFFEEEEEE
-                            ),
-                            shape = Shapes.large,
-                            onClick = {
-                                navController.navigate("Profile") {
-                                    launchSingleTop = true
-                                    restoreState = true
-                                }
-                            }
-                        ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier.padding(vertical = 10.dp)
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Person,
-                                    contentDescription = null,
-                                    modifier = Modifier
-                                        .width(60.dp)
-                                        .height(60.dp)
-                                )
-
-                                Column {
-                                    Text(text = "TomTom", fontSize = 20.sp)
-
-                                    Text(
-                                        text = "200000 followers",
-                                        fontSize = 14.sp
-                                    )
-                                }
-
-                                Spacer(modifier = Modifier.weight(1f))
-
-                                Button(
-                                    onClick = {},
-                                    modifier = Modifier.padding(horizontal = 10.dp)
-                                )
-                                {
-                                    Text(text = "Unfollow", color = Color.White)
-                                }
-                            }
-                        }
+                        FollowedPageCard(
+                            page = page,
+                            curr_user = uiState.curr_user,
+                            navController = navController,
+                            manageNetworkViewModel = manageNetworkViewModel,
+                            workHubViewModel = workHubViewModel
+                        )
 
                         Divider()
                     }
