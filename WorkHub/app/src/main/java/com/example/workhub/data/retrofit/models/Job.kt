@@ -13,7 +13,7 @@ data class Job(
     val deadline: Long,
     val area: String,
     val date_posted: Long,
-    val applicants: List<Applicant>
+    var applicants: List<Applicant>
 )
 
 data class Applicant(

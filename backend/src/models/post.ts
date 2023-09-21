@@ -3,14 +3,11 @@ import mongoose from "mongoose";
 const Schema = mongoose.Schema
 
 let Post = new Schema({
-    visibility: {
-        type: String
-    },
     post_type: {
         type: String
     },
     creator_type: {
-        type: String
+        type: Number
     },
     creator: {
         type: String

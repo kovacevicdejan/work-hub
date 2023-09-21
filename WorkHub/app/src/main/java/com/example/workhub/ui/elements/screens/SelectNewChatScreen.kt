@@ -7,19 +7,49 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.example.workhub.ChatsDestination
+import com.example.workhub.data.retrofit.WorkHubApi
+import com.example.workhub.ui.elements.composables.ChatConnectionCard
 import com.example.workhub.ui.elements.theme.Shapes
+import com.example.workhub.ui.stateholders.ChatEvent
+import com.example.workhub.ui.stateholders.OnEvent
+import com.example.workhub.ui.stateholders.SelectNewChatViewModel
+import com.example.workhub.ui.stateholders.WorkHubViewModel
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SelectNewChatScreen(
+    workHubViewModel: WorkHubViewModel,
+    selectNewChatViewModel: SelectNewChatViewModel = hiltViewModel(),
     navController: NavHostController
 ) {
+    val uiState by workHubViewModel.uiState.collectAsState()
+    val selectNewChatUiState by selectNewChatViewModel.uiState.collectAsState()
+
+    LaunchedEffect(Unit) {
+        uiState.curr_user?.let { selectNewChatViewModel.getUser(it.email) }
+    }
+
+    OnEvent(selectNewChatViewModel.event) {
+        if(it == ChatEvent.NewChatEvent) {
+            workHubViewModel.setChatId(chat_id = selectNewChatUiState.chat_id)
+
+            navController.navigate("Single Chat") {
+                launchSingleTop = true
+                restoreState = false
+            }
+        }
+    }
+
     LazyColumn {
         item {
             Row(
@@ -30,41 +60,14 @@ fun SelectNewChatScreen(
             }
         }
 
-        for (i in 0..10) {
+        for (connection in selectNewChatUiState.connections) {
             item {
-                Card(
-                    backgroundColor = if (isSystemInDarkTheme()) Color(0xFF202020) else Color(0xFFEEEEEE),
-                    shape = Shapes.large,
-                    onClick = {
-                        navController.navigate("Single Chat") {
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(vertical = 10.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Person,
-                            contentDescription = null,
-                            modifier = Modifier
-                                .width(60.dp)
-                                .height(60.dp)
-                        )
-
-                        Column {
-                            Text(text = "Petar Petrovic", fontSize = 20.sp)
-
-                            Text(
-                                text = "Software engineer at Microsoft",
-                                fontSize = 14.sp
-                            )
-                        }
-                    }
-                }
+                ChatConnectionCard(
+                    connection = connection,
+                    navController = navController,
+                    selectNewChatViewModel = selectNewChatViewModel,
+                    workHubViewModel = workHubViewModel
+                )
 
                 Divider()
             }

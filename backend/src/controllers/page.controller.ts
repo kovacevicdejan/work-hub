@@ -80,4 +80,29 @@ export class PageController {
 
         res.json("success")
     }
+
+    send_review = async (req: express.Request, res: express.Response) => {
+        const user = req.body.user
+        const page = req.body.page
+        const text = req.body.text
+        const user_image = req.body.user_image
+
+        await Page.findOneAndUpdate({
+            name: page
+        }, {
+            $push: {reviews: {user: user, text: text, user_image: user_image}}
+        })
+
+        res.json("success")
+    }
+
+    search = async (req: express.Request, res: express.Response) => {
+        const keyword = req.params.keyword
+
+        const users = await Page.find({
+            name: { $regex: keyword, $options: 'i' }
+        })
+
+        res.json(users)
+    }
 }

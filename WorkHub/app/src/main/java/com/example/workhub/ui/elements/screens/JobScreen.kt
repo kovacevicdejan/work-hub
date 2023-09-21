@@ -1,5 +1,6 @@
 package com.example.workhub.ui.elements.screens
 
+import android.util.Log
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -13,18 +14,48 @@ import androidx.compose.material.icons.filled.Group
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Work
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.example.workhub.HomeDestination
+import com.example.workhub.data.retrofit.models.Applicant
+import com.example.workhub.ui.elements.composables.PageImage
+import com.example.workhub.ui.elements.theme.Blue
 import com.example.workhub.ui.elements.theme.Shapes
+import com.example.workhub.ui.stateholders.JobEvent
+import com.example.workhub.ui.stateholders.JobViewModel
+import com.example.workhub.ui.stateholders.OnEvent
+import com.example.workhub.ui.stateholders.WorkHubViewModel
 
 @Composable
 fun JobScreen(
+    workHubViewModel: WorkHubViewModel,
+    jobViewModel: JobViewModel = hiltViewModel(),
     navController: NavHostController
 ) {
+    val uiState by workHubViewModel.uiState.collectAsState()
+    val jobUiState by jobViewModel.uiState.collectAsState()
+
+    LaunchedEffect(Unit) {
+        jobViewModel.getJob(uiState.job_id)
+    }
+
+    OnEvent(jobViewModel.event) {
+        if(it == JobEvent.ApplyForJob) {
+            navController.navigate(HomeDestination.route) {
+                launchSingleTop = true
+                restoreState = true
+            }
+        }
+    }
+
     LazyColumn {
         item {
             Card(
@@ -37,26 +68,58 @@ fun JobScreen(
                 Column {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(10.dp)
+                        modifier = Modifier.padding(horizontal = 10.dp)
                     ) {
-                        Text(text = "Software engineer intern at TomTom", fontSize = 24.sp)
+                        Column {
+                            Text(text = jobUiState.job?.title ?: "", fontSize = 24.sp)
+                        }
+
+                        Spacer(modifier = Modifier.weight(1f))
+
+                        if(jobUiState.job != null) {
+                            Log.d("print", jobUiState.job.toString())
+
+                            if (!jobUiState.job!!.applicants.contains(
+                                    Applicant(
+                                        user = uiState.curr_user?.email ?: ""
+                                    )
+                                )
+                            ) {
+                                Column {
+                                    Button(
+                                        onClick = {
+                                            jobViewModel.applyForJob(
+                                                user = uiState.curr_user?.email ?: "",
+                                                job_id = jobUiState.job?._id ?: ""
+                                            )
+                                        },
+                                        modifier = Modifier
+                                            .padding(horizontal = 10.dp)
+                                    ) {
+                                        Text(text = "Apply", color = Color.White)
+                                    }
+                                }
+                            }
+                            else {
+                                Text(
+                                    text = "Applied",
+                                    color = Blue,
+                                    fontSize = 20.sp,
+                                    modifier = Modifier.padding(5.dp)
+                                )
+                            }
+                        }
                     }
 
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            imageVector = Icons.Default.Person,
-                            contentDescription = null,
-                            modifier = Modifier
-                                .width(70.dp)
-                                .height(70.dp)
-                        )
+                        PageImage(image_name = jobUiState.page?.profile_image ?: "", size = 70)
 
                         Column {
-                            Text(text = "TomTom", fontSize = 20.sp)
+                            Text(text = jobUiState.job?.page ?: "", fontSize = 20.sp)
 
-                            Text(text = "Belgrade, Serbia (Hybrid)", fontSize = 12.sp)
+                            Text(text = "${jobUiState.job?.location ?: ""} (${jobUiState.job?.workplace_type ?: ""})", fontSize = 12.sp)
 
-                            Text(text = "50 applicants", fontSize = 12.sp)
+                            Text(text = "${jobUiState.job?.applicants?.size ?: 0} applicants", fontSize = 12.sp)
                         }
                     }
 
@@ -72,7 +135,7 @@ fun JobScreen(
                                 .padding(0.dp, 0.dp, 10.dp, 0.dp)
                         )
 
-                        Text(text = "Full-time | Entry level", fontSize = 18.sp)
+                        Text(text = "${if((jobUiState.job?.job_type ?: "") == 0) "Internship" else "Full-time"} | ${jobUiState.job?.level ?: ""}", fontSize = 18.sp)
                     }
 
                     Row(
@@ -81,65 +144,32 @@ fun JobScreen(
                     ) {
                         Icon(
                             imageVector = Icons.Default.Apartment,
-                            contentDescription = "Industry",
+                            contentDescription = "Area",
                             modifier = Modifier
                                 .size(30.dp)
                                 .padding(0.dp, 0.dp, 10.dp, 0.dp)
                         )
 
-                        Text(text = "Software Engineering", fontSize = 18.sp)
+                        Text(text = jobUiState.job?.area ?: "", fontSize = 18.sp)
                     }
-
-                    Row(
-                        modifier = Modifier.padding(horizontal = 10.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Group,
-                            contentDescription = "Group",
-                            modifier = Modifier
-                                .size(30.dp)
-                                .padding(0.dp, 0.dp, 10.dp, 0.dp)
-                        )
-
-                        Column {
-                            Text(text = "5 connections work here", fontSize = 18.sp)
-
-                            Text(text = "30 school alumni work here", fontSize = 18.sp)
-
-                            Text(text = "10 company alumni work here", fontSize = 18.sp)
-                        }
-                    }
-
-                    Row(
-                        modifier = Modifier.padding(horizontal = 10.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Column(
-                            modifier = Modifier.weight(1f),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Button(
-                                onClick = {},
-                                modifier = Modifier
-                                    .padding(horizontal = 10.dp)
-                            ) {
-                                Text(text = "Apply", color = Color.White)
-                            }
-                        }
-
-                        Column(
-                            modifier = Modifier.weight(1f),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Button(
-                                onClick = {},
-                                modifier = Modifier
-                                    .padding(horizontal = 10.dp)
-                            ) {
-                                Text(text = "Save", color = Color.White)
-                            }
-                        }
-                    }
+//
+//                    Row(
+//                        modifier = Modifier.padding(horizontal = 10.dp)
+//                    ) {
+//                        Icon(
+//                            imageVector = Icons.Default.Group,
+//                            contentDescription = "Group",
+//                            modifier = Modifier
+//                                .size(30.dp)
+//                                .padding(0.dp, 0.dp, 10.dp, 0.dp)
+//                        )
+//
+//                        Column {
+//                            Text(text = "5 connections work here", fontSize = 18.sp)
+//
+//                            Text(text = "10 company alumni work here", fontSize = 18.sp)
+//                        }
+//                    }
                 }
             }
         }
@@ -162,15 +192,7 @@ fun JobScreen(
 
                     Row(modifier = Modifier.padding(horizontal = 10.dp)) {
                         Text(
-                            text = "Below doc contains all useful shortcuts for quick navigation in VS Code and also extensions which will increase your productivity as well as beautify your code.\n" +
-                                    "\n" +
-                                    "Save this pdf and Repost if you find this helpful.\n" +
-                                    "\n" +
-                                    "Learn programming from W3Schools.com\n" +
-                                    "\n" +
-                                    "Follow Ajit Kumar Gupta for more.\n" +
-                                    "\n" +
-                                    "Credit - JSMastery , Maheshpal.",
+                            text = jobUiState.job?.description ?: "",
                             modifier = Modifier.padding(vertical = 10.dp),
                             fontSize = 16.sp
                         )
@@ -180,7 +202,22 @@ fun JobScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.padding(10.dp, 10.dp, 10.dp, 10.dp)
                     ) {
-                        Text(text = "Deadline: 23.8.2023.", fontSize = 20.sp)
+                        Text(
+                            text = "Tech stack: ${jobUiState.job?.tech_stack ?: 0}",
+                            fontSize = 16.sp
+                        )
+                    }
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(10.dp, 10.dp, 10.dp, 10.dp)
+                    ) {
+                        Text(
+                            text = "Deadline: ${jobViewModel.getDay()}." +
+                                    "${jobViewModel.getMonth()}." +
+                                    "${jobViewModel.getYear()}.",
+                            fontSize = 16.sp
+                        )
                     }
                 }
             }

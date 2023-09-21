@@ -25,13 +25,13 @@ data class PostJobUiState(
 @HiltViewModel
 class PostJobViewModel @Inject constructor(
     private val jobRepository: JobRepository,
-) : BaseViewModel<PostEvent>() {
+) : BaseViewModel<JobEvent>() {
     private val _uiState = MutableStateFlow(
         PostJobUiState(
             title = "",
             workplace_type = "",
             location = "",
-            job_type = false,
+            job_type = true,
             level = "",
             description = "",
             tech_stack = "",
@@ -93,6 +93,6 @@ class PostJobViewModel @Inject constructor(
         )
 
         jobRepository.newJob(newJobRequest = newJobRequest)
-        sendEvent(PostEvent.NewPostEvent)
+        sendEvent(JobEvent.NewJobEvent)
     }
 }

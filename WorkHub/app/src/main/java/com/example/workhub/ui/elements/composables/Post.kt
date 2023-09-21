@@ -6,12 +6,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -19,42 +15,31 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.workhub.R
 import com.example.workhub.data.retrofit.BASE_URL
+import com.example.workhub.data.retrofit.models.Page
 import com.example.workhub.data.retrofit.models.Post
 import com.example.workhub.data.retrofit.models.User
 import com.example.workhub.ui.elements.theme.Blue
-import com.example.workhub.ui.stateholders.NewPostViewModel
-import com.example.workhub.ui.stateholders.PostViewModel
 import com.example.workhub.ui.stateholders.WorkHubViewModel
 
 @Composable
 fun Post(
     post: Post,
+    user: User?,
+    page: Page?,
     workHubViewModel: WorkHubViewModel,
-    postViewModel: PostViewModel = hiltViewModel(),
-    navController: NavHostController,
-    curr_user: String
+    navController: NavHostController
 ) {
-    val postUiState by postViewModel.uiState.collectAsState()
-
-    LaunchedEffect(Unit) {
-        postViewModel.getPostCreator(
-            creator = post.creator,
-            creator_type = post.creator_type
-        )
-    }
-
     Card(modifier = Modifier.padding(start = 5.dp, top = 5.dp, end = 5.dp, bottom = 5.dp), backgroundColor = if(isSystemInDarkTheme()) Color(0xFF202020) else Color(0xFFEEEEEE)) {
         Column {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                if(postUiState.user != null) {
+                if(user != null) {
                     IconButton(
                         onClick = {
-                            postUiState.user?.let { workHubViewModel.setUser(it.email) }
+                            user.let { workHubViewModel.setUser(it.email) }
 
                             navController.navigate("Profile") {
                                 launchSingleTop = true
@@ -63,7 +48,7 @@ fun Post(
                         }
                     ) {
                         ProfileImage(
-                            image_name = postUiState.user!!.profile_image,
+                            image_name = user.profile_image,
                             size = 60,
                             vertical_padding = 5,
                             horizontal_padding = 5
@@ -71,25 +56,17 @@ fun Post(
                     }
 
                     Column {
-                        Text(text = postUiState.user!!.firstname + " " + postUiState.user!!.lastname, fontSize = 20.sp)
+                        Text(text = user.firstname + " " + user.lastname, fontSize = 20.sp)
 
-                        Text(text = postUiState.user!!.headline, fontSize = 12.sp)
-
-                        Text(text = "1d", fontSize = 12.sp)
+                        Text(text = user.headline, fontSize = 12.sp)
                     }
 
-                    if (postUiState.user!!.email != curr_user) {
-                        Spacer(modifier = Modifier.weight(1f))
-
-                        TextButton(onClick = {}) {
-                            Text(text = "+ Connect", color = Color(0xFF0077B5), fontSize = 20.sp)
-                        }
-                    }
+                    Spacer(modifier = Modifier.weight(1f))
                 }
-                else if(postUiState.page != null) {
+                else if(page != null) {
                     IconButton(
                         onClick = {
-                            postUiState.page?.let { workHubViewModel.setPage(it.name) }
+                            page.let { workHubViewModel.setPage(it.name) }
 
                             navController.navigate("Page") {
                                 launchSingleTop = true
@@ -98,7 +75,7 @@ fun Post(
                         }
                     ) {
                         PageImage(
-                            image_name = postUiState.page!!.profile_image,
+                            image_name = page.profile_image,
                             size = 60,
                             vertical_padding = 5,
                             horizontal_padding = 5
@@ -106,11 +83,11 @@ fun Post(
                     }
 
                     Column {
-                        Text(text = postUiState.page!!.name, fontSize = 20.sp)
+                        Text(text = page.name, fontSize = 20.sp)
 
-                        Text(text = postUiState.page!!.headline, fontSize = 12.sp)
+                        Text(text = page.headline, fontSize = 12.sp)
 
-                        Text(text = "${postUiState.page!!.followers.size} followers", fontSize = 12.sp)
+                        Text(text = "${page.followers.size} followers", fontSize = 12.sp)
                     }
                 }
             }
@@ -222,6 +199,8 @@ fun Post(
                 Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.weight(1f)) {
                     IconButton(
                         onClick = {
+                            workHubViewModel.setPostId(post_id = post._id)
+
                             navController.navigate("Comments") {
                                 launchSingleTop = true
                                 restoreState = true

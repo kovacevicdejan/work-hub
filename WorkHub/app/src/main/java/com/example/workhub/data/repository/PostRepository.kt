@@ -10,7 +10,6 @@ class PostRepository @Inject constructor(
     private val workHubApi: WorkHubApi
 ) {
     suspend fun newPost(
-        visibility: Int,
         post_type: String,
         creator_type: Int,
         creator: String,
@@ -21,7 +20,6 @@ class PostRepository @Inject constructor(
         options: List<Option>
     ) {
         val newPostRequest = NewPostRequest(
-            visibility = visibility,
             post_type = post_type,
             creator_type = creator_type,
             creator = creator,
@@ -41,5 +39,9 @@ class PostRepository @Inject constructor(
 
     suspend fun getPagePosts(page: String): List<Post> {
         return workHubApi.getPagePosts(page = page)
+    }
+
+    suspend fun getPosts(email: String): List<Post> {
+        return workHubApi.getPosts(email = email)
     }
 }

@@ -14,4 +14,8 @@ postRouter.route('/get_page_posts/:page').get(
     (req, res) => new PostController().get_page_posts(req, res)
 )
 
+postRouter.route('/get_posts/:email').get(
+    (req, res) => new PostController().get_posts(req, res)
+)
+
 export default postRouter

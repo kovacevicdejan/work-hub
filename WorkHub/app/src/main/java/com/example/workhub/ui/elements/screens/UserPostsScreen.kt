@@ -52,7 +52,8 @@ fun UserPostsScreen(
                         post = post,
                         workHubViewModel = workHubViewModel,
                         navController = navController,
-                        curr_user = uiState.curr_user?.email ?: ""
+                        user = userPostsUiState.user,
+                        page = null
                     )
                 }
             }

@@ -2,7 +2,6 @@ package com.example.workhub.data.retrofit.models
 
 data class Post(
     val _id: String,
-    val visibility: Int,
     val post_type: String,
     val creator_type: Int,
     val creator: String,

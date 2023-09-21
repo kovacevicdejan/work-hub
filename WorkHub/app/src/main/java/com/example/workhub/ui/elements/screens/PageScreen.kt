@@ -9,7 +9,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.AddComment
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.runtime.*
@@ -25,12 +24,16 @@ import androidx.navigation.NavHostController
 import com.example.workhub.PostDestination
 import com.example.workhub.data.retrofit.models.FollowedPage
 import com.example.workhub.ui.elements.composables.PageImage
+import com.example.workhub.ui.elements.composables.PageJobCard
 import com.example.workhub.ui.elements.composables.Post
+import com.example.workhub.ui.elements.composables.ReviewCard
 import com.example.workhub.ui.elements.theme.Blue
 import com.example.workhub.ui.elements.theme.Shapes
-import com.example.workhub.ui.stateholders.*
+import com.example.workhub.ui.stateholders.OnEvent
+import com.example.workhub.ui.stateholders.PageEvent
+import com.example.workhub.ui.stateholders.PageViewModel
+import com.example.workhub.ui.stateholders.WorkHubViewModel
 
-@OptIn(ExperimentalMaterialApi::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun PageScreen(
@@ -45,7 +48,10 @@ fun PageScreen(
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
-        pageViewModel.getPage(uiState.page)
+        pageViewModel.getPage(
+            name = uiState.page,
+            user = uiState.curr_user?.email ?: ""
+        )
     }
 
     OnEvent(pageViewModel.event) {
@@ -58,7 +64,7 @@ fun PageScreen(
 
     Scaffold(
         bottomBar = {
-            if (state == 3) {
+            if (state == 3 && (pageUiState.page?.admin ?: "") != (uiState.curr_user?.email ?: "")) {
                 Card(
                     backgroundColor = if (isSystemInDarkTheme()) Color(0xFF202020) else Color(
                         0xFFEEEEEE
@@ -71,8 +77,8 @@ fun PageScreen(
                             modifier = Modifier.padding(vertical = 10.dp)
                         ) {
                             OutlinedTextField(
-                                value = "",
-                                onValueChange = {},
+                                value = pageUiState.text,
+                                onValueChange = {pageViewModel.setText(it)},
                                 modifier = Modifier
                                     .weight(5.6f)
                                     .padding(horizontal = 10.dp)
@@ -80,13 +86,18 @@ fun PageScreen(
 
                             Button(
                                 onClick = {
+                                    pageViewModel.sendPageReview(
+                                        user = (uiState.curr_user?.firstname ?: "") + " " + (uiState.curr_user?.lastname ?: ""),
+                                        user_image = uiState.curr_user?.profile_image ?: "",
+                                        text = pageUiState.text
+                                    )
 
+                                    pageViewModel.setText("")
                                 },
                                 modifier = Modifier
                                     .weight(1f)
                                     .padding(0.dp, 0.dp, 10.dp, 0.dp)
                             ) {
-//                            Text(text = "Send", color = Color.White)
                                 Icon(imageVector = Icons.Default.Send, contentDescription = null)
                             }
                         }
@@ -334,7 +345,8 @@ fun PageScreen(
                                     post = post,
                                     workHubViewModel = workHubViewModel,
                                     navController = navController,
-                                    curr_user = uiState.curr_user!!.email
+                                    page = pageUiState.page,
+                                    user = null
                                 )
                             }
                         }
@@ -342,51 +354,16 @@ fun PageScreen(
                 }
 
                 2 -> {
-                    for (i in 0..7) {
+                    for (job in pageUiState.jobs) {
                         item {
-                            Card(
-                                backgroundColor = if (isSystemInDarkTheme()) Color(0xFF202020) else Color(
-                                    0xFFEEEEEE
-                                ),
-                                shape = Shapes.large,
-                                onClick = {
-                                    navController.navigate("Job Post") {
-                                        launchSingleTop = true
-                                        restoreState = true
-                                    }
-                                }
-                            ) {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    modifier = Modifier.padding(vertical = 5.dp)
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Default.Person,
-                                        contentDescription = null,
-                                        modifier = Modifier
-                                            .width(60.dp)
-                                            .height(60.dp)
-                                    )
-
-                                    Column {
-                                        Text(text = "Senior Software engineer", fontSize = 20.sp)
-
-                                        Text(text = "TomTom", fontSize = 14.sp)
-
-                                        Text(text = "Belgrade, Serbia", fontSize = 14.sp)
-
-                                        Text(text = "Hybrid", fontSize = 14.sp)
-                                    }
-
-                                    Spacer(modifier = Modifier.weight(1f))
-
-                                    Button(
-                                        onClick = {},
-                                        modifier = Modifier.padding(horizontal = 10.dp)
-                                    ) {
-                                        Text(text = "Save", color = Color.White)
-                                    }
-                                }
+                            pageUiState.page?.let { it1 ->
+                                PageJobCard(
+                                    job = job,
+                                    page = it1,
+                                    navController = navController,
+                                    pageViewModel = pageViewModel,
+                                    workHubViewModel = workHubViewModel
+                                )
                             }
 
                             Divider()
@@ -395,51 +372,13 @@ fun PageScreen(
                 }
 
                 3 -> {
-                    item {
-                        for (i in 1..5) {
-                            Card(
-                                backgroundColor = if (isSystemInDarkTheme()) Color(0xFF202020) else Color(
-                                    0xFFEEEEEE
-                                ),
-                                modifier = Modifier
-                                    .padding(
-                                        0.dp,
-                                        0.dp,
-                                        0.dp,
-                                        if (i == 5) 85.dp else 10.dp
-                                    )
-                                    .fillMaxWidth(),
-                                shape = Shapes.large
-                            ) {
-                                Column {
-                                    Row(
-                                        verticalAlignment = Alignment.CenterVertically
-                                    ) {
-                                        Icon(
-                                            imageVector = Icons.Default.Person,
-                                            contentDescription = null,
-                                            modifier = Modifier
-                                                .width(30.dp)
-                                                .height(30.dp)
-                                        )
-
-                                        Text(text = "Petar Petrovic", fontSize = 20.sp)
-                                    }
-
-                                    Column(modifier = Modifier.padding(30.dp, 0.dp, 0.dp, 5.dp)) {
-                                        Text(
-                                            text = "I saw you got a new job at my company. Congratulations!",
-                                            fontSize = 18.sp,
-                                            maxLines = Int.MAX_VALUE
-                                        )
-
-                                        Text(
-                                            text = "Can we meet for a drink?",
-                                            fontSize = 18.sp,
-                                            maxLines = Int.MAX_VALUE
-                                        )
-                                    }
-                                }
+                    if(pageUiState.page != null) {
+                        for(i in pageUiState.page!!.reviews.size - 1 downTo 0) {
+                            item {
+                                ReviewCard(
+                                    review = pageUiState.page!!.reviews[i],
+                                    first = i == 0
+                                )
                             }
                         }
                     }

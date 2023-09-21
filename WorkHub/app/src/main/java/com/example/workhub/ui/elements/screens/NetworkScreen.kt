@@ -27,7 +27,6 @@ import com.example.workhub.ui.elements.composables.RecommendedUser
 import com.example.workhub.ui.elements.theme.Blue
 import com.example.workhub.ui.stateholders.*
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun NetworkScreen(
     workHubViewModel: WorkHubViewModel,

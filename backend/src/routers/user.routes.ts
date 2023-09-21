@@ -50,4 +50,12 @@ userRouter.route('/add_experience').post(
     (req, res) => new UserController().add_experience(req, res)
 )
 
+userRouter.route('/get_connections/:user').get(
+    (req, res) => new UserController().get_connections(req, res)
+)
+
+userRouter.route('/search/:keyword').get(
+    (req, res) => new UserController().search(req, res)
+)
+
 export default userRouter

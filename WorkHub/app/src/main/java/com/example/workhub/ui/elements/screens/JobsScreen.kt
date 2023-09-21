@@ -302,7 +302,7 @@ fun JobsScreen(
                                         onClick = {},
                                         modifier = Modifier.padding(horizontal = 10.dp)
                                     ) {
-                                        Text(text = "Save", color = Color.White)
+                                        Text(text = "Apply", color = Color.White)
                                     }
                                 }
                             }

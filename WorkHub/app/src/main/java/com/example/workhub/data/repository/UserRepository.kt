@@ -141,4 +141,12 @@ class UserRepository @Inject constructor(
     suspend fun addExperience(addExperienceRequest: AddExperienceRequest) {
         workHubApi.addExperience(addExperienceRequest = addExperienceRequest)
     }
+
+    suspend fun getConnections(user: String): List<User> {
+        return workHubApi.getConnections(user = user)
+    }
+
+    suspend fun searchUsers(keyword: String): List<User> {
+        return workHubApi.searchUsers(keyword = keyword)
+    }
 }

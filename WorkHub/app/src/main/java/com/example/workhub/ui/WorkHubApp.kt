@@ -1,6 +1,5 @@
 package com.example.workhub.ui
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
@@ -10,16 +9,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
-import androidx.compose.ui.input.nestedscroll.NestedScrollSource
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -31,6 +28,7 @@ import com.example.workhub.*
 import com.example.workhub.ui.elements.composables.ProfileImage
 import com.example.workhub.ui.elements.screens.*
 import com.example.workhub.ui.elements.theme.WorkHubTheme
+import com.example.workhub.ui.stateholders.ChatEvent
 import com.example.workhub.ui.stateholders.OnEvent
 import com.example.workhub.ui.stateholders.SignInEvent
 import com.example.workhub.ui.stateholders.WorkHubViewModel
@@ -57,8 +55,14 @@ fun WorkHubApp() {
                     }
                 }
             }
-            is SignInEvent.SignInFailure ->
-                Toast.makeText(context, "error", Toast.LENGTH_SHORT).show()
+
+            ChatEvent.NewMessageEvent -> {
+                Toast.makeText(
+                    context,
+                    "New message!",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
     }
 
@@ -105,7 +109,7 @@ fun WorkHubApp() {
                                     .weight(3f)
                             ) {
                                 OutlinedTextField(
-                                    value = "",
+                                    value = uiState.keyword,
                                     placeholder = {
                                         Row {
                                             Icon(
@@ -115,12 +119,14 @@ fun WorkHubApp() {
                                             Text(text = "Search")
                                         }
                                     },
-                                    onValueChange = {}
+                                    onValueChange = {workHubViewModel.setKeyword(it)}
                                 )
                             }
 
                             Button(
                                 onClick = {
+                                    workHubViewModel.setKeyword(uiState.keyword)
+
                                     navController.navigate("Search") {
                                         launchSingleTop = true
                                         restoreState = false
@@ -147,23 +153,10 @@ fun WorkHubApp() {
                         snippetDestinations.forEach { navDestination ->
                             BottomNavigationItem(
                                 icon = {
-                                    if (navDestination.route == "Network" || navDestination.route == "Chats") {
-                                        BadgedBox(
-                                            badge = {
-                                                Badge(backgroundColor = Color.Red) { Text("8") }
-                                            }
-                                        ) {
-                                            Icon(
-                                                imageVector = navDestination.icon,
-                                                contentDescription = null,
-                                            )
-                                        }
-                                    } else {
-                                        Icon(
-                                            imageVector = navDestination.icon,
-                                            contentDescription = null,
-                                        )
-                                    }
+                                    Icon(
+                                        imageVector = navDestination.icon,
+                                        contentDescription = null,
+                                    )
                                 },
                                 label = { Text(navDestination.route, fontSize = 11.sp) },
                                 selected = currentRoute.startsWith(navDestination.route),
@@ -197,6 +190,7 @@ fun WorkHubApp() {
             ) {
                 composable(route = HomeDestination.route) {
                     HomeScreen(
+                        workHubViewModel = workHubViewModel,
                         navController = navController
                     )
                 }
@@ -223,7 +217,8 @@ fun WorkHubApp() {
 
                 composable(route = ChatsDestination.route) {
                     ChatsScreen(
-                        navController = navController
+                        navController = navController,
+                        workHubViewModel = workHubViewModel
                     )
                 }
 
@@ -256,6 +251,7 @@ fun WorkHubApp() {
 
                 composable(route = "Single Chat") {
                     ChatScreen(
+                        workHubViewModel,
                         navController = navController
                     )
                 }
@@ -287,6 +283,7 @@ fun WorkHubApp() {
 
                 composable(route = "Job Post") {
                     JobScreen(
+                        workHubViewModel = workHubViewModel,
                         navController = navController
                     )
                 }
@@ -307,12 +304,14 @@ fun WorkHubApp() {
 
                 composable(route = "Search") {
                     SearchScreen(
+                        workHubViewModel = workHubViewModel,
                         navController = navController
                     )
                 }
 
                 composable(route = "Select New Chat") {
                     SelectNewChatScreen(
+                        workHubViewModel = workHubViewModel,
                         navController = navController
                     )
                 }

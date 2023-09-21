@@ -47,6 +47,9 @@ let Page = new Schema({
             },
             text: {
                 type: String
+            },
+            user_image: {
+                type: String
             }
         }
     ]

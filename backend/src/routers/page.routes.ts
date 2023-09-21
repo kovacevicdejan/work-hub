@@ -22,4 +22,12 @@ pageRouter.route('/unfollow').post(
     (req, res) => new PageController().unfollow(req, res)
 )
 
+pageRouter.route('/send_review').post(
+    (req, res) => new PageController().send_review(req, res)
+)
+
+pageRouter.route('/search/:keyword').get(
+    (req, res) => new PageController().search(req, res)
+)
+
 export default pageRouter

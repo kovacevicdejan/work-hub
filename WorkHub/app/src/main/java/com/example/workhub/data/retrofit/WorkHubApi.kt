@@ -13,7 +13,7 @@ import retrofit2.http.POST
 import retrofit2.http.Part
 import retrofit2.http.Path
 
-const val BASE_URL = "https://c7e9-109-245-38-169.ngrok-free.app/"
+const val BASE_URL = "https://9626-109-245-38-169.ngrok-free.app/"
 
 interface WorkHubApi {
     // image routes
@@ -60,7 +60,14 @@ interface WorkHubApi {
     @POST("user/add_experience")
     suspend fun addExperience(@Body addExperienceRequest: AddExperienceRequest)
 
+    @GET("user/get_connections/{user}")
+    suspend fun getConnections(@Path("user") user: String): List<User>
+
+    @GET("user/search/{keyword}")
+    suspend fun searchUsers(@Path("keyword") keyword: String): List<User>
+
     // post routes
+
     @POST("post/new_post")
     suspend fun newPost(@Body newPostRequest: NewPostRequest)
 
@@ -70,7 +77,11 @@ interface WorkHubApi {
     @GET("post/get_page_posts/{page}")
     suspend fun getPagePosts(@Path("page") page: String): List<Post>
 
+    @GET("post/get_posts/{email}")
+    suspend fun getPosts(@Path("email") email: String): List<Post>
+
     // page routes
+
     @POST("page/create_page")
     suspend fun createPage(@Body createPageRequest: CreatePageRequest)
 
@@ -86,7 +97,14 @@ interface WorkHubApi {
     @POST("page/unfollow")
     suspend fun unfollow(@Body followRequest: FollowRequest)
 
+    @POST("page/send_review")
+    suspend fun sendPageReview(@Body sendPageReview: SendPageReview)
+
+    @GET("page/search/{keyword}")
+    suspend fun searchPages(@Path("keyword") keyword: String): List<Page>
+
     // job routes
+
     @POST("job/new_job")
     suspend fun newJob(@Body newJobRequest: NewJobRequest)
 
@@ -95,4 +113,18 @@ interface WorkHubApi {
 
     @POST("job/delete")
     suspend fun deleteJob(@Body deleteJobRequest: DeleteJobRequest)
+
+    @GET("job/get_job_by_id/{job_id}")
+    suspend fun getJobById(@Path("job_id") job_id: String): Job
+
+    @POST("job/apply")
+    suspend fun applyForJob(@Body applyForJobRequest: ApplyForJobRequest)
+
+    @GET("job/search/{keyword}")
+    suspend fun searchJobs(@Path("keyword") keyword: String): List<Job>
+
+    // chat routes
+
+    @POST("chat/new_chat")
+    suspend fun newChat(@Body newChatRequest: NewChatRequest): String
 }

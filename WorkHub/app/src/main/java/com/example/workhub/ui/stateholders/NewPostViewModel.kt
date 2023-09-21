@@ -21,7 +21,6 @@ import java.util.*
 import javax.inject.Inject
 
 data class NewPostUiState(
-    val visibility: Boolean,
     val post_type: String,
     val post_text: String,
     val job_title: String,
@@ -38,7 +37,6 @@ class NewPostViewModel @Inject constructor(
 ) : BaseViewModel<PostEvent>() {
     private val _uiState = MutableStateFlow(
         NewPostUiState(
-            visibility = true,
             post_type = "Classic",
             post_text = "",
             job_title = "",
@@ -50,10 +48,6 @@ class NewPostViewModel @Inject constructor(
     )
 
     val uiState = _uiState.asStateFlow()
-
-    fun setVisibility(visibility: Boolean) {
-        _uiState.update { it.copy(visibility = visibility) }
-    }
 
     fun setPostType(post_type: String) {
         _uiState.update { it.copy(post_type = post_type) }
@@ -153,7 +147,6 @@ class NewPostViewModel @Inject constructor(
         }
 
         postRepository.newPost(
-            visibility = if(uiState.value.visibility) 0 else 1,
             post_type = uiState.value.post_type,
             creator_type = creator_type,
             creator = post_creator,

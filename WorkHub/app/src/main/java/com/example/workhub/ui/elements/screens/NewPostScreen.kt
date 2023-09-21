@@ -48,12 +48,6 @@ fun NewPostScreen(
         rememberLauncherForActivityResult(contract = ActivityResultContracts.OpenDocument()) {
             it?.let { uri ->
                 newPostViewModel.setImageUri(image_uri = uri)
-
-                val file = newPostViewModel.createFileFromImageUri(
-                    context = context,
-                    imageUri = uri,
-                    newFileName = "image"
-                )
             }
         }
 
@@ -106,39 +100,6 @@ fun NewPostScreen(
                         ) {
                             Text(text = "Post", color = Color.White, fontSize = 20.sp)
                         }
-                    }
-
-                    Row(
-                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = "Visibility: ",
-                            modifier = Modifier.weight(1.2f),
-                            fontSize = 20.sp
-                        )
-
-                        RadioButton(
-                            selected = newPostUiState.visibility,
-                            onClick = { newPostViewModel.setVisibility(true) }
-                        )
-
-                        Text(
-                            text = "Anyone",
-                            modifier = Modifier.weight(1f),
-                            fontSize = 20.sp
-                        )
-
-                        RadioButton(
-                            selected = !newPostUiState.visibility,
-                            onClick = { newPostViewModel.setVisibility(false) }
-                        )
-
-                        Text(
-                            text = if(uiState.creator_type == 0) "Connections" else "Followers",
-                            modifier = Modifier.weight(1.5f),
-                            fontSize = 20.sp
-                        )
                     }
 
                     Row(

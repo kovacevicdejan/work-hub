@@ -221,4 +221,31 @@ export class UserController {
 
         res.json("success")
     }
+
+    get_connections = async (req: express.Request, res: express.Response) => {
+        const email = req.params.user
+
+        const user = await User.findOne({
+            email: email
+        })
+
+        const user_connections = user.connections.map(conn => conn.user)
+
+        const connections = await User.find({
+            email: {$in: user_connections}
+        })
+
+        res.json(connections)
+    }
+
+    search = async (req: express.Request, res: express.Response) => {
+        const keyword = req.params.keyword
+
+        const users = await User.find({
+            $or: [{firstname: { $regex: keyword, $options: 'i' }}, 
+            {firstname: { $regex: keyword, $options: 'i' }}]
+        })
+
+        res.json(users)
+    }
 }

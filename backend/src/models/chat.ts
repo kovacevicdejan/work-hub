@@ -9,6 +9,9 @@ let Chat = new Schema({
     user2: {
         type: String
     },
+    timestamp: {
+        type: Number
+    },
     messages: [
         {
             user: {
@@ -17,7 +20,7 @@ let Chat = new Schema({
             text: {
                 type: String
             },
-            date_sent: {
+            timestamp: {
                 type: Number
             }
         }

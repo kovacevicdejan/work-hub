@@ -1,13 +1,11 @@
 package com.example.workhub.data.repository
 
 import com.example.workhub.data.retrofit.WorkHubApi
-import com.example.workhub.data.retrofit.models.FollowedPage
-import com.example.workhub.data.retrofit.models.Option
-import com.example.workhub.data.retrofit.models.Page
-import com.example.workhub.data.retrofit.models.Post
+import com.example.workhub.data.retrofit.models.*
 import com.example.workhub.data.retrofit.requests.CreatePageRequest
 import com.example.workhub.data.retrofit.requests.FollowRequest
 import com.example.workhub.data.retrofit.requests.NewPostRequest
+import com.example.workhub.data.retrofit.requests.SendPageReview
 import javax.inject.Inject
 
 class PageRepository @Inject constructor(
@@ -41,5 +39,20 @@ class PageRepository @Inject constructor(
         )
 
         workHubApi.unfollow(followRequest = followRequest)
+    }
+
+    suspend fun sendPageReview(user: String, page: String, text: String, user_image: String) {
+        val sendPageReview = SendPageReview(
+            user = user,
+            page = page,
+            text = text,
+            user_image = user_image
+        )
+
+        workHubApi.sendPageReview(sendPageReview = sendPageReview)
+    }
+
+    suspend fun searchPages(keyword: String): List<Page> {
+        return workHubApi.searchPages(keyword = keyword)
     }
 }

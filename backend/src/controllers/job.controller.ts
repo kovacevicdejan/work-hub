@@ -33,12 +33,45 @@ export class JobController {
     }
 
     delete = async (req: express.Request, res: express.Response) => {
-        const job_id = req.params.job_id
+        const job_id = req.body.job_id
 
         await Job.findOneAndDelete({
             _id: job_id
         })
 
         res.json('success')
+    }
+
+    get_job_by_id = async (req: express.Request, res: express.Response) => {
+        const job_id = req.params.job_id;
+
+        const job = await Job.findOne({
+            _id: job_id
+        })
+
+        res.json(job)
+    }
+
+    apply = async (req: express.Request, res: express.Response) => {
+        const user = req.body.user
+        const job_id = req.body.job_id
+
+        await Job.findOneAndUpdate({
+            _id: job_id
+        }, {
+            $push: {applicants: {user: user}}
+        })
+
+        res.json('success')
+    }
+
+    search = async (req: express.Request, res: express.Response) => {
+        const keyword = req.params.keyword
+
+        const users = await Job.find({
+            title: { $regex: keyword, $options: 'i' }
+        })
+
+        res.json(users)
     }
 }

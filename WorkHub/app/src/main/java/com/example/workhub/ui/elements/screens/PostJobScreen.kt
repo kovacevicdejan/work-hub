@@ -20,6 +20,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.workhub.R
+import com.example.workhub.ui.stateholders.JobEvent
+import com.example.workhub.ui.stateholders.OnEvent
 import com.example.workhub.ui.stateholders.PostJobViewModel
 import com.example.workhub.ui.stateholders.WorkHubViewModel
 import java.util.*
@@ -33,7 +35,6 @@ fun PostJobScreen(
 ) {
     val uiState by workHubViewModel.uiState.collectAsState()
     val postJobUiState by postJobViewModel.uiState.collectAsState()
-    var state by remember { mutableStateOf(true) }
     val workplaceTypes = arrayOf("Office", "Remote", "Hybrid")
     var expanded by remember { mutableStateOf(false) }
     val context = LocalContext.current
@@ -54,8 +55,18 @@ fun PostJobScreen(
         if(isSystemInDarkTheme()) R.style.DatePickerDarkTheme else R.style.DatePickerLightTheme,
         { _: DatePicker, mYear: Int, mMonth: Int, mDayOfMonth: Int ->
             date.value = "$mDayOfMonth/${mMonth+1}/$mYear"
+            postJobViewModel.setDeadline(calendar.timeInMillis)
         }, year, month, day
     )
+
+    OnEvent(postJobViewModel.event) {
+        if(it == JobEvent.NewJobEvent) {
+            navController.navigate("Page") {
+                launchSingleTop = true
+                restoreState = true
+            }
+        }
+    }
 
     Card(modifier = Modifier.padding(10.dp), backgroundColor = if(isSystemInDarkTheme()) Color(0xFF202020) else Color(0xFFEEEEEE)) {
         Column {
@@ -182,7 +193,7 @@ fun PostJobScreen(
                         )
 
                         RadioButton(
-                            selected = state,
+                            selected = postJobUiState.job_type,
                             onClick = { postJobViewModel.setJobType(true) },
                         )
 
@@ -193,7 +204,7 @@ fun PostJobScreen(
                         )
 
                         RadioButton(
-                            selected = !state,
+                            selected = !postJobUiState.job_type,
                             onClick = { postJobViewModel.setJobType(false) }
                         )
 
@@ -239,7 +250,7 @@ fun PostJobScreen(
                         OutlinedTextField(
                             value = postJobUiState.area,
                             onValueChange = { postJobViewModel.setArea(it) },
-                            label = {Text(text = "Job areas")}
+                            label = {Text(text = "Job area")}
                         )
                     }
                 }

@@ -11,7 +11,7 @@ data class Page(
     val specialties: String,
     val admin: String,
     var followers: List<Follower>,
-    val reviews: List<PageReview>
+    var reviews: List<PageReview>
 )
 
 data class Follower(
@@ -20,5 +20,6 @@ data class Follower(
 
 data class PageReview(
     val user: String,
-    val text: String?
+    val text: String,
+    val user_image: String
 )

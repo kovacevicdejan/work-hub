@@ -1,10 +1,11 @@
 import * as express from "express"
 import Post from "../models/post"
+import User from "../models/user"
+
 
 export class PostController {
     new_post = async (req: express.Request, res: express.Response) => {
         const post = new Post({
-            visibility: req.body.visibility,
             post_type: req.body.post_type,
             creator_type: req.body.creator_type,
             creator: req.body.creator,
@@ -40,6 +41,25 @@ export class PostController {
             creator_type: 1
         })
 
+        res.json(posts)
+    }
+
+    get_posts = async (req: express.Request, res: express.Response) => {
+        const email = req.params.email
+
+        let user = await User.findOne({
+            email: email
+        })
+
+        let connections = user.connections.map(conn => conn.user)
+        console.log(connections)
+        let followed_pages = user.followed_pages.map(page => page.name)
+
+        let posts = await Post.find({
+            $or: [ {creator_type: 0, creator: {$in: connections}}, {creator_type: 1, creator: {$in: followed_pages}}]
+        })
+
+        console.log(posts)
         res.json(posts)
     }
 }

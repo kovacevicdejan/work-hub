@@ -73,3 +73,13 @@ sealed interface PageEvent : Event {
 sealed interface PostEvent : Event {
     object NewPostEvent: PostEvent
 }
+
+sealed interface JobEvent : Event {
+    object NewJobEvent: JobEvent
+    object ApplyForJob: JobEvent
+}
+
+sealed interface ChatEvent: Event {
+    object NewChatEvent: ChatEvent
+    object NewMessageEvent: ChatEvent
+}
