@@ -4,6 +4,7 @@ data class Job(
     val _id: String,
     val title: String,
     val page: String,
+    val page_image: String,
     val workplace_type: String,
     val location: String,
     val job_type: Int,

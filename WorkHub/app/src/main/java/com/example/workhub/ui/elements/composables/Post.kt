@@ -3,11 +3,15 @@ package com.example.workhub.ui.elements.composables
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.material.Card
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,7 +26,6 @@ import com.example.workhub.data.retrofit.BASE_URL
 import com.example.workhub.data.retrofit.models.Page
 import com.example.workhub.data.retrofit.models.Post
 import com.example.workhub.data.retrofit.models.User
-import com.example.workhub.ui.elements.theme.Blue
 import com.example.workhub.ui.stateholders.WorkHubViewModel
 
 @Composable
@@ -33,6 +36,8 @@ fun Post(
     workHubViewModel: WorkHubViewModel,
     navController: NavHostController
 ) {
+    val uiState by workHubViewModel.uiState.collectAsState()
+
     Card(modifier = Modifier.padding(start = 5.dp, top = 5.dp, end = 5.dp, bottom = 5.dp), backgroundColor = if(isSystemInDarkTheme()) Color(0xFF202020) else Color(0xFFEEEEEE)) {
         Column {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -131,71 +136,9 @@ fun Post(
                         )
                     }
                 }
-
-                "Poll" -> {
-                    Row(modifier = Modifier.padding(horizontal = 10.dp)) {
-                        Text(
-                            text = post.post_text,
-                            modifier = Modifier.padding(vertical = 10.dp),
-                            fontSize = 16.sp
-                        )
-                    }
-
-                    Column() {
-                        for (option in post.options) {
-                            Row(
-                                modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                RadioButton(
-                                    selected = false,
-                                    onClick = {  }
-                                )
-
-                                Text(
-                                    text = option.text,
-                                    fontSize = 20.sp,
-                                    color = Blue
-                                )
-
-                                Text(
-                                    text = "   (${option.voters.size} votes)",
-                                    fontSize = 16.sp
-                                )
-                            }
-                        }
-                    }
-                }
             }
             
-            Row(modifier = Modifier.padding(10.dp)) {
-                Icon(
-                    imageVector = Icons.Default.ThumbUp,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .width(16.dp)
-                        .height(16.dp)
-                )
-                
-                Text(text = " ${post.likes.size}", fontSize = 12.sp)
-                
-                Spacer(modifier = Modifier.weight(1f))
-                
-                Text(text = "${post.comments.size} comments", fontSize = 12.sp)
-            }
-            
-            Divider()
-
-            Row(modifier = Modifier.padding(horizontal = 10.dp)) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.weight(1f)) {
-                    IconButton(onClick = { /*TODO*/ }) {
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Icon(imageVector = Icons.Default.ThumbUp, contentDescription = "Like", modifier = Modifier.size(20.dp))
-                            Text(text = "Like", fontSize = 12.sp)
-                        }
-                    }
-                }
-
+            Row(modifier = Modifier.padding(10.dp), verticalAlignment = Alignment.CenterVertically) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.weight(1f)) {
                     IconButton(
                         onClick = {
@@ -213,6 +156,10 @@ fun Post(
                         }
                     }
                 }
+                
+                Spacer(modifier = Modifier.weight(2f))
+
+                Text(text = "${post.comments.size} comments", fontSize = 12.sp, modifier = Modifier.weight(1f))
             }
         }
     }

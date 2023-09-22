@@ -9,9 +9,9 @@ let Chat = new Schema({
     user2: {
         type: String
     },
-    timestamp: {
-        type: Number
-    },
+    // timestamp: {
+    //     type: Number
+    // },
     messages: [
         {
             user: {

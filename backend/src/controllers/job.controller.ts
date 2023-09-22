@@ -6,6 +6,7 @@ export class JobController {
         const job = new Job({
             title: req.body.title,
             page: req.body.page,
+            page_image: req.body.page_image,
             workplace_type: req.body.workplace_type,
             location: req.body.location,
             job_type: req.body.job_type,
@@ -68,10 +69,16 @@ export class JobController {
     search = async (req: express.Request, res: express.Response) => {
         const keyword = req.params.keyword
 
-        const users = await Job.find({
+        const jobs = await Job.find({
             title: { $regex: keyword, $options: 'i' }
         })
 
-        res.json(users)
+        res.json(jobs)
+    }
+
+    get_recommended_jobs = async (req: express.Request, res: express.Response) => {
+        const jobs = await Job.find()
+
+        res.json(jobs)
     }
 }

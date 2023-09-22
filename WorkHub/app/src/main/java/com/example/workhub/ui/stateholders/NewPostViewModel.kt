@@ -6,8 +6,6 @@ import android.net.Uri
 import androidx.lifecycle.viewModelScope
 import com.example.workhub.data.repository.ImageRepository
 import com.example.workhub.data.repository.PostRepository
-import com.example.workhub.data.retrofit.models.Option
-import com.example.workhub.data.retrofit.models.User
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -25,8 +23,6 @@ data class NewPostUiState(
     val post_text: String,
     val job_title: String,
     val page_name: String,
-    val option: String,
-    val option_list: List<String>,
     val image_uri: Uri?
 )
 
@@ -41,8 +37,6 @@ class NewPostViewModel @Inject constructor(
             post_text = "",
             job_title = "",
             page_name = "",
-            option = "",
-            option_list = emptyList(),
             image_uri = null
         )
     )
@@ -63,23 +57,6 @@ class NewPostViewModel @Inject constructor(
 
     fun setPageName(page_name: String) {
         _uiState.update { it.copy(page_name = page_name) }
-    }
-
-    fun setOption(option: String) {
-        _uiState.update { it.copy(option = option) }
-    }
-
-    fun addOption(option: String) {
-        _uiState.update { it.copy(option_list = uiState.value.option_list.plus(option)) }
-    }
-
-    fun getOptionsText(): String {
-        var optionsText = ""
-
-        for(option in uiState.value.option_list) {
-            optionsText = "$optionsText$option   "
-        }
-        return optionsText
     }
 
     fun setImageUri(image_uri: Uri) {
@@ -140,12 +117,6 @@ class NewPostViewModel @Inject constructor(
             }
         }
 
-        var options: List<Option> = emptyList()
-
-        for(option in uiState.value.option_list) {
-            options = options.plus(Option(option, emptyList()))
-        }
-
         postRepository.newPost(
             post_type = uiState.value.post_type,
             creator_type = creator_type,
@@ -153,8 +124,7 @@ class NewPostViewModel @Inject constructor(
             post_text = uiState.value.post_text,
             post_image = imageName,
             job_title = uiState.value.job_title,
-            page_name = uiState.value.page_name,
-            options = options
+            page_name = uiState.value.page_name
         )
 
         sendEvent(PostEvent.NewPostEvent)

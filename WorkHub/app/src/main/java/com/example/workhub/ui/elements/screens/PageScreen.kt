@@ -126,6 +126,8 @@ fun PageScreen(
             else if(state == 2) {
                 FloatingActionButton(
                     onClick = {
+                        workHubViewModel.setPageImage(pageUiState.page?.profile_image ?: "")
+
                         navController.navigate("New Job Post") {
                             launchSingleTop = true
                             restoreState = true
@@ -338,9 +340,9 @@ fun PageScreen(
                 }
 
                 1 -> {
-                    if(pageUiState.page != null && uiState.curr_user != null) {
-                        for (post in pageUiState.posts) {
-                            item {
+                    item {
+                        if (pageUiState.page != null && uiState.curr_user != null) {
+                            for (post in pageUiState.posts) {
                                 Post(
                                     post = post,
                                     workHubViewModel = workHubViewModel,

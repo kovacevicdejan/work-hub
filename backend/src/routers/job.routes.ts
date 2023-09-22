@@ -26,4 +26,8 @@ jobRouter.route('/search/:keyword').get(
     (req, res) => new JobController().search(req, res)
 )
 
+jobRouter.route('/get_jobs').get(
+    (req, res) => new JobController().get_recommended_jobs(req, res)
+)
+
 export default jobRouter

@@ -40,7 +40,7 @@ fun NewPostScreen(
 ) {
     val uiState by workHubViewModel.uiState.collectAsState()
     val newPostUiState by newPostViewModel.uiState.collectAsState()
-    val postTypes = arrayOf("Classic", "New position", "Poll")
+    val postTypes = arrayOf("Classic", "New position")
     var expanded by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
@@ -254,56 +254,6 @@ fun NewPostScreen(
                                             .fillMaxWidth()
                                             .padding(vertical = 5.dp)
                                     )
-                                }
-                            }
-                        }
-
-                        "Poll" -> {
-                            Row(modifier = Modifier.padding(horizontal = 10.dp, vertical = 10.dp)) {
-                                OutlinedTextField(
-                                    value = newPostUiState.post_text,
-                                    onValueChange = {newPostViewModel.setPostText(it)},
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .height(200.dp),
-                                    label = {Text(text = "Post text")}
-                                )
-                            }
-
-                            Row(modifier = Modifier.padding(horizontal = 10.dp, vertical = 10.dp)) {
-                                Text(
-                                    text = "Poll options:   ",
-                                    fontSize = 20.sp
-                                )
-
-                                Text(
-                                    text = newPostViewModel.getOptionsText(),
-                                    fontSize = 20.sp,
-                                    color = Blue,
-                                    maxLines = 5
-                                )
-                            }
-
-                            Row(
-                                modifier = Modifier.padding(horizontal = 10.dp, vertical = 10.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                OutlinedTextField(
-                                    value = newPostUiState.option,
-                                    onValueChange = { newPostViewModel.setOption(it) },
-                                    modifier = Modifier
-                                        .weight(2.4f)
-                                        .padding(0.dp, 0.dp, 10.dp, 0.dp)
-                                        .weight(3f)
-                                )
-
-                                Button(
-                                    onClick = {
-                                        newPostViewModel.addOption(newPostUiState.option)
-                                    },
-                                    modifier = Modifier.weight(1f)
-                                ) {
-                                    Text(text = "Add option", color = Color.White)
                                 }
                             }
                         }

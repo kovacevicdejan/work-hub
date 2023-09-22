@@ -78,10 +78,11 @@ class PostJobViewModel @Inject constructor(
         _uiState.update { it.copy(area = area) }
     }
 
-    fun postJob(page: String) = viewModelScope.launch {
+    fun postJob(page: String, page_image: String) = viewModelScope.launch {
         val newJobRequest = NewJobRequest(
             title = uiState.value.title,
             page = page,
+            page_image = page_image,
             workplace_type = uiState.value.workplace_type,
             location = uiState.value.location,
             job_type = if(uiState.value.job_type) 0 else 1,

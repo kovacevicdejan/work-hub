@@ -211,6 +211,7 @@ fun WorkHubApp() {
 
                 composable(route = JobsDestination.route) {
                     JobsScreen(
+                        workHubViewModel = workHubViewModel,
                         navController = navController
                     )
                 }
@@ -257,7 +258,10 @@ fun WorkHubApp() {
                 }
 
                 composable(route = "Comments") {
-                    CommentsScreen()
+                    CommentsScreen(
+                        workHubViewModel = workHubViewModel,
+                        navController = navController
+                    )
                 }
 
                 composable(route = "Manage Network") {

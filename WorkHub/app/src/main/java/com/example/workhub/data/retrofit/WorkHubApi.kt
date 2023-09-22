@@ -13,7 +13,7 @@ import retrofit2.http.POST
 import retrofit2.http.Part
 import retrofit2.http.Path
 
-const val BASE_URL = "https://9626-109-245-38-169.ngrok-free.app/"
+const val BASE_URL = "https://aacf-178-237-216-126.ngrok-free.app/"
 
 interface WorkHubApi {
     // image routes
@@ -80,6 +80,12 @@ interface WorkHubApi {
     @GET("post/get_posts/{email}")
     suspend fun getPosts(@Path("email") email: String): List<Post>
 
+    @GET("post/get_post_by_id/{post_id}")
+    suspend fun getPostById(@Path("post_id") post_id: String): Post
+
+    @POST("post/add_comment")
+    suspend fun addComment(@Body addCommentRequest: AddCommentRequest)
+
     // page routes
 
     @POST("page/create_page")
@@ -122,6 +128,9 @@ interface WorkHubApi {
 
     @GET("job/search/{keyword}")
     suspend fun searchJobs(@Path("keyword") keyword: String): List<Job>
+
+    @GET("job/get_jobs")
+    suspend fun getJobs(): List<Job>
 
     // chat routes
 

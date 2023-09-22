@@ -9,28 +9,12 @@ data class Post(
     val post_image: String,
     val job_title: String,
     val page_name: String,
-    val options: List<Option>,
     val date_posted: Long,
-    val comments: List<Comment>,
-    val likes: List<Like>
-)
-
-data class Option(
-    val text: String,
-    val voters: List<Voter>
+    var comments: List<Comment>
 )
 
 data class Comment(
     val user: String,
-    val text: String,
-    val replying_user: String,
-    val replying_text: String
-)
-
-data class Like(
-    val user: String
-)
-
-data class Voter(
-    val user: String
+    val profile_image: String,
+    val text: String
 )

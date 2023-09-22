@@ -1,18 +1,12 @@
 package com.example.workhub.ui.stateholders
 
-import android.annotation.SuppressLint
-import android.content.Context
-import android.os.Build
 import android.util.Log
-import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.lifecycle.viewModelScope
 import com.example.workhub.data.localdb.LocalChat
 import com.example.workhub.data.localdb.LocalMessage
 import com.example.workhub.data.repository.LocalChatRepository
 import com.example.workhub.data.repository.LocalMessageRepository
 import com.example.workhub.data.repository.UserRepository
-import com.example.workhub.data.retrofit.models.Skill
 import com.example.workhub.data.retrofit.models.User
 import com.example.workhub.ui.SocketManager
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -34,7 +28,8 @@ data class UiState(
     val job_id: String,
     val chat_id: String,
     val keyword: String,
-    val post_id: String
+    val post_id: String,
+    val page_image: String
 )
 
 @HiltViewModel
@@ -55,7 +50,7 @@ class WorkHubViewModel @Inject constructor(
                         id = args[0].toString(),
                         user1 = args[1].toString(),
                         user2 = args[2].toString(),
-                        timestamp = args[3] as Long
+//                        timestamp = args[3] as Long
                     )
 
                     localChatRepository.insert(localChat = localChat)
@@ -94,7 +89,8 @@ class WorkHubViewModel @Inject constructor(
             job_id = "",
             chat_id = "",
             keyword = "",
-            post_id = ""
+            post_id = "",
+            page_image = ""
         )
     )
 
@@ -163,6 +159,10 @@ class WorkHubViewModel @Inject constructor(
 
     fun setKeyword(keyword: String) {
         _uiState.update { it.copy(keyword = keyword) }
+    }
+
+    fun setPageImage(page_image: String) {
+        _uiState.update { it.copy(page_image = page_image) }
     }
 
     fun addSkill() = viewModelScope.launch {

@@ -46,6 +46,19 @@ fun SearchJobCard(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(10.dp)
         ) {
+            IconButton(
+                onClick = {
+                    workHubViewModel.setJobId(job_id = job._id)
+
+                    navController.navigate("Job Post") {
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                }
+            ) {
+                PageImage(image_name = job.page_image, size = 60, horizontal_padding = 5)
+            }
+
             Column {
                 Text(text = job.title, fontSize = 20.sp)
 

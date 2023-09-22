@@ -9,6 +9,9 @@ let Job = new Schema({
     page: {
         type: String
     },
+    page_image: {
+        type: String
+    },
     workplace_type: {
         type: String
     },

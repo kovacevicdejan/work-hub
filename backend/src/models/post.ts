@@ -24,20 +24,6 @@ let Post = new Schema({
     page_name: {
         type: String
     },
-    options: [
-        {
-            text: {
-                type: String
-            },
-            voters: [
-                {
-                    user: {
-                        type: String
-                    }
-                }
-            ]
-        }
-    ],
     date_posted: {
         type: Number
     },
@@ -46,20 +32,10 @@ let Post = new Schema({
             user: {
                 type: String
             },
+            profile_image: {
+                type: String
+            },
             text: {
-                type: String
-            },
-            replying_user: {
-                type: String
-            },
-            replying_text: {
-                type: String
-            }
-        }
-    ],
-    likes: [
-        {
-            user: {
                 type: String
             }
         }

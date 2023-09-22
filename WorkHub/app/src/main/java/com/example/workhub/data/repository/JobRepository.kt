@@ -2,13 +2,9 @@ package com.example.workhub.data.repository
 
 import com.example.workhub.data.retrofit.WorkHubApi
 import com.example.workhub.data.retrofit.models.Job
-import com.example.workhub.data.retrofit.models.Option
-import com.example.workhub.data.retrofit.models.Post
-import com.example.workhub.data.retrofit.models.User
 import com.example.workhub.data.retrofit.requests.ApplyForJobRequest
 import com.example.workhub.data.retrofit.requests.DeleteJobRequest
 import com.example.workhub.data.retrofit.requests.NewJobRequest
-import com.example.workhub.data.retrofit.requests.NewPostRequest
 import javax.inject.Inject
 
 class JobRepository @Inject constructor(
@@ -38,5 +34,9 @@ class JobRepository @Inject constructor(
 
     suspend fun searchJobs(keyword: String): List<Job> {
         return workHubApi.searchJobs(keyword = keyword)
+    }
+
+    suspend fun getJobs(): List<Job> {
+        return workHubApi.getJobs()
     }
 }

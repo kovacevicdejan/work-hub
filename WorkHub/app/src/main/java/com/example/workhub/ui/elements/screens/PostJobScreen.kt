@@ -84,7 +84,7 @@ fun PostJobScreen(
 
                         Button(
                             onClick = {
-                                postJobViewModel.postJob(page = uiState.page)
+                                postJobViewModel.postJob(page = uiState.page, uiState.page_image)
                             }
                         ) {
                             Text(text = "Post", color = Color.White, fontSize = 20.sp)

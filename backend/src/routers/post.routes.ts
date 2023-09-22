@@ -18,4 +18,12 @@ postRouter.route('/get_posts/:email').get(
     (req, res) => new PostController().get_posts(req, res)
 )
 
+postRouter.route('/get_post_by_id/:post_id').get(
+    (req, res) => new PostController().get_post_by_id(req, res)
+)
+
+postRouter.route('/add_comment').post(
+    (req, res) => new PostController().add_comment(req, res)
+)
+
 export default postRouter

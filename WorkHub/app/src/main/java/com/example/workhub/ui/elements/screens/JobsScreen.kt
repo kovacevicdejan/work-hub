@@ -14,13 +14,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.example.workhub.ui.elements.composables.PageImage
 import com.example.workhub.ui.elements.theme.Shapes
+import com.example.workhub.ui.stateholders.JobsViewModel
+import com.example.workhub.ui.stateholders.WorkHubViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun JobsScreen(
+    workHubViewModel: WorkHubViewModel,
+    jobsViewModel: JobsViewModel = hiltViewModel(),
     navController: NavHostController
 ) {
     val sortTypes = arrayOf("Date posted", "Deadline")
@@ -33,15 +39,12 @@ fun JobsScreen(
     val scope = rememberCoroutineScope()
     val drawerState = rememberBottomDrawerState(BottomDrawerValue.Closed)
 
-//    sort by most recent
-//
-//            expirience level internship medior senior junior entry level director executive
-//            date posted any time past month past week last day .
-//    company names .
-//    job type intern full time .
-//    onsite/remote .
-//    location .
-//    industry
+    val uiState by workHubViewModel.uiState.collectAsState()
+    val jobsUiState by jobsViewModel.uiState.collectAsState()
+
+    LaunchedEffect(Unit) {
+        jobsViewModel.getJobs()
+    }
 
     Column {
         BottomDrawer(
@@ -170,75 +173,75 @@ fun JobsScreen(
             }
         ) {
             Column {
-                Card(
-                    modifier = Modifier
-                        .padding(vertical = 10.dp)
-                        .fillMaxWidth(),
-                    shape = Shapes.large
-                ) {
-                    Column {
-                        Row(
-                            modifier = Modifier.padding(10.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                text = "Sort jobs by: ",
-                                modifier = Modifier.weight(1.2f)
-                            )
-
-                            Box(modifier = Modifier.weight(2.5f)) {
-                                ExposedDropdownMenuBox(
-                                    expanded = expanded,
-                                    onExpandedChange = {
-                                        expanded = !expanded
-                                    }
-                                ) {
-                                    TextField(
-                                        value = selectedText,
-                                        onValueChange = {},
-                                        readOnly = true,
-                                        trailingIcon = {
-                                            ExposedDropdownMenuDefaults.TrailingIcon(
-                                                expanded = expanded
-                                            )
-                                        },
-                                    )
-
-                                    ExposedDropdownMenu(
-                                        expanded = expanded,
-                                        onDismissRequest = { expanded = false }
-                                    ) {
-                                        sortTypes.forEach { item ->
-                                            DropdownMenuItem(
-                                                onClick = {
-                                                    selectedText = item
-                                                    expanded = false
-                                                }
-                                            ) {
-                                                Text(text = item)
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-
-                            IconButton(
-                                onClick = {
-                                    scope.launch { drawerState.open() }
-                                },
-                                modifier = Modifier.weight(0.8f)
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Tune,
-                                    contentDescription = null,
-                                    modifier = Modifier
-                                        .width(40.dp)
-                                        .height(40.dp)
-                                )
-                            }
-                        }
-                    }
-                }
+//                Card(
+//                    modifier = Modifier
+//                        .padding(vertical = 10.dp)
+//                        .fillMaxWidth(),
+//                    shape = Shapes.large
+//                ) {
+//                    Column {
+//                        Row(
+//                            modifier = Modifier.padding(10.dp),
+//                            verticalAlignment = Alignment.CenterVertically
+//                        ) {
+//                            Text(
+//                                text = "Sort jobs by: ",
+//                                modifier = Modifier.weight(1.2f)
+//                            )
+//
+//                            Box(modifier = Modifier.weight(2.5f)) {
+//                                ExposedDropdownMenuBox(
+//                                    expanded = expanded,
+//                                    onExpandedChange = {
+//                                        expanded = !expanded
+//                                    }
+//                                ) {
+//                                    TextField(
+//                                        value = selectedText,
+//                                        onValueChange = {},
+//                                        readOnly = true,
+//                                        trailingIcon = {
+//                                            ExposedDropdownMenuDefaults.TrailingIcon(
+//                                                expanded = expanded
+//                                            )
+//                                        },
+//                                    )
+//
+//                                    ExposedDropdownMenu(
+//                                        expanded = expanded,
+//                                        onDismissRequest = { expanded = false }
+//                                    ) {
+//                                        sortTypes.forEach { item ->
+//                                            DropdownMenuItem(
+//                                                onClick = {
+//                                                    selectedText = item
+//                                                    expanded = false
+//                                                }
+//                                            ) {
+//                                                Text(text = item)
+//                                            }
+//                                        }
+//                                    }
+//                                }
+//                            }
+//
+//                            IconButton(
+//                                onClick = {
+//                                    scope.launch { drawerState.open() }
+//                                },
+//                                modifier = Modifier.weight(0.8f)
+//                            ) {
+//                                Icon(
+//                                    imageVector = Icons.Default.Tune,
+//                                    contentDescription = null,
+//                                    modifier = Modifier
+//                                        .width(40.dp)
+//                                        .height(40.dp)
+//                                )
+//                            }
+//                        }
+//                    }
+//                }
 
                 LazyColumn {
                     item {
@@ -260,7 +263,7 @@ fun JobsScreen(
                         Divider()
                     }
 
-                    for (i in 0..7) {
+                    for (job in jobsUiState.jobs) {
                         item {
                             Card(
                                 backgroundColor = if (isSystemInDarkTheme()) Color(0xFF202020) else Color(
@@ -268,6 +271,8 @@ fun JobsScreen(
                                 ),
                                 shape = Shapes.large,
                                 onClick = {
+                                    workHubViewModel.setJobId(job._id)
+
                                     navController.navigate("Job Post") {
                                         launchSingleTop = true
                                         restoreState = true
@@ -278,32 +283,19 @@ fun JobsScreen(
                                     verticalAlignment = Alignment.CenterVertically,
                                     modifier = Modifier.padding(vertical = 5.dp)
                                 ) {
-                                    Icon(
-                                        imageVector = Icons.Default.Person,
-                                        contentDescription = null,
-                                        modifier = Modifier
-                                            .width(60.dp)
-                                            .height(60.dp)
-                                    )
+                                    PageImage(image_name = job.page_image, size = 60, horizontal_padding = 5)
 
                                     Column {
-                                        Text(text = "Senior Software engineer", fontSize = 20.sp)
+                                        Text(text = job.title, fontSize = 20.sp)
 
-                                        Text(text = "TomTom", fontSize = 14.sp)
+                                        Text(text = job.page, fontSize = 14.sp)
 
-                                        Text(text = "Belgrade, Serbia", fontSize = 14.sp)
+                                        Text(text = job.location, fontSize = 14.sp)
 
-                                        Text(text = "Hybrid", fontSize = 14.sp)
+                                        Text(text = job.workplace_type, fontSize = 14.sp)
                                     }
 
                                     Spacer(modifier = Modifier.weight(1f))
-
-                                    Button(
-                                        onClick = {},
-                                        modifier = Modifier.padding(horizontal = 10.dp)
-                                    ) {
-                                        Text(text = "Apply", color = Color.White)
-                                    }
                                 }
                             }
 

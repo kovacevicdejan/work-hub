@@ -30,15 +30,16 @@ fun HomeScreen(
 
     Column(modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 10.dp)) {
         LazyColumn {
-            for(post in homeUiState.posts)
             item {
-                Post(
-                    navController = navController,
-                    workHubViewModel = workHubViewModel,
-                    post = post,
-                    user = if(post.creator_type == 0) homeUiState.users[post.creator] else null,
-                    page = if(post.creator_type == 1) homeUiState.pages[post.creator] else null
-                )
+                for (post in homeUiState.posts) {
+                    Post(
+                        navController = navController,
+                        workHubViewModel = workHubViewModel,
+                        post = post,
+                        user = if (post.creator_type == 0) homeUiState.users[post.creator] else null,
+                        page = if (post.creator_type == 1) homeUiState.pages[post.creator] else null
+                    )
+                }
             }
         }
     }
