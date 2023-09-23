@@ -1,13 +1,11 @@
-package com.example.workhub.ui
+package com.example.workhub.utils
 
 import android.app.Application
-import com.example.workhub.data.repository.LocalMessageRepository
 import com.example.workhub.data.retrofit.BASE_URL
 import io.socket.client.IO
 import io.socket.client.Socket
 import io.socket.emitter.Emitter
 import java.net.URISyntaxException
-import javax.inject.Inject
 
 object SocketManager: Application() {
     private var socket: Socket? = null

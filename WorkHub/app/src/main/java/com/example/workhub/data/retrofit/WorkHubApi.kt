@@ -5,6 +5,7 @@ import com.example.workhub.data.retrofit.models.Page
 import com.example.workhub.data.retrofit.models.Post
 import com.example.workhub.data.retrofit.models.User
 import com.example.workhub.data.retrofit.requests.*
+import com.example.workhub.utils.PostUserPage
 import okhttp3.MultipartBody
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -12,8 +13,9 @@ import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
 import retrofit2.http.Path
+import retrofit2.http.Query
 
-const val BASE_URL = "https://aacf-178-237-216-126.ngrok-free.app/"
+const val BASE_URL = "https://9ff4-109-245-38-169.ngrok-free.app/"
 
 interface WorkHubApi {
     // image routes
@@ -78,7 +80,11 @@ interface WorkHubApi {
     suspend fun getPagePosts(@Path("page") page: String): List<Post>
 
     @GET("post/get_posts/{email}")
-    suspend fun getPosts(@Path("email") email: String): List<Post>
+    suspend fun getPosts(
+        @Path("email") email: String,
+        @Query("timestamp") timestamp: Long,
+        @Query("page") page: Int
+    ): List<Post>
 
     @GET("post/get_post_by_id/{post_id}")
     suspend fun getPostById(@Path("post_id") post_id: String): Post

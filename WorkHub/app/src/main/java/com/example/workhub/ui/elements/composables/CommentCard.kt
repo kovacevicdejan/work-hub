@@ -53,7 +53,7 @@ fun CommentCard(
                 Text(text = comment.user, fontSize = 20.sp)
             }
 
-            Column(modifier = Modifier.padding(30.dp, 0.dp, 0.dp, 5.dp)) {
+            Column(modifier = Modifier.padding(40.dp, 0.dp, 0.dp, 5.dp)) {
                 Text(
                     text = comment.text,
                     fontSize = 18.sp,

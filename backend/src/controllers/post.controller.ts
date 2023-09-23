@@ -45,6 +45,9 @@ export class PostController {
 
     get_posts = async (req: express.Request, res: express.Response) => {
         const email = req.params.email
+        const timestamp = req.query.timestamp
+        const page_size = 2
+        const page = parseInt(req.query.page.toString()) - 1
 
         let user = await User.findOne({
             email: email
@@ -54,9 +57,12 @@ export class PostController {
         let followed_pages = user.followed_pages.map(page => page.name)
 
         let posts = await Post.find({
-            $or: [ {creator_type: 0, creator: {$in: connections}}, {creator_type: 1, creator: {$in: followed_pages}}]
+            $or: [ {creator_type: 0, creator: {$in: connections}}, {creator_type: 1, creator: {$in: followed_pages}}],
+            $lt: {date_posted: timestamp}
         })
 
+        posts = posts.reverse()
+        posts = posts.slice(page * page_size, (page + 1) * page_size)
         res.json(posts)
     }
 

@@ -1,9 +1,12 @@
 package com.example.workhub.data.repository
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
 import com.example.workhub.data.retrofit.WorkHubApi
 import com.example.workhub.data.retrofit.models.Post
 import com.example.workhub.data.retrofit.requests.AddCommentRequest
 import com.example.workhub.data.retrofit.requests.NewPostRequest
+import com.example.workhub.utils.PostsPagingSource
 import javax.inject.Inject
 
 class PostRepository @Inject constructor(
@@ -39,15 +42,24 @@ class PostRepository @Inject constructor(
         return workHubApi.getPagePosts(page = page)
     }
 
-    suspend fun getPosts(email: String): List<Post> {
-        return workHubApi.getPosts(email = email)
-    }
+    fun getPosts(email: String, timestamp: Long) = Pager(
+        config = PagingConfig(
+            pageSize = 2
+        ),
+        pagingSourceFactory = {
+            PostsPagingSource(
+                workHubApi = workHubApi,
+                email = email,
+                timestamp = timestamp
+            )
+        }
+    ).flow
 
-    suspend fun getPostById(post_id: String): Post {
-        return workHubApi.getPostById(post_id = post_id)
-    }
+suspend fun getPostById(post_id: String): Post {
+    return workHubApi.getPostById(post_id = post_id)
+}
 
-    suspend fun addComment(addCommentRequest: AddCommentRequest) {
-        workHubApi.addComment(addCommentRequest = addCommentRequest)
-    }
+suspend fun addComment(addCommentRequest: AddCommentRequest) {
+    workHubApi.addComment(addCommentRequest = addCommentRequest)
+}
 }

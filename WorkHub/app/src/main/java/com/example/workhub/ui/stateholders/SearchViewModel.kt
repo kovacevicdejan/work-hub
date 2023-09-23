@@ -1,22 +1,15 @@
 package com.example.workhub.ui.stateholders
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
-import com.example.workhub.data.localdb.LocalMessage
 import com.example.workhub.data.repository.*
-import com.example.workhub.data.retrofit.models.ChatMessage
 import com.example.workhub.data.retrofit.models.Job
 import com.example.workhub.data.retrofit.models.Page
 import com.example.workhub.data.retrofit.models.User
-import com.example.workhub.ui.SocketManager
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.json.JSONObject
-import java.util.*
 import javax.inject.Inject
 
 data class SearchUiState(

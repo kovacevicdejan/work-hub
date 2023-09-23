@@ -8,7 +8,7 @@ import com.example.workhub.data.repository.LocalChatRepository
 import com.example.workhub.data.repository.LocalMessageRepository
 import com.example.workhub.data.repository.UserRepository
 import com.example.workhub.data.retrofit.models.User
-import com.example.workhub.ui.SocketManager
+import com.example.workhub.utils.SocketManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -3,11 +3,10 @@ package com.example.workhub.ui.stateholders
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.example.workhub.data.localdb.LocalChat
-import com.example.workhub.data.repository.ChatRepository
 import com.example.workhub.data.repository.LocalChatRepository
 import com.example.workhub.data.repository.UserRepository
 import com.example.workhub.data.retrofit.models.User
-import com.example.workhub.ui.SocketManager
+import com.example.workhub.utils.SocketManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
