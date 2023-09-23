@@ -4,10 +4,7 @@ import android.util.Log
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.Button
-import androidx.compose.material.Card
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Apartment
 import androidx.compose.material.icons.filled.Group
@@ -27,6 +24,8 @@ import androidx.navigation.NavHostController
 import com.example.workhub.HomeDestination
 import com.example.workhub.data.retrofit.models.Applicant
 import com.example.workhub.ui.elements.composables.PageImage
+import com.example.workhub.ui.elements.composables.ProfileImage
+import com.example.workhub.ui.elements.composables.SearchUserCard
 import com.example.workhub.ui.elements.theme.Blue
 import com.example.workhub.ui.elements.theme.Shapes
 import com.example.workhub.ui.stateholders.JobEvent
@@ -48,7 +47,7 @@ fun JobScreen(
     }
 
     OnEvent(jobViewModel.event) {
-        if(it == JobEvent.ApplyForJob) {
+        if (it == JobEvent.ApplyForJob) {
             navController.navigate(HomeDestination.route) {
                 launchSingleTop = true
                 restoreState = true
@@ -62,7 +61,7 @@ fun JobScreen(
                 modifier = Modifier
                     .padding(vertical = 10.dp)
                     .fillMaxWidth(),
-                backgroundColor = if(isSystemInDarkTheme()) Color(0xFF202020) else Color(0xFFEEEEEE),
+                backgroundColor = if (isSystemInDarkTheme()) Color(0xFF202020) else Color(0xFFEEEEEE),
                 shape = Shapes.large
             ) {
                 Column {
@@ -76,50 +75,66 @@ fun JobScreen(
 
                         Spacer(modifier = Modifier.weight(1f))
 
-                        if(jobUiState.job != null) {
-                            Log.d("print", jobUiState.job.toString())
-
-                            if (!jobUiState.job!!.applicants.contains(
-                                    Applicant(
-                                        user = uiState.curr_user?.email ?: ""
+                        if((jobUiState.page?.admin ?: "") != (uiState.curr_user?.email ?: "")) {
+                            if (jobUiState.job != null) {
+                                if (!jobUiState.job!!.applicants.contains(
+                                        Applicant(
+                                            user = uiState.curr_user?.email ?: ""
+                                        )
                                     )
-                                )
-                            ) {
-                                Column {
-                                    Button(
-                                        onClick = {
-                                            jobViewModel.applyForJob(
-                                                user = uiState.curr_user?.email ?: "",
-                                                job_id = jobUiState.job?._id ?: ""
-                                            )
-                                        },
-                                        modifier = Modifier
-                                            .padding(horizontal = 10.dp)
-                                    ) {
-                                        Text(text = "Apply", color = Color.White)
+                                ) {
+                                    Column {
+                                        Button(
+                                            onClick = {
+                                                jobViewModel.applyForJob(
+                                                    user = uiState.curr_user?.email ?: "",
+                                                    job_id = jobUiState.job?._id ?: ""
+                                                )
+                                            },
+                                            modifier = Modifier
+                                                .padding(horizontal = 10.dp)
+                                        ) {
+                                            Text(text = "Apply", color = Color.White)
+                                        }
                                     }
+                                } else {
+                                    Text(
+                                        text = "Applied",
+                                        color = Blue,
+                                        fontSize = 20.sp,
+                                        modifier = Modifier.padding(5.dp)
+                                    )
                                 }
-                            }
-                            else {
-                                Text(
-                                    text = "Applied",
-                                    color = Blue,
-                                    fontSize = 20.sp,
-                                    modifier = Modifier.padding(5.dp)
-                                )
                             }
                         }
                     }
 
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        PageImage(image_name = jobUiState.page?.profile_image ?: "", size = 70)
+                        IconButton(
+                            onClick = {
+                                workHubViewModel.setPage(jobUiState.job?.page ?: "")
+
+                                navController.navigate("Page") {
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
+                            }
+                        ) {
+                            PageImage(image_name = jobUiState.page?.profile_image ?: "", size = 70)
+                        }
 
                         Column {
                             Text(text = jobUiState.job?.page ?: "", fontSize = 20.sp)
 
-                            Text(text = "${jobUiState.job?.location ?: ""} (${jobUiState.job?.workplace_type ?: ""})", fontSize = 12.sp)
+                            Text(
+                                text = "${jobUiState.job?.location ?: ""} (${jobUiState.job?.workplace_type ?: ""})",
+                                fontSize = 12.sp
+                            )
 
-                            Text(text = "${jobUiState.job?.applicants?.size ?: 0} applicants", fontSize = 12.sp)
+                            Text(
+                                text = "${jobUiState.job?.applicants?.size ?: 0} applicants",
+                                fontSize = 12.sp
+                            )
                         }
                     }
 
@@ -135,7 +150,10 @@ fun JobScreen(
                                 .padding(0.dp, 0.dp, 10.dp, 0.dp)
                         )
 
-                        Text(text = "${if((jobUiState.job?.job_type ?: "") == 0) "Internship" else "Full-time"} | ${jobUiState.job?.level ?: ""}", fontSize = 18.sp)
+                        Text(
+                            text = "${if ((jobUiState.job?.job_type ?: "") == 0) "Internship" else "Full-time"} | ${jobUiState.job?.level ?: ""}",
+                            fontSize = 18.sp
+                        )
                     }
 
                     Row(
@@ -179,7 +197,7 @@ fun JobScreen(
                 modifier = Modifier
                     .padding(0.dp, 0.dp, 0.dp, 10.dp)
                     .fillMaxWidth(),
-                backgroundColor = if(isSystemInDarkTheme()) Color(0xFF202020) else Color(0xFFEEEEEE),
+                backgroundColor = if (isSystemInDarkTheme()) Color(0xFF202020) else Color(0xFFEEEEEE),
                 shape = Shapes.large
             ) {
                 Column {
@@ -219,6 +237,33 @@ fun JobScreen(
                             fontSize = 16.sp
                         )
                     }
+                }
+            }
+        }
+
+        if ((jobUiState.page?.admin ?: "") == (uiState.curr_user?.email ?: "")) {
+            item {
+                Card(
+                    backgroundColor = if (isSystemInDarkTheme()) Color(0xFF202020) else Color(
+                        0xFFEEEEEE
+                    ),
+                    shape = Shapes.large,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(10.dp)
+                    ) {
+                        Text(text = "Applicants", fontSize = 24.sp)
+                    }
+                }
+
+                Divider()
+            }
+
+            item {
+                for (applicant in jobUiState.applicants) {
+                    SearchUserCard(user = applicant, navController = navController, workHubViewModel = workHubViewModel)
                 }
             }
         }

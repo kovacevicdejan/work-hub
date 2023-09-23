@@ -354,14 +354,6 @@ fun ProfileScreen(
                             val exp = profileUiState.user!!.experience[i]
 
                             Row(modifier = Modifier.padding(10.dp, 0.dp, 10.dp, 10.dp)) {
-                                Icon(
-                                    imageVector = Icons.Default.Person,
-                                    contentDescription = null,
-                                    modifier = Modifier
-                                        .width(70.dp)
-                                        .height(70.dp)
-                                )
-
                                 Column {
                                     Text(
                                         text = exp.job_title,
