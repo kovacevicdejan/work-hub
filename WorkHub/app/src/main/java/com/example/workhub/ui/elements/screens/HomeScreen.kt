@@ -78,7 +78,7 @@ fun HomeScreen(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Center,
                         ) {
-                            Text(text = "Pagination Loading")
+                            Text(text = "Loading")
 
                             CircularProgressIndicator(color = Blue)
                         }

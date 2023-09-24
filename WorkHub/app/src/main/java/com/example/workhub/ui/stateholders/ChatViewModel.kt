@@ -1,6 +1,7 @@
 package com.example.workhub.ui.stateholders
 
 import androidx.lifecycle.viewModelScope
+import com.example.workhub.data.localdb.LocalChat
 import com.example.workhub.data.localdb.LocalMessage
 import com.example.workhub.data.repository.LocalChatRepository
 import com.example.workhub.data.repository.LocalMessageRepository

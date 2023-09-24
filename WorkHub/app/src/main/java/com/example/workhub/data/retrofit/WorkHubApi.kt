@@ -1,9 +1,6 @@
 package com.example.workhub.data.retrofit
 
-import com.example.workhub.data.retrofit.models.Job
-import com.example.workhub.data.retrofit.models.Page
-import com.example.workhub.data.retrofit.models.Post
-import com.example.workhub.data.retrofit.models.User
+import com.example.workhub.data.retrofit.models.*
 import com.example.workhub.data.retrofit.requests.*
 import com.example.workhub.utils.PostUserPage
 import okhttp3.MultipartBody
@@ -15,7 +12,7 @@ import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-const val BASE_URL = "https://9ff4-109-245-38-169.ngrok-free.app/"
+const val BASE_URL = "https://1c81-109-245-38-169.ngrok-free.app/"
 
 interface WorkHubApi {
     // image routes
@@ -140,6 +137,9 @@ interface WorkHubApi {
 
     // chat routes
 
-    @POST("chat/new_chat")
-    suspend fun newChat(@Body newChatRequest: NewChatRequest): String
+    @GET("chat/get_modified_chats/{user}")
+    suspend fun getModifiedChats(
+        @Path("user") user: String,
+        @Query("timestamp") timestamp: Long
+    ): List<Chat>
 }

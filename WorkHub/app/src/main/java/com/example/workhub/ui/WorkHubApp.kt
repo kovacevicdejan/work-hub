@@ -84,7 +84,7 @@ fun WorkHubApp() {
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             IconButton(onClick = {
-                                workHubViewModel.setUser(uiState.curr_user!!.email)
+                                workHubViewModel.setUser(uiState.curr_user?.email ?: "")
 
                                 navController.navigate("Profile") {
                                     launchSingleTop = true

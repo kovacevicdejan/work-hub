@@ -66,7 +66,9 @@ fun ChatsScreen(
                             chat = chats[i],
                             user = chatsUiState.users[i],
                             workHubViewModel = workHubViewModel,
-                            navController = navController
+                            navController = navController,
+                            unread_messages_count = chatsViewModel.getUnreadMessagesCount(chats[i]),
+                            chatsViewModel = chatsViewModel
                         )
 
                         Divider()

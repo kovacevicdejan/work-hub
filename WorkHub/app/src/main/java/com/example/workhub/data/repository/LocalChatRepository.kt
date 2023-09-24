@@ -23,4 +23,8 @@ class LocalChatRepository @Inject constructor(private val workHubDao: WorkHubDao
     suspend fun getChatById(id: String): LocalChat {
         return workHubDao.getChatById(id = id)
     }
+
+    suspend fun getChatExists(id: String): Int {
+        return workHubDao.getChatExists(chat_id = id)
+    }
 }

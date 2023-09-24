@@ -1,15 +1,19 @@
 package com.example.workhub.ui.stateholders
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.example.workhub.data.localdb.LocalChat
 import com.example.workhub.data.localdb.LocalMessage
+import com.example.workhub.data.repository.ChatRepository
 import com.example.workhub.data.repository.LocalChatRepository
 import com.example.workhub.data.repository.LocalMessageRepository
 import com.example.workhub.data.repository.UserRepository
 import com.example.workhub.data.retrofit.models.User
 import com.example.workhub.utils.SocketManager
+import com.example.workhub.utils.makeStatusNotification
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -37,6 +41,8 @@ class WorkHubViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val localChatRepository: LocalChatRepository,
     private val localMessageRepository: LocalMessageRepository,
+    private val chatRepository: ChatRepository,
+    @ApplicationContext private val context: Context
 ) : BaseViewModel<Event>() {
     init {
         SocketManager.getSocket()?.on("chat created") { args ->
@@ -50,7 +56,7 @@ class WorkHubViewModel @Inject constructor(
                         id = args[0].toString(),
                         user1 = args[1].toString(),
                         user2 = args[2].toString(),
-//                        timestamp = args[3] as Long
+                        timestamp = args[3] as Long
                     )
 
                     localChatRepository.insert(localChat = localChat)
@@ -110,6 +116,40 @@ class WorkHubViewModel @Inject constructor(
             val user = userRepository.getUserByEmail(email)
             _uiState.update { it.copy(curr_user = user) }
             sendEvent(GetUserEvent.GetUserSuccess)
+            var timestamp: Long = 0
+
+            if(localMessageRepository.getMessageCount() != 0)
+                timestamp = localMessageRepository.getLatestMessageTimestamp()
+
+            val modifiedChats = chatRepository.getModifiedChats(user = user.email, timestamp = timestamp)
+
+            if(modifiedChats.isNotEmpty())
+                makeStatusNotification(context = context, message = "New messages!")
+
+            for(chat in modifiedChats) {
+                if(localChatRepository.getChatExists(chat._id) == 0) {
+                    val localChat = LocalChat(
+                        id = chat._id,
+                        user1 = chat.user1,
+                        user2 = chat.user2,
+                        timestamp = chat.timestamp
+                    )
+
+                    localChatRepository.insert(localChat = localChat)
+                }
+
+                for(message in chat.messages) {
+                    val localMessage = LocalMessage(
+                        user = message.user,
+                        text = message.text,
+                        timestamp = message.timestamp,
+                        read = 0,
+                        chat = chat._id
+                    )
+
+                    localMessageRepository.insert(localMessage = localMessage)
+                }
+            }
         }
         else {
             withContext(Dispatchers.IO) {

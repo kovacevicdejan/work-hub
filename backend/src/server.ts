@@ -67,7 +67,7 @@ io.on('connection', (socket) => {
 			_id: chat_id
 		}, {
 			$push: { messages: { user: user, text: text, timestamp: timestamp } },
-			// timestamp: timestamp,
+			timestamp: timestamp,
 		}, (err) => {
 			if (err)
 				console.log(err)
@@ -86,8 +86,6 @@ io.on('connection', (socket) => {
 			})
 		})
 	});
-
-	// socket.broadcast.emit('hi');
 });
 
 server.listen(4000, () => console.log('listening on localhost:4000'));

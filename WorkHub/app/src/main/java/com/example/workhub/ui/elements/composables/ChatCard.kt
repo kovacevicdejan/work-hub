@@ -17,9 +17,45 @@ import androidx.navigation.NavHostController
 import com.example.workhub.HomeDestination
 import com.example.workhub.data.localdb.LocalChat
 import com.example.workhub.data.retrofit.models.User
+import com.example.workhub.ui.elements.theme.Blue
 import com.example.workhub.ui.elements.theme.Shapes
+import com.example.workhub.ui.stateholders.ChatsViewModel
 import com.example.workhub.ui.stateholders.ManageNetworkViewModel
 import com.example.workhub.ui.stateholders.WorkHubViewModel
+import kotlinx.coroutines.Job
+import java.util.*
+
+fun getYear(timestamp: Long): Int {
+    val calendar = Calendar.getInstance()
+    calendar.timeInMillis = timestamp
+    return calendar.get(Calendar.YEAR)
+}
+
+fun getMonth(timestamp: Long): String {
+    val calendar = Calendar.getInstance()
+    calendar.timeInMillis = timestamp
+    return when(calendar.get(Calendar.MONTH) + 1) {
+        1 -> "JAN"
+        2 -> "FEB"
+        3 -> "MAR"
+        4 -> "APR"
+        5 -> "MAY"
+        6 -> "JUN"
+        7 -> "JUL"
+        8 -> "AUG"
+        9 -> "SEP"
+        10 -> "OCT"
+        11 -> "NOV"
+        12 -> "DEC"
+        else -> "INVALID"
+    }
+}
+
+fun getDay(timestamp: Long): Int {
+    val calendar = Calendar.getInstance()
+    calendar.timeInMillis = timestamp
+    return calendar.get(Calendar.DAY_OF_MONTH)
+}
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -27,13 +63,16 @@ fun ChatCard(
     chat: LocalChat,
     user: User,
     navController: NavHostController,
-    workHubViewModel: WorkHubViewModel
+    workHubViewModel: WorkHubViewModel,
+    unread_messages_count: Int,
+    chatsViewModel: ChatsViewModel
 ) {
     Card(
         backgroundColor = if (isSystemInDarkTheme()) Color(0xFF202020) else Color(0xFFEEEEEE),
         shape = Shapes.large,
         onClick = {
             workHubViewModel.setChatId(chat.id)
+            chatsViewModel.readMessages(chat)
 
             navController.navigate("Single Chat") {
                 launchSingleTop = true
@@ -52,10 +91,17 @@ fun ChatCard(
             )
 
             Column {
-                Text(text = user.firstname + " " + user.lastname, fontSize = 20.sp)
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(text = user.firstname + " " + user.lastname, fontSize = 20.sp)
+
+                    if(unread_messages_count > 0)
+                        Badge(backgroundColor = Blue, contentColor = Color.White, modifier = Modifier.padding(horizontal = 5.dp)) {
+                            Text("$unread_messages_count", fontSize = 10.sp)
+                        }
+                }
 
                 Text(
-                    text = "Thank you! It means a lot to me.",
+                    text = user.headline,
                     fontSize = 14.sp
                 )
             }
@@ -63,7 +109,7 @@ fun ChatCard(
             Spacer(modifier = Modifier.weight(1f))
 
             Text(
-                text = "27.8.2023.",
+                text = "${getDay(chat.timestamp)}.${getMonth(chat.timestamp)}.${getYear(chat.timestamp)}.",
                 fontSize = 14.sp,
                 modifier = Modifier.padding(horizontal = 10.dp)
             )

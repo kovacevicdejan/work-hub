@@ -398,19 +398,35 @@ fun ProfileScreen(
 
                     Row(modifier = Modifier.padding(10.dp, 0.dp, 10.dp, 10.dp)) {
                         Column {
-                            if (profileUiState.user != null) {
-                                for (skill in profileUiState.user!!.skills) {
-                                    Text(
-                                        text = skill.name,
-                                        fontSize = 16.sp,
-                                        modifier = Modifier.padding(vertical = 5.dp)
-                                    )
+                            if (profileUiState.user != null && uiState.curr_user != null) {
+                                if((profileUiState.user?.email ?: "") == (uiState.curr_user?.email
+                                        ?: "")) {
+                                    for (skill in uiState.curr_user!!.skills) {
+                                        Text(
+                                            text = skill.name,
+                                            fontSize = 16.sp,
+                                            modifier = Modifier.padding(vertical = 5.dp)
+                                        )
 
-                                    Divider()
+                                        Divider()
+                                    }
+                                }
+                                else {
+                                    for (skill in profileUiState.user!!.skills) {
+                                        Text(
+                                            text = skill.name,
+                                            fontSize = 16.sp,
+                                            modifier = Modifier.padding(vertical = 5.dp)
+                                        )
+
+                                        Divider()
+                                    }
                                 }
                             }
 
-                            if(profileUiState.user == uiState.curr_user) {
+                            if((profileUiState.user?.email ?: "") == (uiState.curr_user?.email
+                                    ?: "")
+                            ) {
                                 Row(
                                     modifier = Modifier.padding(
                                         horizontal = 10.dp,

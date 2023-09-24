@@ -38,7 +38,7 @@ class SelectNewChatViewModel @Inject constructor(
                         id = args[0].toString(),
                         user1 = args[1].toString(),
                         user2 = args[2].toString(),
-//                        timestamp = args[3] as Long
+                        timestamp = args[3] as Long
                     )
 
                     localChatRepository.insert(localChat = localChat)

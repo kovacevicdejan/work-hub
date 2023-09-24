@@ -4,14 +4,18 @@ import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.example.workhub.data.localdb.LocalChat
 import com.example.workhub.data.repository.LocalChatRepository
+import com.example.workhub.data.repository.LocalMessageRepository
 import com.example.workhub.data.repository.UserRepository
 import com.example.workhub.data.retrofit.models.User
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 data class ChatsUiState(
@@ -23,7 +27,8 @@ data class ChatsUiState(
 @HiltViewModel
 class ChatsViewModel @Inject constructor(
     private val userRepository: UserRepository,
-    private val localChatRepository: LocalChatRepository
+    private val localChatRepository: LocalChatRepository,
+    private val localMessageRepository: LocalMessageRepository
 ) : BaseViewModel<ChatEvent>() {
     private val _uiState = MutableStateFlow(
         ChatsUiState(
@@ -57,5 +62,14 @@ class ChatsViewModel @Inject constructor(
         }
 
         _uiState.update { it.copy(users = users) }
+    }
+
+    fun getUnreadMessagesCount(chat: LocalChat) = runBlocking {
+        val deferred = async { localMessageRepository.getUnreadMessagesCount(chat_id = chat.id) }
+        return@runBlocking deferred.await()
+    }
+
+    fun readMessages(chat: LocalChat) =viewModelScope.launch {
+        localMessageRepository.readMessages(chat_id = chat.id)
     }
 }
