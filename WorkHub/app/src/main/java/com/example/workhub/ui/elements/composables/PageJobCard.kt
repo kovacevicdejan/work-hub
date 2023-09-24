@@ -65,7 +65,7 @@ fun PageJobCard(
 
             Spacer(modifier = Modifier.weight(1f))
 
-            if(pageUiState.page?.admin == uiState.user) {
+            if(pageUiState.page?.admin == (uiState.curr_user?.email ?: "")) {
                 Button(
                     onClick = {
                         pageViewModel.deleteJob(job_id = job._id)
