@@ -123,7 +123,9 @@ fun PageScreen(
                     Icon(imageVector = Icons.Default.Add, contentDescription = null)
                 }
             }
-            else if(state == 2) {
+            else if(state == 2 && (pageUiState.page?.admin ?: "") == (uiState.curr_user?.email
+                    ?: "")
+            ) {
                 FloatingActionButton(
                     onClick = {
                         workHubViewModel.setPageImage(pageUiState.page?.profile_image ?: "")

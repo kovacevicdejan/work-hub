@@ -256,7 +256,7 @@ fun JobsScreen(
                                 verticalAlignment = Alignment.CenterVertically,
                                 modifier = Modifier.padding(10.dp)
                             ) {
-                                Text(text = "Recommended jobs", fontSize = 24.sp)
+                                Text(text = "Jobs", fontSize = 24.sp)
                             }
                         }
 

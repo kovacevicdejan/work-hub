@@ -77,7 +77,7 @@ class WorkHubViewModel @Inject constructor(
                         )
 
                         localMessageRepository.insert(localMessage = localMessage)
-                        sendEvent(ChatEvent.NewMessageEvent)
+                        makeStatusNotification(context = context, "New message")
                     }
                 }
             }

@@ -57,7 +57,7 @@ fun ChatsScreen(
         }
     ) {
         LazyColumn(
-            modifier = Modifier.padding(0.dp, 10.dp, 0.dp, 0.dp),
+            modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 0.dp),
         ) {
             if(chats.isNotEmpty() && chatsUiState.users.isNotEmpty()) {
                 for (i in chats.indices) {

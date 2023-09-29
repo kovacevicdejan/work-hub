@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
@@ -52,6 +53,8 @@ fun ChatScreen(
                 shape = Shapes.large
             ) {
                 Column {
+                    Divider()
+
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.padding(vertical = 10.dp)
@@ -86,78 +89,91 @@ fun ChatScreen(
             }
         }
     ) {
-        LazyColumn {
-            item {
-                Card(
-                    modifier = Modifier
-                        .padding(0.dp, 10.dp, 0.dp, 0.dp)
-                        .fillMaxWidth(),
-                    backgroundColor = if (isSystemInDarkTheme()) Color(0xFF202020) else Color(
-                        0xFFEEEEEE
-                    ),
-                    shape = Shapes.large
+        Column {
+            Card(
+                modifier = Modifier
+                    .padding(0.dp, 0.dp, 0.dp, 0.dp)
+                    .fillMaxWidth(),
+                backgroundColor = if (isSystemInDarkTheme()) Color(0xFF202020) else Color(
+                    0xFFEEEEEE
+                ),
+                shape = Shapes.large
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(vertical = 5.dp)
                 ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(vertical = 10.dp)
-                    ) {
-                        IconButton(
-                            onClick = {
-                                navController.navigate("Profile") {
-                                    launchSingleTop = true
-                                    restoreState = true
-                                }
+                    IconButton(
+                        onClick = {
+                            navController.navigate("Profile") {
+                                launchSingleTop = true
+                                restoreState = true
                             }
-                        ) {
-                            ProfileImage(
-                                image_name = chatUiState.other_user?.profile_image ?: "",
-                                size = 60,
-                                horizontal_padding = 5
-                            )
                         }
+                    ) {
+                        ProfileImage(
+                            image_name = chatUiState.other_user?.profile_image ?: "",
+                            size = 60,
+                            horizontal_padding = 5
+                        )
+                    }
 
-                        Column {
-                            Text(
-                                text = (chatUiState.other_user?.firstname ?: "") + " "
-                                        + (chatUiState.other_user?.lastname ?: ""),
-                                fontSize = 20.sp
-                            )
+                    Column {
+                        Text(
+                            text = (chatUiState.other_user?.firstname ?: "") + " "
+                                    + (chatUiState.other_user?.lastname ?: ""),
+                            fontSize = 20.sp
+                        )
 
-                            Text(text = chatUiState.other_user?.headline ?: "", fontSize = 14.sp)
-                        }
+                        Text(text = chatUiState.other_user?.headline ?: "", fontSize = 14.sp)
                     }
                 }
             }
 
-            if(messages.isNotEmpty() && chatUiState.user != null && chatUiState.other_user != null) {
-                val dividedMessages = chatViewModel.divideMessages(messages = messages)
+            LazyColumn {
+                if (messages.isNotEmpty() && chatUiState.user != null && chatUiState.other_user != null) {
+                    val dividedMessages = chatViewModel.divideMessages(messages = messages)
 
-                for(message_list in dividedMessages){
-                    val timestamp = message_list[0].timestamp
+                    for (message_list in dividedMessages) {
+                        val timestamp = message_list[0].timestamp
 
-                    item {
-                        Card(
-                            backgroundColor = if (isSystemInDarkTheme()) Color(0xFF202020) else Color(
-                                0xFFEEEEEE
-                            ),
-                            shape = Shapes.large,
-                            modifier = Modifier.padding(0.dp, 0.dp, 0.dp, if (message_list == dividedMessages[dividedMessages.size - 1]) 77.dp else 0.dp)
-                        ) {
-                            Column(modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 5.dp)) {
-                                Divider()
+                        item {
+                            Card(
+                                backgroundColor = if (isSystemInDarkTheme()) Color(0xFF202020) else Color(
+                                    0xFFEEEEEE
+                                ),
+                                shape = Shapes.large,
+                                modifier = Modifier.padding(
+                                    0.dp,
+                                    0.dp,
+                                    0.dp,
+                                    if (message_list == dividedMessages[dividedMessages.size - 1]) 77.dp else 0.dp
+                                )
+                            ) {
+                                Column(modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 5.dp)) {
+                                    Divider()
 
-                                Column(
-                                    horizontalAlignment = Alignment.CenterHorizontally,
-                                    modifier = Modifier.fillMaxWidth()
-                                ) {
-                                    Text(text = "${chatViewModel.getMonth(timestamp)} ${chatViewModel.getDay(timestamp)}, ${chatViewModel.getYear(timestamp)}")
-                                }
+                                    Column(
+                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                        modifier = Modifier.fillMaxWidth()
+                                    ) {
+                                        Text(
+                                            text = "${chatViewModel.getMonth(timestamp)} ${
+                                                chatViewModel.getDay(
+                                                    timestamp
+                                                )
+                                            }, ${chatViewModel.getYear(timestamp)}"
+                                        )
+                                    }
 
-                                for(message in message_list) {
-                                    Message(
-                                        message = message,
-                                        user = if(message.user == (chatUiState.user?.email ?: "")) chatUiState.user!! else chatUiState.other_user!!
-                                    )
+                                    for (message in message_list) {
+                                        Message(
+                                            message = message,
+                                            user = if (message.user == (chatUiState.user?.email
+                                                    ?: "")
+                                            ) chatUiState.user!! else chatUiState.other_user!!
+                                        )
+                                    }
                                 }
                             }
                         }
