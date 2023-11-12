@@ -18,8 +18,8 @@
         <activity
             android:name=".WorkHubActivity"
             android:exported="true"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.WorkHub">
+            android:theme="@style/Theme.WorkHub"
+            android:configChanges="orientation|screenSize|screenLayout">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

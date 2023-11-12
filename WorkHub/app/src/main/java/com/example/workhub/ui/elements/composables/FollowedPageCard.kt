@@ -47,7 +47,7 @@ fun FollowedPageCard(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(vertical = 10.dp)
         ) {
-            PageImage(image_name = page.profile_image, size = 60)
+            PageImage(image_name = page.profile_image, size = 60, horizontal_padding = 5)
 
             Column {
                 Text(text = page.name, fontSize = 20.sp)

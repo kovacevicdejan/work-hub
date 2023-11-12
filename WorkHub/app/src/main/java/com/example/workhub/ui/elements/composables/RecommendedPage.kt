@@ -12,10 +12,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.example.workhub.data.retrofit.models.FollowedPage
-import com.example.workhub.data.retrofit.models.Invitation
-import com.example.workhub.data.retrofit.models.Page
-import com.example.workhub.data.retrofit.models.User
+import com.example.workhub.data.retrofit.models.*
 import com.example.workhub.ui.elements.theme.Blue
 import com.example.workhub.ui.stateholders.NetworkViewModel
 import com.example.workhub.ui.stateholders.WorkHubViewModel
@@ -43,22 +40,36 @@ fun RecommendedPage(
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             PageImage(
                 image_name = page.profile_image,
-                size = 70
+                size = 70,
+                vertical_padding = 5
             )
 
             Text(text = page.name, fontSize = 20.sp)
 
             Text(
-                text = "20 connections follow this page",
+                text = "${page.followers.size} followers",
                 fontSize = 12.sp
             )
 
-            Button(
-                onClick = {
-                    networkViewModel.follow(user = user.email, name = page.name)
+            if (!page.followers.contains(Follower(user = user.email))) {
+                Button(
+                    onClick = {
+                        networkViewModel.follow(
+                            user = user.email,
+                            name = page.name
+                        )
+                    }
+                ) {
+                    Text(text = "Follow", color = Color.White)
                 }
-            ) {
-                Text(text = "Follow", color = Color.White)
+            }
+            else {
+                Text(
+                    text = "Following",
+                    color = Blue,
+                    fontSize = 20.sp,
+                    modifier = Modifier.padding(5.dp)
+                )
             }
         }
     }

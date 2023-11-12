@@ -156,10 +156,13 @@ fun Post(
                         }
                     }
                 }
-                
-                Spacer(modifier = Modifier.weight(2f))
 
-                Text(text = "${post.comments.size} comments", fontSize = 12.sp, modifier = Modifier.weight(1f))
+                Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = "${post.comments.size} comments",
+                        fontSize = 12.sp
+                    )
+                }
             }
         }
     }

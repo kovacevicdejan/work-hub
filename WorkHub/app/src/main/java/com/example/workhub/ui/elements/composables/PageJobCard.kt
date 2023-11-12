@@ -44,14 +44,13 @@ fun PageJobCard(
                 launchSingleTop = true
                 restoreState = true
             }
-        },
-        modifier = Modifier.padding(horizontal = 5.dp)
+        }
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(vertical = 5.dp)
         ) {
-            PageImage(image_name = page.profile_image, size = 60)
+            PageImage(image_name = page.profile_image, size = 60, horizontal_padding = 5)
 
             Column {
                 Text(text = job.title, fontSize = 20.sp)

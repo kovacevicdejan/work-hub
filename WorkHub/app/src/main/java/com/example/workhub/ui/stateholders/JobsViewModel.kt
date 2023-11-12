@@ -1,5 +1,6 @@
 package com.example.workhub.ui.stateholders
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.example.workhub.data.repository.*
 import com.example.workhub.data.retrofit.models.Job
@@ -31,5 +32,10 @@ class JobsViewModel @Inject constructor(
     fun getJobs() = viewModelScope.launch {
         val jobs = jobRepository.getJobs()
         _uiState.update { it.copy(jobs = jobs) }
+    }
+
+    fun sortJobs(sortFunction: (List<Job>) -> List<Job>) {
+        Log.d("print", sortFunction(uiState.value.jobs).toString())
+        _uiState.update { it.copy(jobs = sortFunction(uiState.value.jobs)) }
     }
 }

@@ -12,7 +12,7 @@ import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-const val BASE_URL = "https://cf64-109-245-225-246.ngrok-free.app/"
+const val BASE_URL = "https://8ff2-109-245-35-170.ngrok-free.app/"
 
 interface WorkHubApi {
     // image routes

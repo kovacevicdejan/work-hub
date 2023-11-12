@@ -55,6 +55,7 @@ fun PostJobScreen(
         if(isSystemInDarkTheme()) R.style.DatePickerDarkTheme else R.style.DatePickerLightTheme,
         { _: DatePicker, mYear: Int, mMonth: Int, mDayOfMonth: Int ->
             date.value = "$mDayOfMonth/${mMonth+1}/$mYear"
+
             postJobViewModel.setDeadline(calendar.timeInMillis)
         }, year, month, day
     )

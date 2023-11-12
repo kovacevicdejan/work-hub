@@ -1,5 +1,6 @@
 package com.example.workhub.ui.elements.screens
 
+import android.util.Log
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -173,75 +174,81 @@ fun JobsScreen(
             }
         ) {
             Column {
-//                Card(
-//                    modifier = Modifier
-//                        .padding(vertical = 10.dp)
-//                        .fillMaxWidth(),
-//                    shape = Shapes.large
-//                ) {
-//                    Column {
-//                        Row(
-//                            modifier = Modifier.padding(10.dp),
-//                            verticalAlignment = Alignment.CenterVertically
-//                        ) {
-//                            Text(
-//                                text = "Sort jobs by: ",
-//                                modifier = Modifier.weight(1.2f)
-//                            )
-//
-//                            Box(modifier = Modifier.weight(2.5f)) {
-//                                ExposedDropdownMenuBox(
-//                                    expanded = expanded,
-//                                    onExpandedChange = {
-//                                        expanded = !expanded
-//                                    }
-//                                ) {
-//                                    TextField(
-//                                        value = selectedText,
-//                                        onValueChange = {},
-//                                        readOnly = true,
-//                                        trailingIcon = {
-//                                            ExposedDropdownMenuDefaults.TrailingIcon(
-//                                                expanded = expanded
-//                                            )
-//                                        },
-//                                    )
-//
-//                                    ExposedDropdownMenu(
-//                                        expanded = expanded,
-//                                        onDismissRequest = { expanded = false }
-//                                    ) {
-//                                        sortTypes.forEach { item ->
-//                                            DropdownMenuItem(
-//                                                onClick = {
-//                                                    selectedText = item
-//                                                    expanded = false
-//                                                }
-//                                            ) {
-//                                                Text(text = item)
-//                                            }
-//                                        }
-//                                    }
-//                                }
-//                            }
-//
-//                            IconButton(
-//                                onClick = {
-//                                    scope.launch { drawerState.open() }
-//                                },
-//                                modifier = Modifier.weight(0.8f)
-//                            ) {
-//                                Icon(
-//                                    imageVector = Icons.Default.Tune,
-//                                    contentDescription = null,
-//                                    modifier = Modifier
-//                                        .width(40.dp)
-//                                        .height(40.dp)
-//                                )
-//                            }
-//                        }
-//                    }
-//                }
+                Card(
+                    modifier = Modifier
+                        .padding(vertical = 10.dp)
+                        .fillMaxWidth(),
+                    shape = Shapes.large
+                ) {
+                    Column {
+                        Row(
+                            modifier = Modifier.padding(10.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "Sort jobs by: ",
+                                modifier = Modifier.weight(1.2f)
+                            )
+
+                            Box(modifier = Modifier.weight(2.5f)) {
+                                ExposedDropdownMenuBox(
+                                    expanded = expanded,
+                                    onExpandedChange = {
+                                        expanded = !expanded
+                                    }
+                                ) {
+                                    TextField(
+                                        value = selectedText,
+                                        onValueChange = {},
+                                        readOnly = true,
+                                        trailingIcon = {
+                                            ExposedDropdownMenuDefaults.TrailingIcon(
+                                                expanded = expanded
+                                            )
+                                        },
+                                    )
+
+                                    ExposedDropdownMenu(
+                                        expanded = expanded,
+                                        onDismissRequest = { expanded = false }
+                                    ) {
+                                        sortTypes.forEach { item ->
+                                            DropdownMenuItem(
+                                                onClick = {
+                                                    selectedText = item
+                                                    expanded = false
+
+                                                    if(selectedText == "Date posted") {
+                                                        Log.d("print", "nsjns")
+                                                        jobsViewModel.sortJobs { jobs -> jobs.sortedBy { job -> job.date_posted } }
+                                                    }else
+                                                        jobsViewModel.sortJobs { jobs -> jobs.sortedBy { job -> job.deadline } }
+                                                }
+                                            ) {
+                                                Text(text = item)
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            IconButton(
+                                onClick = {
+                                    scope.launch { drawerState.open() }
+                                },
+                                modifier = Modifier.weight(0.8f)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Tune,
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .width(40.dp)
+                                        .height(40.dp)
+                                )
+                            }
+                        }
+                    }
+                }
 
                 LazyColumn {
                     item {

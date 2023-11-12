@@ -156,7 +156,9 @@ fun PageScreen(
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             PageImage(
                                 image_name = pageUiState.page?.profile_image ?: "",
-                                size = 100
+                                size = 100,
+                                vertical_padding = 5,
+                                horizontal_padding = 5
                             )
                         }
 

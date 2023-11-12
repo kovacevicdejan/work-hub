@@ -55,6 +55,19 @@ export class PostController {
 
         let connections = user.connections.map(conn => conn.user)
         let followed_pages = user.followed_pages.map(page => page.name)
+        let second_conn = []
+
+        connections.forEach(async conn => {
+            let user = await User.findOne({
+                email: conn
+            })
+
+            let c = user.connections.map(conn => conn.user)
+            c.filter(conn => conn != email)
+            second_conn = second_conn.concat(c)
+        });
+
+        connections = connections.concat(second_conn)
 
         let posts = await Post.find({
             $or: [ {creator_type: 0, creator: {$in: connections}}, {creator_type: 1, creator: {$in: followed_pages}}],

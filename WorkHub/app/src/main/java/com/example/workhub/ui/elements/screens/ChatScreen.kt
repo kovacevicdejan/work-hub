@@ -10,10 +10,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Send
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,6 +23,7 @@ import com.example.workhub.ui.elements.composables.ProfileImage
 import com.example.workhub.ui.elements.theme.Shapes
 import com.example.workhub.ui.stateholders.ChatViewModel
 import com.example.workhub.ui.stateholders.WorkHubViewModel
+import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -38,6 +36,12 @@ fun ChatScreen(
     val chatUiState by chatViewModel.uiState.collectAsState()
     val messages by chatViewModel.getMessages(chat_id = uiState.chat_id)
         .collectAsState(initial = emptyList())
+
+    val messageListState = rememberLazyListState()
+
+    LaunchedEffect(messages) {
+        messageListState.animateScrollToItem(messageListState.layoutInfo.totalItemsCount)
+    }
 
     LaunchedEffect(Unit) {
         chatViewModel.getUsers(
@@ -130,7 +134,9 @@ fun ChatScreen(
                 }
             }
 
-            LazyColumn {
+            LazyColumn(
+                state = messageListState,
+            ) {
                 if (messages.isNotEmpty() && chatUiState.user != null && chatUiState.other_user != null) {
                     val dividedMessages = chatViewModel.divideMessages(messages = messages)
 
