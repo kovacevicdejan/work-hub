@@ -4,3 +4,7 @@
 - Integrated Socket.io in order to provide users a real-time chat application with notifications.
 
 <video src="demo.mp4" width="320" height="240" controls></video>
+
+
+https://github.com/kovacevicdejan/work-hub/assets/82605059/d3099ac5-e2fb-40ff-9742-711a22d8c73c
+
